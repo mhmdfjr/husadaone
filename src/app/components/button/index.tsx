@@ -4,13 +4,28 @@ import clsx from "clsx";
 
 export default function Button(props:any) {
     const baseStyle = {
-        baseButton: ['w-[118px]','h-11', 'bg-brand-base', 'flex', 'justify-center', 'items-center', 'rounded-lg', 'cursor-pointer'],
-        baseText: ['text-basic-white', 'text-body-bold']
+        baseButton: ['w-[118px]','h-11', 'flex', 'justify-center', 'items-center', 'rounded-lg', 'cursor-pointer'],
+        baseText: ['text-body-bold']
     }
     
     return (
-        <div className={clsx(baseStyle.baseButton, {'border-[2px] border-brand-base bg-transparent' : props.variant=='secondary', 'w-[194px]' : props.size=='big'})}>
-            <p className={clsx(baseStyle.baseText, {'text-brand-base' : props.variant=='secondary'})}>{props.label}</p>
+        <div className={
+            clsx(baseStyle.baseButton, {
+                'bg-brand-base' : props.variant=='primary',
+                'bg-brand-40 cursor-default' : props.variant=='primary-disable',
+                'border-[2px] border-brand-base bg-transparent' : props.variant=='secondary', 
+                'border-[2px] border-brand-40 bg-transparent cursor-default' : props.variant=='secondary-disable',
+                'bg-gray-light cursor-not-allowed' : props.variant=='disable',
+                'w-[194px]' : props.size=='big'
+                })}>
+            <p className={
+                clsx(baseStyle.baseText, {
+                    'text-basic-white' : props.variant=='primary'||'primary-disable',
+                    'text-brand-base' : props.variant=='secondary',
+                    'text-brand-40' : props.variant=='secondary-disable',
+                    'text-gray-medium-light' : props.variant=='disable'
+                })}>{props.label}
+            </p>
         </div>
     )
 }
