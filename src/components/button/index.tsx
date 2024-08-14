@@ -10,7 +10,7 @@ export default function Button(props: any) {
       "flex",
       "justify-center",
       "items-center",
-      "rounded-lg",
+      ,
     ],
     baseText: ["text-body-bold"],
   };
@@ -18,20 +18,31 @@ export default function Button(props: any) {
   return (
     <div
       className={clsx(baseStyle.baseButton, {
-        "bg-brand-base cursor-pointer": props.variant == "primary",
-        "bg-brand-40 cursor-not-allowed": props.variant == "primary-disable",
-        "border-[2px] border-brand-base cursor-pointer bg-transparent":
+        //Button
+        "bg-brand-base cursor-pointer rounded-lg": props.variant == "primary",
+        "border-[2px] border-brand-base rounded-lg cursor-pointer  bg-transparent":
           props.variant == "secondary",
-        "border-[2px] border-brand-40 bg-transparent cursor-not-allowed":
+        // Disable Button
+        "bg-brand-40 cursor-not-allowed rounded-lg":
+          props.variant == "primary-disable",
+        "border-[2px] border-brand-40 rounded-lg bg-transparent cursor-not-allowed":
           props.variant == "secondary-disable",
-        "bg-gray-light cursor-not-allowed": props.variant == "disable",
+        "bg-gray-light rounded-lg cursor-not-allowed":
+          props.variant == "disable",
         "w-[194px]": props.size == "big",
+        //Button Line
+        "border-b-[2px]  cursor-pointer  active:border-b-brand-base ":
+          props.variant == "button-line",
       })}
     >
       <p
         className={clsx(baseStyle.baseText, {
-          "text-basic-white": props.variant == "primary" || "primary-disable",
-          "text-brand-base": props.variant == "secondary",
+          // Solid Text
+          "text-basic-white": props.variant === "primary" || "primary-disable",
+          "text-brand-base": props.variant === "secondary",
+          "text-black active:text-brand-base": props.variant === "button-line",
+
+          //Disabled Text
           "text-brand-40": props.variant == "secondary-disable",
           "text-gray-medium-light": props.variant == "disable",
         })}
