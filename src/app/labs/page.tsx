@@ -1,4 +1,4 @@
-import Button from "@/app/components/button"
+import Button from "@/components/button"
 
 // Labs to develop UI components
 
