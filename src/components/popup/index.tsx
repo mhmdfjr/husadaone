@@ -3,6 +3,7 @@ import Button from "../button"
 import clsx from "clsx"
 
 export default async function Popup(props:any) {
+    // console.log(props)
     const chooseIcon = () => {
         if(props.icon=='warning') {
             return <Warning2 size="48" className="text-h3 text-basic-white" />   
@@ -17,7 +18,7 @@ export default async function Popup(props:any) {
             return <FolderCross size="48" className="text-h3 text-basic-white" />   
         }
     }
-    console.log(props)
+    
     return (
         <div className="popup p-10 max-w-[529px] flex flex-col justify-center items-center gap-6 rounded-3xl bg-basic-white drop-shadow-md">
             <div className={clsx("popup-icon w-[104px] h-[104px] flex justify-center items-center rounded-full", {"bg-alert-warning": props.variant=="warning", "bg-alert-success": props.variant=="success", "bg-alert-danger": props.variant=="danger"})}>
