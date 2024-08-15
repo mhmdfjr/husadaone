@@ -1,0 +1,45 @@
+{
+    "patients": [
+      {
+        "number": 101,
+        "name": "Andi Santoso",
+        "age": 34,
+        "gender": "Male",
+        "address": "Jalan Jenderal Sudirman No. 10, Jakarta, DKI Jakarta, 10220, Indonesia",
+        "insuranceStatus": "Active"
+      },
+      {
+        "number": 102,
+        "name": "Siti Rahmawati",
+        "age": 29,
+        "gender": "Female",
+        "address": "Jalan Gatot Subroto No. 5, Bandung, Jawa Barat, 40112, Indonesia",
+        "insuranceStatus": "Inactive"
+      },
+      {
+        "number": 103,
+        "name": "Budi Hartono",
+        "age": 45,
+        "gender": "Male",
+        "address": "Jalan Diponegoro No. 22, Surabaya, Jawa Timur, 60241, Indonesia",
+        "insuranceStatus": "Active"
+      },
+      {
+        "number": 104,
+        "name": "Dewi Anggraini",
+        "age": 37,
+        "gender": "Female",
+        "address": "Jalan Imam Bonjol No. 7, Medan, Sumatera Utara, 20112, Indonesia",
+        "insuranceStatus": "Pending"
+      },
+      {
+        "number": 105,
+        "name": "Rizky Ramadhan",
+        "age": 50,
+        "gender": "Male",
+        "address": "Jalan Ahmad Yani No. 18, Yogyakarta, DI Yogyakarta, 55222, Indonesia",
+        "insuranceStatus": "Expired"
+      }
+    ]
+  }
+  

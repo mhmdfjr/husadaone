@@ -1,4 +1,5 @@
 import Button from "@/components/button";
+import Table from "@/components/table";
 
 // Labs to develop UI components
 
@@ -25,11 +26,11 @@ export default function Labs() {
         </div>
       </div>
 
-      
+
       <div className="w-11/12 my-10 flex flex-col mx-auto ">
-        <li className="text-start font-semibold mb-10">Comp Button</li>
-        <div className="flex flex-col items-center gap-5">
-          Lorem ipsum dolor sit amet.
+        <li className="text-start font-semibold mb-10">Comp Table</li>
+        <div className="flex justify-center gap-5">
+           <Table />
         </div>
       </div>
     </div>
