@@ -28,7 +28,7 @@ export default function Labs() {
       </div>
 
       <div className="w-11/12 my-10 flex flex-col mx-auto ">
-        <li className="text-start font-semibold mb-10">Comp Table</li>
+        <li className="text-start font-semibold mb-10">Comp Search</li>
         <div className="flex justify-center gap-5">
           <Search placeholder="Cari" />
         </div>
