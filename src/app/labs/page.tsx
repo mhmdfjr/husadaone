@@ -1,4 +1,5 @@
 import Button from "@/components/button";
+import Popup from "@/components/popup";
 import Search from "@/components/search";
 import Table from "@/components/table";
 
@@ -38,6 +39,16 @@ export default function Labs() {
         <li className="text-start font-semibold mb-10">Comp Table</li>
         <div className="flex justify-center gap-5">
           <Table />
+        </div>
+      </div>
+
+      <div className="w-11/12 my-10 flex flex-col mx-auto ">
+        <li className="text-start font-semibold mb-10">Comp Pop Out</li>
+        <div className="flex flex-col justify-center items-center gap-8">
+          <Popup variant="warning" icon="warning" withoutButton={false} label="Anda yakin menghapus data ini?" description="Apakah Anda yakin untuk menghapus data ini? Data yang sudah terhapus tidak bisa dikembalikan" buttonLabel={["Hapus", "Simpan"]} />
+          <Popup variant="danger" icon="logout" withoutButton={false} label="Keluar Akun" description="Apakah Anda yakin untuk keluar akun?" buttonLabel={["Batal", "Keluar"]} />
+          <Popup variant="success" icon="tick" withoutButton={true} label="Data Berhasil Disimpan" description="Selamat! Data Anda sudah tersimpan pada sistem" buttonLabel={["Hapus, Simpan"]} />
+          <Popup variant="danger" icon="folder" withoutButton={true} label="Data Gagal Disimpan" description="Maaf, data Anda gagal disimpan pada sistem " buttonLabel={["Hapus, Simpan"]} />
         </div>
       </div>
     </div>
