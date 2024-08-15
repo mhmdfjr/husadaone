@@ -1,4 +1,5 @@
 import Button from "@/components/button";
+import Search from "@/components/search";
 
 // Labs to develop UI components
 
@@ -29,7 +30,7 @@ export default function Labs() {
       <div className="w-11/12 my-10 flex flex-col mx-auto ">
         <li className="text-start font-semibold mb-10">Comp Button</li>
         <div className="flex flex-col items-center gap-5">
-          Lorem ipsum dolor sit amet.
+          <Search placeholder="Cari" />
         </div>
       </div>
     </div>
