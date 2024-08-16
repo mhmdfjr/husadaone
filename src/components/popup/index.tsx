@@ -41,34 +41,19 @@ export default function Popup(props: any) {
 
   return (
     <div className="p-10 max-w-[529px] flex flex-col justify-center items-center gap-6 rounded-3xl bg-basic-white drop-shadow-md">
-      <div
-        className={clsx(
-          "w-[104px] h-[104px] flex justify-center items-center rounded-full",
-          {
-            "bg-alert-warning": props.variant === "warning",
-            "bg-alert-success": props.variant === "success",
-            "bg-alert-danger": props.variant === "danger",
-          }
-        )}
-      >
-        {chooseIcon()}
-      </div>
-      <div className="popup-message flex flex-col justify-center items-center gap-4">
-        <p className="text-h7 text-basic-black text-center">
-          {getMessage()[0]}
-        </p>
-        <p className="text-body-regular text-gray-medium text-center">
-          {getMessage()[1]}
-        </p>
-      </div>
-      <div
-        className={clsx("popup-button flex gap-4 justify-center items-center", {
-          hidden: props.withoutButton,
-        })}
-      >
-        <Button label={props.buttonLabel[0]} variant="secondary" size="big" />
-        <Button label={props.buttonLabel[1]} variant="primary" size="big" />
-      </div>
-    </div>
-  );
+        <div className="popup p-10 max-w-[529px] flex flex-col justify-center items-center gap-6 rounded-3xl bg-basic-white drop-shadow-md">
+            <div className={clsx("popup-icon w-[104px] h-[104px] flex justify-center items-center rounded-full", {"bg-alert-warning": props.variant=="warning", "bg-alert-success": props.variant=="success", "bg-alert-danger": props.variant=="danger"})}>
+                {chooseIcon()}
+            </div>
+            <div className="popup-message flex flex-col justify-center items-center gap-4">
+                <p className="text-h7 text-basic-black text-center">{props.label}</p>
+                <p className="text-body-regular text-gray-medium text-center">{props.description}</p>
+            </div>
+            <div className={clsx("popup-button flex gap-4 justify-center items-center", {"hidden": props.withoutButton})}>
+                <Button label={props.buttonLabel[0]} variant="secondary" size="big" />
+                <Button label={props.buttonLabel[1]} variant="primary" size="big" />
+            </div>
+        </div>
+    )
 }
+
