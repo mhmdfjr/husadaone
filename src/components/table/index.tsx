@@ -1,0 +1,25 @@
+import { ReactNode } from "react";
+
+interface TableProps {
+  tableHead: string[];
+  children: ReactNode;
+}
+
+const Table: React.FC<TableProps> = ({ tableHead, children }) => {
+  return (
+    <table className="h-full w-full">
+      <thead className="bg-N2.2 sticky top-0 z-20">
+        <tr>
+          {tableHead.map((label, index) => (
+            <th key={index} className="px-4 py-4 text-center text-N5">
+              {label}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>{children}</tbody>
+    </table>
+  );
+};
+
+export default Table;
