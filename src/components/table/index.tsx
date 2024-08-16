@@ -1,4 +1,3 @@
-
 import { ReactNode } from "react";
 
 interface TableProps {
@@ -7,7 +6,6 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = ({ tableHead, children }) => {
-
   return (
     <table className="h-full w-full">
       <thead className="bg-N2.2 sticky top-0 z-20">
@@ -24,3 +22,4 @@ const Table: React.FC<TableProps> = ({ tableHead, children }) => {
   );
 };
 
+export default Table;
