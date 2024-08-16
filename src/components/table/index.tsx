@@ -5,7 +5,7 @@ interface TableProps {
   children: ReactNode;
 }
 
-export const Table: React.FC<TableProps> = ({ tableHead, children }) => {
+const Table: React.FC<TableProps> = ({ tableHead, children }) => {
   return (
     <table className="h-full w-full">
       <thead className="bg-N2.2 sticky top-0 z-20">
@@ -21,3 +21,4 @@ export const Table: React.FC<TableProps> = ({ tableHead, children }) => {
     </table>
   );
 };
+export default Table;

@@ -6,6 +6,7 @@ import Table from "@/components/table";
 // Labs to develop UI components
 
 export default function Labs() {
+  const tableHeaders = ["Name", "Age", "Occupation"];
   return (
     <div className="">
       <div className="w-11/12 my-10 flex flex-col mx-auto ">
@@ -23,7 +24,11 @@ export default function Labs() {
             <Button label="Daftar" variant="secondary" size="small" />
             <Button label="Hapus" variant="disable" size="small" />
             <Button label="Data Peserta" variant="submenu" size="small" />
-            <Button label="Data Peserta" variant="submenu-disable" size="small" />
+            <Button
+              label="Data Peserta"
+              variant="submenu-disable"
+              size="small"
+            />
           </div>
         </div>
       </div>
@@ -35,20 +40,61 @@ export default function Labs() {
         </div>
       </div>
 
-      <div className="w-11/12 my-10 flex flex-col mx-auto ">
-        <li className="text-start font-semibold mb-10">Comp Table</li>
-        <div className="flex justify-center gap-5">
-          <Table />
-        </div>
+      <div className="container mx-auto mt-10">
+        <Table tableHead={tableHeaders}>
+          <tr>
+            <td className="px-4 py-4 text-center">John Doe</td>
+            <td className="px-4 py-4 text-center">30</td>
+            <td className="px-4 py-4 text-center">Engineer</td>
+          </tr>
+          <tr>
+            <td className="px-4 py-4 text-center">Jane Smith</td>
+            <td className="px-4 py-4 text-center">28</td>
+            <td className="px-4 py-4 text-center">Designer</td>
+          </tr>
+          <tr>
+            <td className="px-4 py-4 text-center">Bob Johnson</td>
+            <td className="px-4 py-4 text-center">35</td>
+            <td className="px-4 py-4 text-center">Manager</td>
+          </tr>
+        </Table>
       </div>
 
       <div className="w-11/12 my-10 flex flex-col mx-auto ">
         <li className="text-start font-semibold mb-10">Comp Pop Out</li>
         <div className="flex flex-col justify-center items-center gap-8">
-          <Popup variant="warning" icon="warning" withoutButton={false} label="Anda yakin menghapus data ini?" description="Apakah Anda yakin untuk menghapus data ini? Data yang sudah terhapus tidak bisa dikembalikan" buttonLabel={["Hapus", "Simpan"]} />
-          <Popup variant="danger" icon="logout" withoutButton={false} label="Keluar Akun" description="Apakah Anda yakin untuk keluar akun?" buttonLabel={["Batal", "Keluar"]} />
-          <Popup variant="success" icon="tick" withoutButton={true} label="Data Berhasil Disimpan" description="Selamat! Data Anda sudah tersimpan pada sistem" buttonLabel={["Hapus, Simpan"]} />
-          <Popup variant="danger" icon="folder" withoutButton={true} label="Data Gagal Disimpan" description="Maaf, data Anda gagal disimpan pada sistem " buttonLabel={["Hapus, Simpan"]} />
+          <Popup
+            variant="warning"
+            icon="warning"
+            withoutButton={false}
+            // label="Anda yakin menghapus data ini?"
+            // description="Apakah Anda yakin untuk menghapus data ini? Data yang sudah terhapus tidak bisa dikembalikan"
+            buttonLabel={["Hapus", "Simpan"]}
+          />
+          <Popup
+            variant="danger"
+            icon="logout"
+            withoutButton={false}
+            // label="Keluar Akun"
+            // description="Apakah Anda yakin untuk keluar akun?"
+            buttonLabel={["Batal", "Keluar"]}
+          />
+          <Popup
+            variant="success"
+            icon="tick"
+            withoutButton={true}
+            // label="Data Berhasil Disimpan"
+            // description="Selamat! Data Anda sudah tersimpan pada sistem"
+            buttonLabel={["Hapus, Simpan"]}
+          />
+          <Popup
+            variant="danger"
+            icon="folder"
+            withoutButton={true}
+            // label="Data Gagal Disimpan"
+            // description=
+            buttonLabel={["Hapus, Simpan"]}
+          />
         </div>
       </div>
     </div>
