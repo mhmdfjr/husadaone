@@ -40,7 +40,6 @@ export default function Popup(props: any) {
   };
 
   return (
-    // <div className="p-10 max-w-[529px] flex flex-col justify-center items-center gap-6 rounded-3xl bg-basic-white drop-shadow-md">
       <div className="popup p-10 max-w-[529px] flex flex-col justify-center items-center gap-6 rounded-3xl bg-basic-white drop-shadow-md">
         <div
           className={clsx(
@@ -54,6 +53,7 @@ export default function Popup(props: any) {
         >
           {chooseIcon()}
         </div>
+
         <div className="popup-message flex flex-col justify-center items-center gap-4">
           <p className="text-h7 text-basic-black text-center">
             {getMessage()[0]}
@@ -62,6 +62,7 @@ export default function Popup(props: any) {
             {getMessage()[1]}
           </p>
         </div>
+        
         <div
           className={clsx(
             "popup-button flex gap-4 justify-center items-center",

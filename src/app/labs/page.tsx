@@ -67,32 +67,24 @@ export default function Labs() {
             variant="warning"
             icon="warning"
             withoutButton={false}
-            // label="Anda yakin menghapus data ini?"
-            // description="Apakah Anda yakin untuk menghapus data ini? Data yang sudah terhapus tidak bisa dikembalikan"
             buttonLabel={["Hapus", "Simpan"]}
           />
           <Popup
             variant="danger"
             icon="logout"
             withoutButton={false}
-            // label="Keluar Akun"
-            // description="Apakah Anda yakin untuk keluar akun?"
             buttonLabel={["Batal", "Keluar"]}
           />
           <Popup
             variant="success"
             icon="tick"
             withoutButton={true}
-            // label="Data Berhasil Disimpan"
-            // description="Selamat! Data Anda sudah tersimpan pada sistem"
             buttonLabel={["Hapus, Simpan"]}
           />
           <Popup
             variant="danger"
             icon="folder"
             withoutButton={true}
-            // label="Data Gagal Disimpan"
-            // description=
             buttonLabel={["Hapus, Simpan"]}
           />
         </div>
