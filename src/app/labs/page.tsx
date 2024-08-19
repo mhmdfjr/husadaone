@@ -41,6 +41,7 @@ export default function Labs() {
       </div>
 
       <div className="container mx-auto mt-10">
+        <li className="text-start font-semibold mb-10">Comp Table</li>
         <Table tableHead={tableHeaders}>
           <tr>
             <td className="px-4 py-4 text-center">John Doe</td>
