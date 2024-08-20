@@ -1,7 +1,7 @@
 import Search from "../search";
 import { Notification, ProfileCircle } from "iconsax-react";
 
-export default async function TopBar(props: any) {
+export default function TopBar(props: any) {
   return (
     <div className="flex justify-between items-center w-full">
       <div className="leading flex flex-col justify-center gap-2">
