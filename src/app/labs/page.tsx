@@ -7,6 +7,7 @@ import Search from "@/components/search";
 import Table from "@/components/table";
 import DatePicker from "@/components/date-picker";
 import TopBar from "@/components/topbar";
+import CardDashboard from "@/components/card-dashboard";
 
 // Labs to develop UI components
 
@@ -133,6 +134,15 @@ export default function Labs() {
         <li className="text-start font-semibold mb-10">DatePicker</li>
         <div className="flex flex-row justify-center items-center gap-8">
           <DatePicker title="Tanggal Pertama Daftar" name="" />
+        </div>
+      </div>
+      <div className="w-11/12 my-10 flex flex-col mx-auto ">
+        <li className="text-start font-semibold mb-10">Card Dashboard</li>
+        <div className="flex flex-row justify-center items-center gap-8">
+          <CardDashboard title="Dokter" sum={23} date={"12 Sept 2024"} />
+          <CardDashboard title="Pasien" sum={21} date={"12 Sept 2024"} />
+          <CardDashboard title="Perawat" sum={12} date={"12 Sept 2024"} />
+          <CardDashboard title="Poliklinik" sum={23} date={"12 Sept 2024"} />
         </div>
       </div>
     </div>
