@@ -2,6 +2,7 @@ import Button from "@/components/button";
 import Popup from "@/components/popup";
 import Search from "@/components/search";
 import Table from "@/components/table";
+import TopBar from "@/components/topbar";
 
 // Labs to develop UI components
 
@@ -36,7 +37,7 @@ export default function Labs() {
       <div className="w-11/12 my-10 flex flex-col mx-auto ">
         <li className="text-start font-semibold mb-10">Comp Search</li>
         <div className="flex justify-center gap-5">
-          <Search placeholder="Cari" />
+          <TopBar />
         </div>
       </div>
 
