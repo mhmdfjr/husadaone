@@ -54,9 +54,9 @@ const config: Config = {
         'body': ['16px', { lineHeight: '120%', fontWeight: '500' }],
         'body-regular': ['16px', { lineHeight: '120%', fontWeight: '400' }],
         'body-bold': ['16px', { lineHeight: '120%', fontWeight: '700' }],
-        'body-sm': ['28px', { lineHeight: '120%', fontWeight: '500' }],
-        'body-sm-regular': ['28px', { lineHeight: '120%', fontWeight: '400' }],
-        'body-sm-bold': ['28px', { lineHeight: '120%', fontWeight: '700' }],
+        'body-sm': ['14px', { lineHeight: '120%', fontWeight: '500' }],
+        'body-sm-regular': ['14px', { lineHeight: '120%', fontWeight: '400' }],
+        'body-sm-bold': ['14px', { lineHeight: '120%', fontWeight: '700' }],
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

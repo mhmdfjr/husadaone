@@ -2,7 +2,7 @@ import { SearchNormal1 } from "iconsax-react"
 
 export default function Search(props:any) {
     return (
-        <div className="flex border-2 rounded-lg py-2.5 px-4 gap-4 w-[560px]">
+        <div className="flex border-2 rounded-lg py-2 px-4 gap-4 w-full">
             <div className="">
                 <SearchNormal1 size="24" className="text-h7 text-gray-medium" />
             </div>
