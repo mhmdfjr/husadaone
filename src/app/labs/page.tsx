@@ -41,7 +41,7 @@ export default function Labs() {
       </div>
 
       <div className="w-11/12 my-10 flex flex-col mx-auto ">
-        <li className="text-start font-semibold mb-10">Comp Search</li>
+        <li className="text-start font-semibold mb-10">Comp Top Bar</li>
         <div className="flex justify-center gap-5">
           <TopBar />
         </div>
