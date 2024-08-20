@@ -1,4 +1,7 @@
+"use client";
+import { useState } from "react";
 import Button from "@/components/button";
+import Input from "@/components/input";
 import Popup from "@/components/popup";
 import Search from "@/components/search";
 import Table from "@/components/table";
@@ -7,6 +10,9 @@ import Table from "@/components/table";
 
 export default function Labs() {
   const tableHeaders = ["Name", "Age", "Occupation"];
+  const [username, setUsername] = useState("");
+  const [selectedUsername, setSelectedUsername] = useState("");
+  const [fillDescription, setFillDescription] = useState("");
   return (
     <div className="">
       <div className="w-11/12 my-10 flex flex-col mx-auto ">
@@ -87,6 +93,37 @@ export default function Labs() {
             icon="folder"
             withoutButton={true}
             buttonLabel={["Hapus, Simpan"]}
+          />
+        </div>
+      </div>
+      <div className="w-11/12 my-10 flex flex-col mx-auto ">
+        <li className="text-start font-semibold mb-10">Input</li>
+        <div className="flex flex-col justify-center items-center gap-8">
+          <Input
+            label="Nama Pengguna"
+            type="text"
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Masukan nama pengguna"
+            name="username"
+            value={username}
+          />
+          <Input
+            label="Pilih nama pengguna"
+            type="select"
+            onChange={(e) => setSelectedUsername(e.target.value)}
+            placeholder="Pilih salah satu"
+            name="selectedUsername"
+            value={selectedUsername}
+            options={["1. Budi", "2. Hartono"]}
+          />
+          <Input
+            label="Berikan deskripsi singkatmu!"
+            type="textarea"
+            onChange={(e) => setFillDescription(e.target.value)}
+            placeholder="Maksimal 200 karakter"
+            name="fillDescription"
+            value={fillDescription}
+            options={["1. Budi", "2. Hartono"]}
           />
         </div>
       </div>
