@@ -36,11 +36,11 @@ export default function Sidebar() {
     };
 
     return (
-        <div className="h-screen flex flex-col justify-start gap-12 px-4 pt-4 border-2">
+        <div className="h-auto min-h-screen flex flex-col justify-start gap-12 px-4 py-4 border-2">
             <div className="logo w-full flex justify-center items-center cursor-pointer">
                 <p className="text-h6-bold text-brand-base">SIMRS</p>
             </div>
-            <div className="main-menu">
+            <div className="main-menu mb-8">
                 <ul className="flex flex-col gap-4 text-body">
                     <li className="flex justify-start items-center px-4"><p className="text-body-sm text-gray-medium">Menu Utama</p></li>
                     {mainMenu.map((menu, index) => (
@@ -48,7 +48,7 @@ export default function Sidebar() {
                     ))}
                 </ul>
             </div>
-            <div className="more-menu">
+            <div className="more-menu mb-8">
                 <ul className="flex flex-col gap-4 text-body text-basic-black">
                     <li className="flex justify-start items-center px-4"><p className="text-body-sm text-gray-medium">Menu Lainnya</p></li>
                     {moreMenu.map((menu, index) => (
