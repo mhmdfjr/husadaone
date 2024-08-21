@@ -5,7 +5,10 @@ import Input from "@/components/input";
 import Popup from "@/components/popup";
 import Search from "@/components/search";
 import Table from "@/components/table";
+import DatePicker from "@/components/date-picker";
 import TopBar from "@/components/topbar";
+import Sidebar from "@/components/sidebar";
+import CardDashboard from "@/components/card-dashboard";
 
 // Labs to develop UI components
 
@@ -97,9 +100,9 @@ export default function Labs() {
           />
         </div>
       </div>
-      <div className="w-11/12 my-10 flex flex-col mx-auto ">
+      <div className="w-11/12 my-10 flex flex-row mx-auto ">
         <li className="text-start font-semibold mb-10">Input</li>
-        <div className="flex flex-col justify-center items-center gap-8">
+        <div className="flex flex-row justify-center items-center gap-8">
           <Input
             label="Nama Pengguna"
             type="text"
@@ -126,6 +129,29 @@ export default function Labs() {
             value={fillDescription}
             options={["1. Budi", "2. Hartono"]}
           />
+        </div>
+      </div>
+      <div className="w-11/12 my-10 flex flex-row mx-auto ">
+        <li className="text-start font-semibold mb-10">DatePicker</li>
+        <div className="flex flex-row justify-center items-center gap-8">
+          <DatePicker title="Tanggal Pertama Daftar" name="" />
+        </div>
+      </div>
+
+      <div className="w-11/12 my-10 flex flex-col mx-auto ">
+        <li className="text-start font-semibold mb-10">Side Bar Component</li>
+        <div className="flex flex-row justify-start items-center gap-8">
+          <Sidebar />
+        </div>
+      </div>
+
+      <div className="w-11/12 my-10 flex flex-col mx-auto ">
+        <li className="text-start font-semibold mb-10">Card Dashboard</li>
+        <div className="flex flex-row justify-center items-center gap-8">
+          <CardDashboard title="Dokter" sum={23} date={"12 Sept 2024"} />
+          <CardDashboard title="Pasien" sum={21} date={"12 Sept 2024"} />
+          <CardDashboard title="Perawat" sum={12} date={"12 Sept 2024"} />
+          <CardDashboard title="Poliklinik" sum={23} date={"12 Sept 2024"} />
         </div>
       </div>
     </div>
