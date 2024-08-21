@@ -36,7 +36,7 @@ export default function Sidebar() {
     };
 
     return (
-        <div className="h-auto flex flex-col justify-start gap-12 px-4 pt-4 border-2">
+        <div className="h-screen flex flex-col justify-start gap-12 px-4 pt-4 border-2">
             <div className="logo w-full flex justify-center items-center cursor-pointer">
                 <p className="text-h6-bold text-brand-base">SIMRS</p>
             </div>
