@@ -3,7 +3,7 @@ import { Notification, ProfileCircle } from "iconsax-react";
 
 export default function TopBar(props: any) {
   return (
-    <div className="flex justify-between items-center w-full">
+    <div className="flex justify-between items-center w-full p-4">
       <div className="leading flex flex-col justify-center gap-2">
         <p className="text-body-bold text-basic-black">Selamat datang!</p>
         <p className="text-body-sm-regular text-gray-medium">
@@ -20,7 +20,7 @@ export default function TopBar(props: any) {
           <Notification
             size="24"
             className="text-h7 cursor-pointer text-basic-black"
-            onClick={props.onClick}
+            // onClick={props.onClick}
           />
         </div>
         <div className="flex justify-center items-center gap-2">
