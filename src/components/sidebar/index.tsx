@@ -15,10 +15,10 @@ const mainMenu: Menu[] = [
 ];
 
 const moreMenu: Menu[] = [
-    { title: "Dashboard", dropdown: false, icon: <Note size="24" /> },
-    { title: "Registrasi Pasien", dropdown: false, icon: <DocumentLike size="24"  /> },
-    { title: "Penanganan", dropdown: false, icon: <DocumentText size="24"  /> },
-    { title: "Apotek", dropdown: false, icon: <Buildings2 size="24" /> },
+    { title: "Daftar Pasien", dropdown: false, icon: <Note size="24" /> },
+    { title: "Daftar Dokter", dropdown: false, icon: <DocumentLike size="24"  /> },
+    { title: "Daftar Perawat", dropdown: false, icon: <DocumentText size="24"  /> },
+    { title: "Daftar Poliklinik", dropdown: false, icon: <Buildings2 size="24" /> },
 ];
 
 const childMenu: string[] = ["Rawat Inap", "Rawat Jalan"];
@@ -62,7 +62,7 @@ export default function Sidebar() {
     }
 
     return (
-        <div className="h-auto min-h-screen flex flex-col justify-start gap-12 px-4 py-4">
+        <div className="w-60 h-auto min-h-screen w flex flex-col justify-start gap-12 px-4 py-4">
             <div className="logo w-full flex justify-center items-center cursor-pointer">
                 <p className="text-h6-bold text-brand-base">SIMRS</p>
             </div>
@@ -71,7 +71,9 @@ export default function Sidebar() {
                     <li className="flex justify-start items-center px-4"><p className="text-body-sm text-gray-medium">Menu Utama</p></li>
                     {mainMenu.map((menu, index) => (
                         <>
-                            <li key={index} className="flex justify-start items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer active:bg-brand-base  text-basic-black active:text-basic-white">{menu.icon}{isDropdown(menu.dropdown, menu.title)}</li>
+                            <li key={index} className="text-body flex justify-start items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer active:bg-brand-base  text-basic-black active:text-basic-white">
+                                {menu.icon}{isDropdown(menu.dropdown, menu.title)}
+                            </li>
                             <div key={index}>{isOpen && menu.title=="Penanganan" ? showChild(childMenu) : null}</div>
                         </>
                     ))}
