@@ -1,4 +1,5 @@
-import { Home2, UserEdit, People, ChemicalGlass, Note, DocumentLike, DocumentText, Buildings2, LogoutCurve } from "iconsax-react"
+import { Home2, UserEdit, People, ArrowDown2, ChemicalGlass, Note, DocumentLike, DocumentText, Buildings2, LogoutCurve } from "iconsax-react"
+import { useState, useEffect } from "react";
 
 interface Menu {
     title: string,
@@ -19,24 +20,49 @@ const moreMenu: Menu[] = [
     { title: "Penanganan", dropdown: false, icon: <DocumentText size="24"  /> },
     { title: "Apotek", dropdown: false, icon: <Buildings2 size="24" /> },
 ];
+
+const childMenu: string[] = ["Rawat Inap", "Rawat Jalan"];
   
 export default function Sidebar() {
+    const [isOpen, setIsOpen] = useState(false);
+    const [childState, setChildState] = useState("Penanganan")
+
+    const toggle = () => {
+        setIsOpen(!isOpen);
+    };
+
+    const selected = (child: string) => {
+        setIsOpen(!isOpen);
+        setChildState(child);
+    };
+
     function isDropdown (dropdown: boolean, title: string):JSX.Element {
         if(dropdown==true) {
             return (
-                <select name={title} id={title} className="w-full bg-transparent cursor-pointer" >
-                    <option value="" disabled selected hidden>Penanganan</option>
-                    <option value="Rawat Jalan">Rawat Jalan</option>
-                    <option value="Rawat Inap">Rawat Inap</option>
-                </select>
+                <div className="w-full flex justify-between items-center" onClick={toggle} >
+                    <p>{childState}</p>
+                    <ArrowDown2 size="24" className={isOpen ? "transition-transform duration-200 rotate-180" : ""}/>
+                </div>
             )
         } else {
             return <p>{title}</p>
         }
     };
 
+    function showChild (childMenu: string[]):JSX.Element {
+        return (
+            <div className="w-full">
+                <ul className="flex flex-col justify-center gap-2 text-start">
+                    {childMenu.map((child, index) => (
+                        <li key={index} onClick={() => selected(child)} className="px-4 py-2.5 rounded-lg cursor-pointer active:bg-brand-base  text-basic-black active:text-basic-white">{child}</li>
+                    ))}
+                </ul>
+            </div>
+        )
+    }
+
     return (
-        <div className="h-auto min-h-screen flex flex-col justify-start gap-12 px-4 py-4 border-2">
+        <div className="h-auto min-h-screen flex flex-col justify-start gap-12 px-4 py-4">
             <div className="logo w-full flex justify-center items-center cursor-pointer">
                 <p className="text-h6-bold text-brand-base">SIMRS</p>
             </div>
@@ -44,7 +70,10 @@ export default function Sidebar() {
                 <ul className="flex flex-col gap-4 text-body">
                     <li className="flex justify-start items-center px-4"><p className="text-body-sm text-gray-medium">Menu Utama</p></li>
                     {mainMenu.map((menu, index) => (
-                        <li key={index} className="flex justify-start items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer active:bg-brand-base  text-basic-black active:text-basic-white">{menu.icon}{isDropdown(menu.dropdown, menu.title)}</li>
+                        <>
+                            <li key={index} className="flex justify-start items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer active:bg-brand-base  text-basic-black active:text-basic-white">{menu.icon}{isDropdown(menu.dropdown, menu.title)}</li>
+                            <div key={index}>{isOpen && menu.title=="Penanganan" ? showChild(childMenu) : null}</div>
+                        </>
                     ))}
                 </ul>
             </div>
