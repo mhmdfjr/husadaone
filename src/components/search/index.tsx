@@ -6,7 +6,7 @@ export default function Search(props:any) {
             <div className="">
                 <SearchNormal1 size="24" className="text-h7 text-gray-medium" />
             </div>
-            <input type="text" name="" id="" placeholder={props.placeholder} className="w-full border-none outline-none text-body-regular text-gray-medium" />
+            <input type="text" name="" id="" placeholder={props.placeholder} className="w-full border-none outline-none text-body-regular bg-basic-white text-gray-medium" />
         </div>
     )
 }

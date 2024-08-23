@@ -1,27 +1,38 @@
+"use client"
 import { Home2, UserEdit, People, ArrowDown2, ChemicalGlass, Note, DocumentLike, DocumentText, Buildings2, LogoutCurve } from "iconsax-react"
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 interface Menu {
     title: string,
-    dropdown: boolean;
-    icon: JSX.Element;
+    dropdown: boolean,
+    icon: JSX.Element,
+    route: string
+}
+
+interface ChildMenu {
+    title: string,
+    route: string
 }
 
 const mainMenu: Menu[] = [
-    { title: "Dashboard", dropdown: false, icon: <Home2 size="24" /> },
-    { title: "Registrasi Pasien", dropdown: false, icon: <UserEdit size="24"  /> },
-    { title: "Penanganan", dropdown: true, icon: <People size="24" /> },
-    { title: "Apotek", dropdown: false, icon: <ChemicalGlass size="24" /> },
+    { title: "Dashboard", dropdown: false, icon: <Home2 size="24" />, route: "/register" },
+    { title: "Registrasi Pasien", dropdown: false, icon: <UserEdit size="24"  />, route: "/register" },
+    { title: "Penanganan", dropdown: true, icon: <People size="24" />, route: "" },
+    { title: "Apotek", dropdown: false, icon: <ChemicalGlass size="24" />, route: "/pharmacy" },
 ];
 
 const moreMenu: Menu[] = [
-    { title: "Daftar Pasien", dropdown: false, icon: <Note size="24" /> },
-    { title: "Daftar Dokter", dropdown: false, icon: <DocumentLike size="24"  /> },
-    { title: "Daftar Perawat", dropdown: false, icon: <DocumentText size="24"  /> },
-    { title: "Daftar Poliklinik", dropdown: false, icon: <Buildings2 size="24" /> },
+    { title: "Daftar Pasien", dropdown: false, icon: <Note size="24" />, route: "/patients" },
+    { title: "Daftar Dokter", dropdown: false, icon: <DocumentLike size="24"/>, route: "/doctors"  },
+    { title: "Daftar Perawat", dropdown: false, icon: <DocumentText size="24"  />, route: "/nurses" },
+    { title: "Daftar Poliklinik", dropdown: false, icon: <Buildings2 size="24" />, route: "/polyclinics"  },
 ];
 
-const childMenu: string[] = ["Rawat Inap", "Rawat Jalan"];
+const services: ChildMenu[] = [
+    { title: "Rawat Inap", route: "/inpatient"},
+    { title: "Rawat Jalan", route: "/outpatient" }
+];
   
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -49,12 +60,12 @@ export default function Sidebar() {
         }
     };
 
-    function showChild (childMenu: string[]):JSX.Element {
+    function showChild (services: ChildMenu[]):JSX.Element {
         return (
             <div className="w-full">
                 <ul className="flex flex-col justify-center gap-2 text-start">
-                    {childMenu.map((child, index) => (
-                        <li key={index} onClick={() => selected(child)} className="px-4 py-2.5 rounded-lg cursor-pointer active:bg-brand-base  text-basic-black active:text-basic-white">{child}</li>
+                    {services.map((child, index) => (
+                        <Link href={child.route} key={index} onClick={() => selected(child.title)} className="px-4 py-2.5 rounded-lg cursor-pointer active:bg-brand-base  text-basic-black active:text-basic-white">{child.title}</Link>
                     ))}
                 </ul>
             </div>
@@ -62,7 +73,7 @@ export default function Sidebar() {
     }
 
     return (
-        <div className="w-60 h-auto min-h-screen w flex flex-col justify-start gap-12 px-4 py-4">
+        <div className="w-60 h-full min-h-screen flex flex-col justify-start gap-12 px-4 py-4 bg-basic-white">
             <div className="logo w-full flex justify-center items-center cursor-pointer">
                 <p className="text-h6-bold text-brand-base">SIMRS</p>
             </div>
@@ -71,10 +82,11 @@ export default function Sidebar() {
                     <li className="flex justify-start items-center px-4"><p className="text-body-sm text-gray-medium">Menu Utama</p></li>
                     {mainMenu.map((menu, index) => (
                         <>
-                            <li key={index} className="text-body flex justify-start items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer active:bg-brand-base  text-basic-black active:text-basic-white">
+                            <Link href={menu.route} key={index} className="text-body flex justify-start items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer active:bg-brand-base  text-basic-black active:text-basic-white">
                                 {menu.icon}{isDropdown(menu.dropdown, menu.title)}
-                            </li>
-                            <div key={index}>{isOpen && menu.title=="Penanganan" ? showChild(childMenu) : null}</div>
+
+                            </Link>
+                            <div key={index}>{isOpen && menu.title=="Penanganan" ? showChild(services) : null}</div>
                         </>
                     ))}
                 </ul>
