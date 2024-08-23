@@ -24,8 +24,10 @@ export default function Button(props: any) {
           props.variant == "primary",
         "border-[2px] border-brand-base hover:border-brand-40 rounded-lg cursor-pointer bg-transparent":
           props.variant == "secondary",
-        "bg-transparent rounded-lg cursor-pointer hover:bg-gray-medium-light font-semibold":
+        "bg-transparent rounded-lg cursor-pointer  hover:text-brand-base active:bg-brand-base active:text-basic-white font-semibold":
           props.variant == "tertiary",
+        "bg-transparent rounded-lg cursor-pointer  hover:text-alert-danger active:bg-alert-danger active:text-basic-white font-semibold":
+          props.variant == "danger",
 
         // Disable Button
         "bg-gray-light rounded-lg cursor-not-allowed":
@@ -43,15 +45,14 @@ export default function Button(props: any) {
       })}
     >
       {/* Icon before text */}
-     
-        <span className="icon-left">{props.leftIcon}</span>
- 
+
+      <span className="icon-left">{props.leftIcon}</span>
 
       {props.label}
 
       {/* Icon after text */}
-   
-        <span className="icon-right">{props.rightIcon}</span>
+
+      <span className="icon-right">{props.rightIcon}</span>
     </button>
   );
 }
