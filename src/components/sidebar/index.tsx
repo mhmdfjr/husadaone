@@ -107,7 +107,7 @@ export default function Sidebar() {
             <Button
                 key={index}
               variant="tertiary"
-              icon={menu.icon}
+              leftIcon={menu.icon}
               iconPosition="left"
               label={menu.dropdown ? childState : menu.title}
               onClick={menu.dropdown ? toggleDropdown : undefined}
@@ -119,7 +119,7 @@ export default function Sidebar() {
         <ul className="flex flex-col gap-4 text-body text-basic-black">
           <Button
             variant="tertiary"
-            icon={<LogoutCurve size="24px" />}
+            leftIcon={<LogoutCurve size="24px" />}
             iconPosition="left"
             label="Keluar"
             onClick={handleLogout}
