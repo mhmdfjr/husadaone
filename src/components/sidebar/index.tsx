@@ -74,7 +74,7 @@ export default function Sidebar() {
               <Button
                 variant="tertiary"
                 leftIcon={menu.icon}
-                rightIcon={ menu.title === "Penanganan" ? <ArrowDown2/> : ""}
+                rightIcon={ menu.title === "Penanganan" ? <ArrowDown2 className={isOpen ? "transition-transform duration-200 rotate-180" : ""}/> : ""}
                 label={menu.dropdown ? childState : menu.title}
                 onClick={menu.dropdown ? toggleDropdown : undefined}
               />
