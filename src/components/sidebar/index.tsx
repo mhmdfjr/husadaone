@@ -56,7 +56,9 @@ export default function Sidebar() {
     setChildState(child);
     setIsOpen(false);
   };
+
   const handleLogout = () => {};
+  
   return (
     <div className="w-60 bg-basic-white h-auto min-h-screen flex flex-col justify-start gap-12 px-4 py-4">
       <div className="logo w-full flex justify-center items-center cursor-pointer">
@@ -71,8 +73,8 @@ export default function Sidebar() {
             <li key={index} className="flex flex-col">
               <Button
                 variant="tertiary"
-                icon={menu.icon}
-                iconPosition="left"
+                leftIcon={menu.icon}
+                rightIcon={ menu.title === "Penanganan" ? <ArrowDown2/> : ""}
                 label={menu.dropdown ? childState : menu.title}
                 onClick={menu.dropdown ? toggleDropdown : undefined}
               />
@@ -103,6 +105,7 @@ export default function Sidebar() {
           </li>
           {moreMenu.map((menu, index) => (
             <Button
+                key={index}
               variant="tertiary"
               icon={menu.icon}
               iconPosition="left"

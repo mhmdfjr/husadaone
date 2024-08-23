@@ -9,7 +9,7 @@ export default function Button(props: any) {
       // "justify-center",
       "items-center",
       "gap-2",
-      props.icon ? "justify-start pl-3" : "justify-center",
+      props.leftIcon ? "justify-start pl-3" : "justify-center",
     ],
     baseText: ["text-body-bold"],
   };
@@ -43,16 +43,15 @@ export default function Button(props: any) {
       })}
     >
       {/* Icon before text */}
-      {props.icon && props.iconPosition === "left" && (
-        <span className="icon-left">{props.icon}</span>
-      )}
+     
+        <span className="icon-left">{props.leftIcon}</span>
+ 
 
       {props.label}
 
       {/* Icon after text */}
-      {props.icon && props.iconPosition === "right" && (
-        <span className="icon-right">{props.icon}</span>
-      )}
+   
+        <span className="icon-right">{props.rightIcon}</span>
     </button>
   );
 }
