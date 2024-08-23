@@ -1,22 +1,22 @@
 import clsx from "clsx";
 
-// Pass props of 'label', 'variant', and 'size' to use Button Component
-
 export default function Button(props: any) {
   const baseStyle = {
     baseButton: [
-      "w-[118px]",
+      "w-[200px]",
       "h-11",
       "flex",
-      "justify-center",
+      // "justify-center",
       "items-center",
-      ,
+      "gap-2",
+      props.icon ? "justify-start pl-3" : "justify-center",
     ],
     baseText: ["text-body-bold"],
   };
 
   return (
     <button
+      onClick={props.onClick}
       className={clsx(baseStyle.baseButton, baseStyle.baseText, {
         "w-[194px]": props.size == "big",
         // Button
@@ -24,11 +24,14 @@ export default function Button(props: any) {
           props.variant == "primary",
         "border-[2px] border-brand-base hover:border-brand-40 rounded-lg cursor-pointer bg-transparent":
           props.variant == "secondary",
+        "bg-transparent rounded-lg cursor-pointer hover:bg-gray-medium-light font-semibold":
+          props.variant == "tertiary",
+
         // Disable Button
         "bg-gray-light rounded-lg cursor-not-allowed":
           props.variant == "disable",
         // Button Submenu
-        "cursor-pointer border-b-[2px] border-b-transparent active:border-b-brand-base ":
+        "cursor-pointer border-b-[2px] border-b-transparent active:border-b-brand-base":
           props.variant == "submenu",
         "cursor-not-allowed border-b-[2px] border-b-gray-medium-light":
           props.variant == "submenu-disable",
@@ -39,7 +42,17 @@ export default function Button(props: any) {
           props.variant === "disable" || props.variant === "submenu-disable",
       })}
     >
+      {/* Icon before text */}
+      {props.icon && props.iconPosition === "left" && (
+        <span className="icon-left">{props.icon}</span>
+      )}
+
       {props.label}
+
+      {/* Icon after text */}
+      {props.icon && props.iconPosition === "right" && (
+        <span className="icon-right">{props.icon}</span>
+      )}
     </button>
   );
 }
