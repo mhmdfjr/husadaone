@@ -13,9 +13,7 @@ export default function Pharmacy () {
             </div>
 
             <div className="w-full flex flex-col bg-brand-10/[.16] gap-4">
-                <div className="topbar flex justify-center items-center">
                 <TopBar />
-                </div>
 
                 <div className="mx-4 flex justify-center items-center gap-4">
                     <div className="table p-4 bg-basic-white rounded-2xl border-2">

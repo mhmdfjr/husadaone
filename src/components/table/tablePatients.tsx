@@ -1,4 +1,5 @@
 import Table from "@/components/table"
+import clsx from "clsx"
 
 interface Patient {
   id: number,
@@ -22,7 +23,7 @@ export default async function TablePatients () {
     return (
         <Table tableHead={tableHeaders}>
           {patients.data.map((patient: Patient, index: number) => (
-            <tr key={index} className={ index%2 == 0 ? "bg-brand-10" : "bg-basic-white"}>
+            <tr key={index} className={clsx("bg-basic-white", {"bg-brand-10 bg-opacity-15": (index%2 == 0)}) }>
               <td className="px-4 py-4 text-center">{patient.id}</td>
               <td className="px-4 py-4 text-center">{patient.name}</td>
               <td className="px-4 py-4 text-center">{patient.gender}</td>

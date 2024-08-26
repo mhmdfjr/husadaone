@@ -12,11 +12,9 @@ export default function Register () {
             </div>
 
             <div className="w-full flex flex-col bg-brand-10/[.16] gap-4">
-                <div className="topbar flex justify-center items-center">
                 <TopBar />
-                </div>
-
-                <div className="flex justify-between items-center mx-4">
+                
+                <div className="flex justify-between items-center mx-4 ">
                     <CardDashboard title="Dokter" sum={23} date={"12 Sept 2024"} />
                     <CardDashboard title="Dokter" sum={23} date={"12 Sept 2024"} />
                     <CardDashboard title="Dokter" sum={23} date={"12 Sept 2024"} />
