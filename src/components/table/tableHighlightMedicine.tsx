@@ -1,36 +1,59 @@
-import Table from "@/components/table"
-import clsx from "clsx"
+import { useEffect, useState } from "react";
+import Table from "@/components/table";
+import clsx from "clsx";
+import axios from "axios";
 
 interface Medicine {
-  id: number,
-  name: string,
-  category: string,
-  unit_price: string,
-  stock: number
+  id: number;
+  name: string;
+  category: string;
+  unit_price: string;
+  stock: number;
 }
 
-export async function getMedicines() {
-    const response = await fetch(`http://192.168.18.31/api/medicines`, {
-      method: 'GET'
+function getMedicines() {
+  return axios
+    .get("http://192.168.18.31:8000/api/medicines")
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error fetching medicines:", error);
+      return { data: [] };
     });
-    return response.json();
-};
+}
 
-export default async function TableHighlightMedicine () {
-    const tableHeaders = ["ID", "Nama", "Kategori", "Harga Satuan", "Stok"];
-    const medicines = await getMedicines()
-    
-    return (
-        <Table tableHead={tableHeaders}>
-          {medicines.data.map((patient: Medicine, index: number) => (
-            <tr key={index} className={clsx("bg-basic-white", {"bg-brand-10 bg-opacity-15": (index%2 == 0)}) }>
-              <td className="px-4 py-4 text-center">{patient.id}</td>
-              <td className="px-4 py-4 text-center">{patient.name}</td>
-              <td className="px-4 py-4 text-center">{patient.category}</td>
-              <td className="px-4 py-4 text-center">{patient.unit_price}</td>
-              <td className="px-4 py-4 text-center">{patient.stock}</td>
-            </tr>
-          ))}
-        </Table>
-    )
+export default function TableHighlightMedicine() {
+  const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getMedicines().then((data) => {
+      setMedicines(data.data);
+      setLoading(false);
+    });
+  }, []);
+
+  const tableHeaders = ["ID", "Nama", "Kategori", "Harga Satuan", "Stok"];
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  return (
+    <Table tableHead={tableHeaders}>
+      {medicines.map((medicine: Medicine, index: number) => (
+        <tr
+          key={index}
+          className={clsx("bg-basic-white", {
+            "bg-brand-10 bg-opacity-15": index % 2 === 0,
+          })}
+        >
+          <td className="px-4 py-4 text-center">{medicine.id}</td>
+          <td className="px-4 py-4 text-center">{medicine.name}</td>
+          <td className="px-4 py-4 text-center">{medicine.category}</td>
+          <td className="px-4 py-4 text-center">{medicine.unit_price}</td>
+          <td className="px-4 py-4 text-center">{medicine.stock}</td>
+        </tr>
+      ))}
+    </Table>
+  );
 }
