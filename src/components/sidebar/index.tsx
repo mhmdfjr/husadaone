@@ -16,7 +16,7 @@ interface ChildMenu {
 }
 
 const mainMenu: Menu[] = [
-    { title: "Dashboard", dropdown: false, icon: <Home2 size="24" />, route: "/register" },
+    { title: "Dashboard", dropdown: false, icon: <Home2 size="24" />, route: "/" },
     { title: "Registrasi Pasien", dropdown: false, icon: <UserEdit size="24"  />, route: "/register" },
     { title: "Penanganan", dropdown: true, icon: <People size="24" />, route: "" },
     { title: "Apotek", dropdown: false, icon: <ChemicalGlass size="24" />, route: "/pharmacy" },
@@ -84,7 +84,6 @@ export default function Sidebar() {
                         <>
                             <Link href={menu.route} key={index} className="text-body flex justify-start items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer active:bg-brand-base  text-basic-black active:text-basic-white">
                                 {menu.icon}{isDropdown(menu.dropdown, menu.title)}
-
                             </Link>
                             <div key={index}>{isOpen && menu.title=="Penanganan" ? showChild(services) : null}</div>
                         </>
