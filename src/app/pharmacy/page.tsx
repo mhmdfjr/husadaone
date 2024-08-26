@@ -19,7 +19,6 @@ export default function Pharmacy () {
 
                 <div className="mx-4 flex justify-center items-center gap-4">
                     <div className="table p-4 bg-basic-white rounded-2xl border-2">
-                        <p className="text-h8-bold text-basic-black">Stok Obat</p>
                         <TableMedicines />
                     </div>
                 </div>

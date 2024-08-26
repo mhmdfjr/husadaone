@@ -2,7 +2,7 @@ import Sidebar from "@/components/sidebar"
 import TopBar from "@/components/topbar"
 import CardDashboard from "@/components/card-dashboard"
 import TablePatients from "@/components/table/tablePatients"
-import TableMedicines from "@/components/table/tableMedicine"
+import TableHighlightMedicine from "@/components/table/tableHighlightMedicine"
 
 export default function Register () {
     return (
@@ -30,7 +30,7 @@ export default function Register () {
                     </div>
                     <div className="table p-4 bg-basic-white rounded-2xl border-2">
                         <p className="text-h8-bold text-basic-black">Stok Obat</p>
-                        <TableMedicines />
+                        <TableHighlightMedicine />
                     </div>
                 </div>
             </div>
