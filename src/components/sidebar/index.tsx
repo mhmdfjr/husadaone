@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import {
   Home2,
   UserEdit,
@@ -61,7 +61,7 @@ export default function Sidebar() {
   const handleLogout = () => {};
 
   return (
-    <div className="w-60 bg-basic-white h-full fixed min-h-screen z-50 flex flex-col justify-start gap-12 px-4 py-4">
+    <div className="w-60 bg-basic-white h-full fixed min-h-screen flex flex-col justify-start gap-12 px-4 py-4">
       <div className="logo w-full flex justify-center items-center cursor-pointer">
         <p className="text-h6-bold text-brand-base">SIMRS</p>
       </div>
@@ -89,7 +89,7 @@ export default function Sidebar() {
                   )
                 }
                 label={menu.dropdown ? childState : menu.title}
-                onClick={menu.dropdown ? toggleDropdown : undefined}
+                onClick={() => (menu.dropdown ? toggleDropdown : undefined)}
               />
 
               {menu.dropdown && isOpen && (
@@ -122,7 +122,7 @@ export default function Sidebar() {
               variant="tertiary"
               leftIcon={menu.icon}
               label={menu.dropdown ? childState : menu.title}
-              onClick={menu.dropdown ? toggleDropdown : undefined}
+              onClick={() => (menu.dropdown ? toggleDropdown : undefined)}
             />
           ))}
         </ul>

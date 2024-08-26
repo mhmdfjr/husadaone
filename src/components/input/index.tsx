@@ -1,5 +1,6 @@
 import clsx from "clsx";
-import React from "react";
+import { Eye, EyeSlash } from "iconsax-react";
+import React, { useState } from "react";
 
 interface InputProps {
   label: string;
@@ -24,6 +25,12 @@ const Input: React.FC<InputProps> = ({
   name,
   options = [],
 }) => {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
   return (
     <div className="w-full mb-4">
       <label htmlFor={name} className="block mb-2">
@@ -68,21 +75,36 @@ const Input: React.FC<InputProps> = ({
           ))}
         </select>
       ) : (
-        <input
-          type={type}
-          id={name}
-          name={name}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          className={clsx(
-            "border",
-            "p-2",
-            "rounded-md",
-            "w-full",
-            "focus:outline-none"
+        <div className="relative">
+          <input
+            type={type === "password" && isPasswordVisible ? "text" : type}
+            id={name}
+            name={name}
+            placeholder={placeholder}
+            value={value}
+            onChange={onChange}
+            className={clsx(
+              "border",
+              "p-2",
+              "rounded-md",
+              "w-full",
+              "focus:outline-none",
+              "pr-10" // Extra padding to make room for the eye icon
+            )}
+          />
+          {type === "password" && (
+            <span
+              onClick={togglePasswordVisibility}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+            >
+              {isPasswordVisible ? (
+                <EyeSlash size="20" className="text-gray-medium" />
+              ) : (
+                <Eye size="20" className="text-gray-medium" />
+              )}
+            </span>
           )}
-        />
+        </div>
       )}
     </div>
   );
