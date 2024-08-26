@@ -61,7 +61,7 @@ export default function Sidebar() {
   const handleLogout = () => {};
 
   return (
-    <div className="w-60 bg-basic-white h-full min-h-screen flex flex-col justify-start gap-12 px-4 py-4">
+    <div className="w-60 bg-basic-white h-full fixed min-h-screen z-50 flex flex-col justify-start gap-12 px-4 py-4">
       <div className="logo w-full flex justify-center items-center cursor-pointer">
         <p className="text-h6-bold text-brand-base">SIMRS</p>
       </div>
