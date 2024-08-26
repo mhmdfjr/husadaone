@@ -18,6 +18,7 @@ export default function Button(props: any) {
     <button
       onClick={props.onClick}
       className={clsx(baseStyle.baseButton, baseStyle.baseText, {
+        "w-[118px]": props.size == "small",
         "w-[194px]": props.size == "big",
         // Button
         "bg-brand-base cursor-pointer rounded-lg hover:bg-brand-40":
@@ -37,7 +38,7 @@ export default function Button(props: any) {
           props.variant == "submenu-disable",
         "text-basic-white": props.variant === "primary",
         "text-brand-base hover:text-brand-40": props.variant === "secondary",
-        "text-black active:text-brand-base": props.variant === "submenu",
+        "text-black active:text-brand-base hover:text-brand-base": props.variant === "submenu",
         "text-gray-medium-light":
           props.variant === "disable" || props.variant === "submenu-disable",
       })}
