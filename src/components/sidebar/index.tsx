@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import {
   Home2,
   UserEdit,
@@ -59,9 +59,9 @@ export default function Sidebar() {
   };
 
   const handleLogout = () => {};
-  
+
   return (
-    <div className="w-60 bg-basic-white h-full min-h-screen flex flex-col justify-start gap-12 px-4 py-4">
+    <div className="w-60 bg-basic-white h-full fixed min-h-screen z-50 flex flex-col justify-start gap-12 px-4 py-4">
       <div className="logo w-full flex justify-center items-center cursor-pointer">
         <p className="text-h6-bold text-brand-base">SIMRS</p>
       </div>
@@ -75,7 +75,19 @@ export default function Sidebar() {
               <Button
                 variant="tertiary"
                 leftIcon={menu.icon}
-                rightIcon={ menu.title === "Penanganan" ? <ArrowDown2 className={isOpen ? "transition-transform duration-200 rotate-180" : ""}/> : ""}
+                rightIcon={
+                  menu.title === "Penanganan" ? (
+                    <ArrowDown2
+                      className={
+                        isOpen
+                          ? "transition-transform duration-200 rotate-180"
+                          : ""
+                      }
+                    />
+                  ) : (
+                    ""
+                  )
+                }
                 label={menu.dropdown ? childState : menu.title}
                 onClick={menu.dropdown ? toggleDropdown : undefined}
               />
@@ -87,7 +99,7 @@ export default function Sidebar() {
                       <li
                         key={index}
                         onClick={() => selectChildMenu(child)}
-                        className="px-4 py-2.5 rounded-lg cursor-pointer active:bg-brand-base text-basic-black active:text-basic-white"
+                        className="px-4 py-2.5 rounded-lg cursor-pointer hover:bg-brand-base hover:text-basic-white active:bg-brand-base text-basic-black active:text-basic-white"
                       >
                         {child}
                       </li>
@@ -106,10 +118,9 @@ export default function Sidebar() {
           </li>
           {moreMenu.map((menu, index) => (
             <Button
-                key={index}
+              key={index}
               variant="tertiary"
               leftIcon={menu.icon}
-              iconPosition="left"
               label={menu.dropdown ? childState : menu.title}
               onClick={menu.dropdown ? toggleDropdown : undefined}
             />
@@ -119,9 +130,8 @@ export default function Sidebar() {
       <div className="logout">
         <ul className="flex flex-col gap-4 text-body text-basic-black">
           <Button
-            variant="tertiary"
+            variant="danger"
             leftIcon={<LogoutCurve size="24px" />}
-            iconPosition="left"
             label="Keluar"
             onClick={handleLogout}
           />

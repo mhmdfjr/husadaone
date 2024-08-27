@@ -1,36 +1,59 @@
-import Table from "@/components/table"
-import clsx from "clsx"
+"use client";
+import Table from "@/components/table";
+import clsx from "clsx";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 interface Medicine {
-  id: number,
-  name: string,
-  category: string,
-  unit_price: string,
-  stock: number
+  id: number;
+  name: string;
+  category: string;
+  unit_price: string;
+  stock: number;
 }
 
-export async function getMedicines() {
-    const response = await fetch(`http://192.168.18.31/api/medicines`, {
-      method: 'GET'
-    });
-    return response.json();
-};
+// export async function getMedicines() {
+//     const response = await fetch(`http://api-simrs.serpihantech.com/api/medicines`, {
+//       method: 'GET'
+//     });
+//     return response.json();
+// };
 
-export default async function TableHighlightMedicine () {
-    const tableHeaders = ["ID", "Nama", "Kategori", "Harga Satuan", "Stok"];
-    const medicines = await getMedicines()
-    
-    return (
-        <Table tableHead={tableHeaders}>
-          {medicines.data.map((patient: Medicine, index: number) => (
-            <tr key={index} className={clsx("bg-basic-white", {"bg-brand-10 bg-opacity-15": (index%2 == 0)}) }>
-              <td className="px-4 py-4 text-center">{patient.id}</td>
-              <td className="px-4 py-4 text-center">{patient.name}</td>
-              <td className="px-4 py-4 text-center">{patient.category}</td>
-              <td className="px-4 py-4 text-center">{patient.unit_price}</td>
-              <td className="px-4 py-4 text-center">{patient.stock}</td>
-            </tr>
-          ))}
-        </Table>
-    )
+export default function TableHighlightMedicine() {
+  const tableHeaders = ["ID", "Nama", "Kategori", "Harga Satuan", "Stok"];
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: response } = await axios.get(
+          "http://api-simrs.serpihantech.com/api/medicines"
+        );
+        setData(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <Table tableHead={tableHeaders}>
+      {data.map((patient: Medicine, index: number) => (
+        <tr
+          key={index}
+          className={clsx("bg-basic-white", {
+            "bg-brand-10 bg-opacity-15": index % 2 == 0,
+          })}
+        >
+          <td className="px-4 py-4 text-center">{patient.id}</td>
+          <td className="px-4 py-4 text-center">{patient.name}</td>
+          <td className="px-4 py-4 text-center">{patient.category}</td>
+          <td className="px-4 py-4 text-center">{patient.unit_price}</td>
+          <td className="px-4 py-4 text-center">{patient.stock}</td>
+        </tr>
+      ))}
+    </Table>
+  );
 }

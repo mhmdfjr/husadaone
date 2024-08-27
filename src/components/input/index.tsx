@@ -25,8 +25,8 @@ const Input: React.FC<InputProps> = ({
   options = [],
 }) => {
   return (
-    <div className="w-full mb-4">
-      <label htmlFor={name} className="block mb-2">
+    <div className="w-full">
+      <label htmlFor={name} className="block text-body text-basic-black mb-2">
         {label}
       </label>
       {type === "textarea" ? (

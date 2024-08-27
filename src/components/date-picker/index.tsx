@@ -79,7 +79,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ title, name }) => {
   };
 
   return (
-    <div className="relative  bg-white h-auto p-4 w-auto rounded-lg">
+    <div className="relative  bg-basic-white h-auto w-full rounded-lg">
       <input
         type="text"
         value={selectedDate ? format(selectedDate, "yyyy-MM-dd") : ""}
