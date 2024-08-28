@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 type ButtonProps = {
   label: string;
-  onClick: () => void;
+  onClick: any;
   size?: "full" | "big" | "small";
   variant?:
     | "primary"
@@ -26,7 +26,6 @@ export default function Button({
 }: ButtonProps) {
   const baseStyle = {
     baseButton: [
-      "w-[200px]",
       "h-11",
       "flex",
       "items-center",
