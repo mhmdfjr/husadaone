@@ -61,7 +61,7 @@ export default function Sidebar() {
   const handleLogout = () => {};
 
   return (
-    <div className="w-60 bg-basic-white h-full fixed min-h-screen flex flex-col justify-start gap-12 px-4 py-4">
+    <div className="w-60 bg-basic-white h-full fixed overflow-y-auto min-h-screen flex flex-col justify-start gap-12 px-4 py-4">
       <div className="logo w-full flex justify-center items-center cursor-pointer">
         <p className="text-h6-bold text-brand-base">SIMRS</p>
       </div>
@@ -89,17 +89,17 @@ export default function Sidebar() {
                   )
                 }
                 label={menu.dropdown ? childState : menu.title}
-                onClick={() => (menu.dropdown ? toggleDropdown : undefined)}
+                onClick={menu.dropdown ? toggleDropdown : undefined}
               />
 
               {menu.dropdown && isOpen && (
-                <div className="pl-8">
+                <div className="pl-9">
                   <ul className="flex flex-col gap-2 text-start">
                     {childMenu.map((child, index) => (
                       <li
                         key={index}
                         onClick={() => selectChildMenu(child)}
-                        className="px-4 py-2.5 rounded-lg cursor-pointer hover:bg-brand-base hover:text-basic-white active:bg-brand-base text-basic-black active:text-basic-white"
+                        className="px-2 py-2.5 rounded-lg cursor-pointer hover:text-brand-base  active:bg-brand-base text-basic-black active:text-basic-white"
                       >
                         {child}
                       </li>

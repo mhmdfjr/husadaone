@@ -1,9 +1,9 @@
-import TablePatients from "@/components/table/tablePatients"
+import TablePatients from "@/components/table/tableRegist";
 
-export default function Patients () {
-    return (
-        <div>
-            <TablePatients />
-        </div>
-    )
+export default function Patients() {
+  return (
+    <div>
+      <TablePatients />
+    </div>
+  );
 }

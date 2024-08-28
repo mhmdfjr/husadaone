@@ -35,7 +35,11 @@ export default function TableHighlightMedicine() {
   const tableHeaders = ["ID", "Nama", "Kategori", "Harga Satuan", "Stok"];
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex justify-start items-center animate-pulse">
+        Loading...
+      </div>
+    );
   }
 
   return (
