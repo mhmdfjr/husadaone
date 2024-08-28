@@ -96,7 +96,7 @@ export default function Register() {
     : "-";
 
   return (
-    <main className="w-[98%] min-h-screen">
+    <main className="w-[99%] min-h-screen">
       <Sidebar />
 
       <div className="ml-60 -z-50 min-h-screen flex flex-col bg-[#D5E5FF] bg-opacity-15 gap-4">

@@ -84,7 +84,7 @@ export default function TablePatients() {
       {regist.map((regist, index) => (
         <tr
           key={index}
-          className={`${
+          className={`w-full${
             index % 2 === 0 ? "bg-brand-10 bg-opacity-15" : "bg-white"
           }`}
         >
@@ -95,7 +95,7 @@ export default function TablePatients() {
             {calculateAge(regist.patient.date_of_birth)}
           </td>
           <td className="px-4 py-4 text-center">{regist.patient.gender}</td>
-          <td className="px-3 py-4 text-center">{regist.polyclinic.name}</td>
+          <td className="px-2 py-4 text-center">{regist.polyclinic.name}</td>
         </tr>
       ))}
     </Table>
