@@ -13,10 +13,10 @@ export default function CashierPharmacy() {
       <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
         <div className="flex">
           <Button
-            label="Input Resep"
+            label="Resep"
             variant="submenu"
             size="small"
-            onClick={() => router.push("input")}
+            onClick={() => router.push("recipe")}
           />
           <Button
             label="Stok Obat"

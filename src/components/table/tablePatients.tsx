@@ -31,7 +31,6 @@ export default function TablePatients() {
           "http://api-simrs.serpihantech.com/api/patients"
         );
         setData(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -45,7 +44,7 @@ export default function TablePatients() {
         <tr
           key={index}
           className={clsx("bg-basic-white", {
-            "bg-brand-10 bg-opacity-15": index % 2 == 0,
+            "bg-brand-10 bg-opacity-15": index % 2 != 0,
           })}
         >
           <td className="px-4 py-4 text-center">{patient.id}</td>

@@ -2,23 +2,32 @@
 import Button from "@/components/button";
 import TableMedicines from "@/components/table/tableMedicine";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function StockPharmacy() {
-  const tableHeaders = ["Name", "Age", "Occupation"];
+  const [select, setSelect] = useState<boolean>(false);
   const router = useRouter();
+  const [childData, setChildData] = useState<number>();
+  const handleChildData = (data: number) => {
+    setChildData(data);
+  };
 
   const handleCLick = () => {};
 
+  const handleSelect = () => {
+    setSelect(!select);
+  };
+  console.log(childData);
   return (
     <div className="mx-4 flex justify-start items-center gap-4 ">
       <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
         <div className="flex justify-between">
           <div className="flex">
             <Button
-              label="Input Resep"
+              label="Resep"
               variant="submenu"
               size="small"
-              onClick={() => router.push("input")}
+              onClick={() => router.push("recipe")}
             />
             <Button
               label="Stok Obat"
@@ -36,32 +45,38 @@ export default function StockPharmacy() {
 
           <div className="flex gap-4">
             <Button
-              label="Batal"
+              label={select ? "Batal" : "Pilih"}
               variant="secondary"
               size="small"
-              onClick={handleCLick}
+              onClick={handleSelect}
             />
             <Button
               label="Hapus"
-              variant="secondary"
+              variant={select ? "secondary" : "disable"}
               size="small"
               onClick={handleCLick}
             />
             <Button
               label="Edit"
-              variant="disable"
+              variant={select ? "secondary" : "disable"}
               size="small"
-              onClick={handleCLick}
+              onClick={() => {
+                {
+                  childData
+                    ? router.push(`stock/input?input=${childData}`)
+                    : null;
+                }
+              }}
             />
             <Button
               label="Tambah"
-              variant="disable"
+              variant="secondary"
               size="small"
-              onClick={handleCLick}
+              onClick={() => router.push("stock/input")}
             />
           </div>
         </div>
-        <TableMedicines />
+        <TableMedicines onSelect={select} onDataChange={handleChildData} />
       </div>
     </div>
   );

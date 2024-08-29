@@ -3,6 +3,7 @@ import Table from "@/components/table";
 import clsx from "clsx";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface Medicine {
   id: number;
@@ -16,9 +17,16 @@ interface Medicine {
   validity_period: string;
 }
 
-export default function TableMedicines() {
-  const tableHeaders = [
-    "   ",
+interface TableMedicinesProps {
+  onSelect: boolean;
+  onDataChange: (data: number) => void;
+}
+
+const TableMedicines: React.FC<TableMedicinesProps> = ({
+  onSelect,
+  onDataChange,
+}) => {
+  const [tableHeaders, setTableHeaders] = useState<string[]>([
     "ID",
     "Nama",
     "Kategori",
@@ -28,8 +36,21 @@ export default function TableMedicines() {
     "Stok",
     "Produksi",
     "Kadaluarsa",
-  ];
-  const [data, setData] = useState([]);
+  ]);
+
+  const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (onSelect) {
+      setTableHeaders((headers) => ["Pilih", ...headers]);
+    } else {
+      setTableHeaders((headers) =>
+        headers.filter((header) => header !== "Pilih")
+      );
+    }
+  }, [onSelect]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,8 +58,7 @@ export default function TableMedicines() {
         const { data: response } = await axios.get(
           "http://api-simrs.serpihantech.com/api/medicines"
         );
-        setData(response.data);
-        console.log(response.data);
+        setMedicines(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -46,29 +66,47 @@ export default function TableMedicines() {
     fetchData();
   }, []);
 
+  const handleCheckboxChange = (id: number) => {
+    setSelectedOption(id);
+    onDataChange(id);
+  };
+
   return (
     <Table tableHead={tableHeaders}>
-      {data.map((patient: Medicine, index: number) => (
+      {medicines.map((medicine: Medicine, index: number) => (
         <tr
           key={index}
-          className={clsx("bg-basic-white", {
-            "bg-brand-10 bg-opacity-15": index % 2 == 0,
+          className={clsx("bg-basic-white cursor-pointer", {
+            "bg-brand-10 bg-opacity-15": index % 2 != 0,
           })}
+          onClick={() => {}}
         >
-          <td className="px-4 py-4 text-center">
-            <input type="checkbox" className="" />
+          <td
+            className={clsx("px-4 py-4 text-center", {
+              hidden: onSelect == false,
+              block: onSelect == true,
+            })}
+          >
+            <input
+              type="checkbox"
+              checked={selectedOption == medicine.id}
+              className="cursor-pointer"
+              onChange={() => handleCheckboxChange(medicine.id)}
+            />
           </td>
-          <td className="px-4 py-4 text-center">{patient.id}</td>
-          <td className="px-4 py-4 text-center">{patient.name}</td>
-          <td className="px-4 py-4 text-center">{patient.category}</td>
-          <td className="px-4 py-4 text-center">{patient.unit}</td>
-          <td className="px-4 py-4 text-center">{patient.purchase_price}</td>
-          <td className="px-4 py-4 text-center">{patient.unit_price}</td>
-          <td className="px-4 py-4 text-center">{patient.stock}</td>
-          <td className="px-4 py-4 text-center">{patient.production_year}</td>
-          <td className="px-4 py-4 text-center">{patient.validity_period}</td>
+          <td className="px-4 py-4 text-center">{medicine.id}</td>
+          <td className="px-4 py-4 text-center">{medicine.name}</td>
+          <td className="px-4 py-4 text-center">{medicine.category}</td>
+          <td className="px-4 py-4 text-center">{medicine.unit}</td>
+          <td className="px-4 py-4 text-center">{medicine.purchase_price}</td>
+          <td className="px-4 py-4 text-center">{medicine.unit_price}</td>
+          <td className="px-4 py-4 text-center">{medicine.stock}</td>
+          <td className="px-4 py-4 text-center">{medicine.production_year}</td>
+          <td className="px-4 py-4 text-center">{medicine.validity_period}</td>
         </tr>
       ))}
     </Table>
   );
-}
+};
+
+export default TableMedicines;

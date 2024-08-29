@@ -7,7 +7,7 @@ export default function PharmacyLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className=" w-full h-screen">
+    <main className=" w-full h-screen bg-brand-10/[.16]">
       <Sidebar />
       <div className="ml-60 h-full h-min-screeen flex flex-col bg-brand-10/[.16] gap-4">
         <TopBar />

@@ -16,10 +16,10 @@ export default function Pharmacy() {
         <div className="flex justify-between">
           <div className="flex">
             <Button
-              label="Input Resep"
+              label="Daftar Resep"
               variant="submenu"
               size="small"
-              onClick={() => router.push("pharmacy/input")}
+              onClick={() => router.push("pharmacy/recipe")}
             />
             <Button
               label="Stok Obat"
@@ -62,7 +62,7 @@ export default function Pharmacy() {
             />
           </div>
         </div>
-        <TableMedicines />
+        <TableMedicines onSelect={false} />
       </div>
     </div>
   );
