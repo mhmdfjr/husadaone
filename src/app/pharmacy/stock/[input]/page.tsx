@@ -34,11 +34,11 @@ export default function InputPharmacy() {
 
   const medicineData: MedicineDetails = {
     id: 0,
-    name: "Nama Obat",
+    name: "",
     category: "",
     unit: "",
-    purchase_price: "0000",
-    unit_price: "0000",
+    purchase_price: "",
+    unit_price: "",
     stock: 0,
     production_year: "",
     validity_period: "",
@@ -52,7 +52,7 @@ export default function InputPharmacy() {
           `http://api-simrs.serpihantech.com/api/medicines/${id}`
         );
         setMedicine(response.data);
-        console.log("Response:", response.data.id);
+        // console.log("Response:", response.data.id);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
@@ -75,21 +75,36 @@ export default function InputPharmacy() {
 
   const handleSave = async () => {
     try {
-      const response = await axios.post("/api/medicines", {
-        id: medicine.id,
-        name: name || medicine.name,
-        category: category || medicine.category,
-        unit: unit || medicine.unit,
-        purchase_price: purchase || medicine.purchase_price,
-        unit_price: price || medicine.unit_price,
-        production_year: production || medicine.production_year,
-        validity_period: validity || medicine.validity_period,
-      });
-
-      console.log("Data saved successfully:", response.data);
-      router.push("/pharmacy/stock"); // Redirect after successful save
+      const response = await axios.post(
+        "http://api-simrs.serpihantech.com/api/medicines",
+        {
+          id: id,
+          name: name,
+          category: category,
+          unit: unit,
+          purchase_price: purchase,
+          unit_price: price,
+          stock: 5000,
+          production_year: "13-04-2024",
+          validity_period: "13-04-2025",
+        },
+        {
+          params: {
+            name: name,
+            category: category,
+            unit: unit,
+            purchase_price: purchase,
+            unit_price: price,
+            stock: 5000,
+            production_year: "13-04-2024",
+            validity_period: "13-04-2025",
+          },
+        }
+      );
+      console.log("Post response:", response.data);
+      router.push("/pharmacy/stock");
     } catch (error) {
-      console.error("Failed to save medicine data:", error);
+      console.error("Failed to post medicine details:", error);
     }
   };
 
@@ -114,35 +129,35 @@ export default function InputPharmacy() {
               label="Kode Obat"
               type="number"
               onChange={(e) => setId(e.target.value)}
-              placeholder={id}
+              placeholder={inputId ? medicine.id.toString() : "00"}
               name=""
-              value={medicine ? medicine.id.toString() : "null"}
+              value={inputId ? medicine.id.toString() : id.toString()}
             />
             <Input
               label="Nama Obat"
               type="text"
               onChange={(e) => setName(e.target.value)}
-              placeholder={name}
+              placeholder={inputId ? medicine.name : "Nama Obat"}
               name=""
-              value={medicine ? medicine.name : "null"}
+              value={inputId ? medicine.name : name}
             />
             <Input
               label="Kategori"
               type="select"
               onChange={(e) => setCategory(e.target.value)}
-              placeholder={"Pilih Kategori" || { category }}
+              placeholder={inputId ? medicine.category : "Pilih Kategori"}
               name=""
-              value={medicine ? medicine.category : "null"}
-              options={["1. Non Oral", "2. Oral"]}
+              value={inputId ? medicine.category : category}
+              options={["Non Oral", "Oral"]}
             />
             <Input
               label="Satuan"
               type="select"
               onChange={(e) => setUnit(e.target.value)}
-              placeholder={"Pilih Satuan" || { unit }}
+              placeholder={inputId ? medicine.unit : "Pilih Satuan"}
               name=""
-              value={medicine ? medicine.unit : "null"}
-              options={["1. Botol", "2. Kaplet"]}
+              value={inputId ? medicine.unit : unit}
+              options={["Botol", "Kaplet"]}
             />
           </div>
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
@@ -150,17 +165,17 @@ export default function InputPharmacy() {
               label="Harga Beli"
               type="number"
               onChange={(e) => setPurchase(e.target.value)}
-              placeholder={purchase}
+              placeholder={inputId ? medicine.purchase_price : "0000"}
               name=""
-              value={medicine ? medicine.purchase_price : "null"}
+              value={inputId ? medicine.purchase_price : purchase}
             />
             <Input
               label="Harga Satuan"
               type="number"
               onChange={(e) => setPrice(e.target.value)}
-              placeholder={price}
+              placeholder={inputId ? medicine.unit_price : "0000"}
               name=""
-              value={medicine ? medicine.unit_price : "null"}
+              value={inputId ? medicine.unit_price : price}
             />
             <DatePicker title="Tanggal Produksi" name="" />
             <DatePicker title="Tanggal Kadaluarsa" name="" />
@@ -177,7 +192,7 @@ export default function InputPharmacy() {
             label="Simpan"
             variant="primary"
             size="small"
-            onClick={handleCLick}
+            onClick={handleSave}
           />
         </div>
       </div>

@@ -12,12 +12,12 @@ interface Medicine {
   stock: number;
 }
 
-// export async function getMedicines() {
-//     const response = await fetch(`http://api-simrs.serpihantech.com/api/medicines`, {
-//       method: 'GET'
-//     });
-//     return response.json();
-// };
+export async function getMedicines() {
+  const response = await fetch(`http://192.168.18.31/api/medicines`, {
+    method: "GET",
+  });
+  return response.json();
+}
 
 export default function TableHighlightMedicine() {
   const tableHeaders = ["ID", "Nama", "Kategori", "Harga Satuan", "Stok"];

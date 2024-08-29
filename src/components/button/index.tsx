@@ -31,6 +31,7 @@ export default function Button({
       "items-center",
       "gap-2",
       leftIcon ? "justify-start pl-3" : "justify-center",
+      leftIcon ? "justify-start pl-3" : "justify-center",
     ],
     baseText: ["text-body-bold"],
   };
@@ -40,44 +41,44 @@ export default function Button({
       onClick={onClick}
       className={clsx(baseStyle.baseButton, baseStyle.baseText, {
         // Size
-        "w-full": size == "full",
-        "w-[194px]": size == "big",
-        "w-[118px]": size == "small",
+        "w-full": size === "full",
+        "w-[194px]": size === "big",
+        "w-[118px]": size === "small",
 
-        // Button
+        // Variants
         "bg-brand-base cursor-pointer rounded-lg hover:bg-brand-40":
-          variant == "primary",
+          variant === "primary",
         "border-[2px] border-brand-base hover:border-brand-40 rounded-lg cursor-pointer bg-transparent":
-          variant == "secondary",
-        "bg-transparent rounded-lg cursor-pointer  hover:text-brand-base active:bg-brand-base active:text-basic-white font-semibold":
-          variant == "tertiary",
-        "bg-transparent rounded-lg cursor-pointer  hover:text-alert-danger active:bg-alert-danger active:text-basic-white font-semibold":
-          variant == "danger",
+          variant === "secondary",
+        "bg-transparent rounded-lg cursor-pointer hover:text-brand-base active:bg-brand-base active:text-basic-white font-semibold":
+          variant === "tertiary",
+        "bg-transparent rounded-lg cursor-pointer hover:text-alert-danger active:bg-alert-danger active:text-basic-white font-semibold":
+          variant === "danger",
 
-        // Disable Button
-        "bg-gray-light rounded-lg cursor-not-allowed": variant == "disable",
-        // Button Submenu
+        // Disabled button styles
+        "bg-gray-light rounded-lg cursor-not-allowed": variant === "disable",
+
+        // Button submenu styles
         "cursor-pointer border-b-[2px] border-b-transparent active:border-b-brand-base":
-          variant == "submenu",
+          variant === "submenu",
         "cursor-not-allowed border-b-[2px] border-b-gray-medium-light":
-          variant == "submenu-disable",
+          variant === "submenu-disable",
+
+        // Text colors
         "text-basic-white": variant === "primary",
         "text-brand-base hover:text-brand-40": variant === "secondary",
-        "text-black active:text-brand-base hover:text-brand-base":
-          variant === "submenu",
+        "text-black active:text-brand-base": variant === "submenu",
         "text-gray-medium-light":
           variant === "disable" || variant === "submenu-disable",
       })}
     >
       {/* Icon before text */}
-
-      <span className="icon-left">{leftIcon}</span>
+      {leftIcon && <span className="icon-left">{leftIcon}</span>}
 
       {label}
 
       {/* Icon after text */}
-
-      <span className="icon-right">{rightIcon}</span>
+      {rightIcon && <span className="icon-right">{rightIcon}</span>}
     </button>
   );
 }

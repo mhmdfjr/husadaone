@@ -36,7 +36,7 @@ export default function TableRecipes() {
           "http://api-simrs.serpihantech.com/api/patients"
         );
         setPatient(response.data);
-        console.log(response.data);
+        // console.log(response.data);
       } catch (error) {
         console.error(error);
       }
