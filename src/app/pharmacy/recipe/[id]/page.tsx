@@ -6,8 +6,8 @@ import DatePicker from "@/components/date-picker";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
-import TableRecipeById from "@/components/table/tableRecipeById";
 import clsx from "clsx";
+import TableRecipeById from "@/components/table/tableRecipeById";
 
 interface PatientRegistration {
   id: number;
