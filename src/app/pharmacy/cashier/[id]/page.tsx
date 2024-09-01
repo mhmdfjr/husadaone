@@ -27,8 +27,10 @@ export default function ValidateRecipe() {
   const [name, setName] = useState("");
   const [polyclinic, setPolyclinic] = useState("");
   const [doctor, setDoctor] = useState("");
+
   const router = useRouter();
   const params = useParams();
+
   const patientData: PatientDetails = {
     id: 0,
     name: "",
@@ -37,6 +39,11 @@ export default function ValidateRecipe() {
     ],
   };
   const [patient, setPatient] = useState<PatientDetails>(patientData);
+
+  const [childData, setChildData] = useState<boolean>(false);
+  const handleChildData = (data: boolean) => {
+    setChildData(data);
+  };
 
   useEffect(() => {
     const fetchPatientDetails = async (id: number) => {
@@ -77,106 +84,61 @@ export default function ValidateRecipe() {
               className="text-gray-medium-light p-2"
               onClick={() => router.push("/pharmacy/recipe")}
             >
-              Resep
+              Kasir
             </p>
             <ArrowRight2 size="16" className="text-gray-medium-light" />
-            <p className="text-brand-40 p-2">Validasi Resep</p>
+            <p className="text-brand-40 p-2">Pembayaran</p>
           </div>
-          <div className="flex justify-start items-center gap-x-20">
-            <div className="flex flex-col justify-start items-center gap-y-4 w-full">
-              <div className="flex justify-start items-center gap-4">
-                <div className="basis-1/4">
-                  <Input
-                    label="No Reg"
-                    type="text"
-                    onChange={(e) => setRegistration(e.target.value)}
-                    placeholder={patient ? patient.id.toString() : "000"}
-                    name=""
-                    value={patient ? patient.id.toString() : ""}
-                  />
-                </div>
-                <div className="basis-1/4">
-                  <Input
-                    label="No RM"
-                    type="text"
-                    onChange={(e) => setMedic(e.target.value)}
-                    placeholder={
-                      patient.registration.length > 0
-                        ? patient.registration[
-                            patient.registration.length - 1
-                          ].id.toString()
-                        : "00000"
-                    }
-                    name=""
-                    value={
-                      patient.registration.length > 0
-                        ? patient.registration[
-                            patient.registration.length - 1
-                          ].id.toString()
-                        : ""
-                    }
-                  />
-                </div>
-                <DatePicker title="Tanggal Penanganan" name="" />
-              </div>
+
+          <div className="flex justify-start items-center gap-4">
+            <div className="basis-1/4">
               <Input
-                label="Nama Pasien"
+                label="No Reg"
                 type="text"
-                onChange={(e) => setName(e.target.value)}
-                placeholder={patient ? patient.name : "Nama Pasien"}
+                onChange={(e) => setRegistration(e.target.value)}
+                placeholder={patient ? patient.id.toString() : "000"}
                 name=""
-                value={patient ? patient.name : ""}
+                value={patient ? patient.id.toString() : ""}
               />
             </div>
-            <div className="flex flex-col justify-start items-center gap-y-4 w-full">
+            <div className="basis-1/4">
               <Input
-                label="Poliklinik"
+                label="No RM"
                 type="text"
-                onChange={(e) => setPolyclinic(e.target.value)}
+                onChange={(e) => setMedic(e.target.value)}
                 placeholder={
                   patient.registration.length > 0
                     ? patient.registration[
                         patient.registration.length - 1
-                      ].polyclinic_id.toString()
-                    : "Nama Poliklinik"
+                      ].id.toString()
+                    : "00000"
                 }
                 name=""
                 value={
                   patient.registration.length > 0
                     ? patient.registration[
                         patient.registration.length - 1
-                      ].polyclinic_id.toString()
-                    : ""
-                }
-              />
-              <Input
-                label="Dokter"
-                type="text"
-                onChange={(e) => setDoctor(e.target.value)}
-                placeholder={
-                  patient.registration.length > 0
-                    ? patient.registration[
-                        patient.registration.length - 1
-                      ].doctor_id.toString()
-                    : "Nama Dokter"
-                }
-                name=""
-                value={
-                  patient.registration.length > 0
-                    ? patient.registration[
-                        patient.registration.length - 1
-                      ].doctor_id.toString()
+                      ].id.toString()
                     : ""
                 }
               />
             </div>
+            <DatePicker title="Tanggal Penanganan" name="" />
+            <Input
+              label="Nama Pasien"
+              type="text"
+              onChange={(e) => setName(e.target.value)}
+              placeholder={patient ? patient.name : "Nama Pasien"}
+              name=""
+              value={patient ? patient.name : ""}
+            />
           </div>
         </div>
       </div>
 
       <div className="mx-4 flex justify-start items-center gap-4 ">
         <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
-          <TableRecipeById />
+          <TableRecipeById onDataChange={handleChildData} />
           <div className="w-full flex justify-end items-center gap-4">
             <Button
               label="Batal"

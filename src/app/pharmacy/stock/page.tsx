@@ -3,6 +3,7 @@ import Button from "@/components/button";
 import TableMedicines from "@/components/table/tableMedicine";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import axios from "axios";
 
 export default function StockPharmacy() {
   const [select, setSelect] = useState<boolean>(false);
@@ -16,6 +17,21 @@ export default function StockPharmacy() {
 
   const handleSelect = () => {
     setSelect(!select);
+  };
+
+  const handleDelete = async () => {
+    if (childData) {
+      try {
+        const response = await axios.delete(
+          `http://api-simrs.serpihantech.com/api/medicines/${childData}`
+        );
+        console.log("Delete response:", response.data);
+      } catch (error) {
+        console.error("Failed to delete medicine:", error);
+      }
+    } else {
+      console.error("No medicine selected for deletion");
+    }
   };
 
   return (
@@ -54,7 +70,7 @@ export default function StockPharmacy() {
               label="Hapus"
               variant={select ? "secondary" : "disable"}
               size="small"
-              onClick={handleCLick}
+              onClick={handleDelete}
             />
             <Button
               label="Edit"

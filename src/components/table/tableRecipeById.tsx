@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Edit } from "iconsax-react";
 import axios from "axios";
+import clsx from "clsx";
 
 interface MedicineDetails {
   id: number;
@@ -11,7 +12,11 @@ interface MedicineDetails {
   stock: number;
 }
 
-export default function TableRecipeById() {
+interface TableRecipeByIdProps {
+  onDataChange: (data: boolean) => void;
+}
+
+const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
   const tableHeaders = [
     "Kode Obat",
     "Nama Obat",
@@ -27,6 +32,8 @@ export default function TableRecipeById() {
     stock: 0,
   };
   const [medicine, setMedicine] = useState<MedicineDetails>(medicineData);
+
+  const [selectedOption, setSelectedOption] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchPatientDetails = async (id: number) => {
@@ -56,6 +63,11 @@ export default function TableRecipeById() {
     console.log("Updated Patient:", medicine.id);
   }, [medicine]);
 
+  const handelAction = (isSelected: boolean) => {
+    setSelectedOption(!isSelected);
+    onDataChange(!isSelected);
+  };
+
   return (
     <Table tableHead={tableHeaders}>
       <tr className="bg-basic-white">
@@ -63,10 +75,20 @@ export default function TableRecipeById() {
         <td className="px-4 py-4 text-center">{medicine.name}</td>
         <td className="px-4 py-4 text-center">{medicine.stock}</td>
         <td className="px-4 py-4 text-center">3x1</td>
-        <td className="px-4 py-4 text-center flex justify-center items-center text-brand-base cursor-pointer">
-          <Edit size="24" />
+        <td
+          className={clsx(
+            "px-4 py-4 text-center flex justify-center items-center cursor-pointer",
+            {
+              "text-gray-medium-light": selectedOption,
+              "text-brand-base": !selectedOption,
+            }
+          )}
+        >
+          <Edit size="24" onClick={() => handelAction(selectedOption)} />
         </td>
       </tr>
     </Table>
   );
-}
+};
+
+export default TableRecipeById;

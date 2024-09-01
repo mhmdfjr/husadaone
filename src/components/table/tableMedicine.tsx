@@ -64,7 +64,7 @@ const TableMedicines: React.FC<TableMedicinesProps> = ({
       }
     };
     fetchData();
-  }, []);
+  }, [medicines]);
 
   const handleCheckboxChange = (id: number) => {
     setSelectedOption(id);

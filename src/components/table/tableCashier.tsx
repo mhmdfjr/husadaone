@@ -82,6 +82,9 @@ export default function TableCashier() {
               ? cashier.registration[cashier.registration.length - 1].doctor_id
               : "-"}
           </td>
+          <td className="px-4 py-4 text-center text-alert-warning text-body-bold">
+            Belum
+          </td>
         </tr>
       ))}
     </Table>
