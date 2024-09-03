@@ -6,6 +6,7 @@ import DatePicker from "@/components/date-picker";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
+import { setPriority } from "os";
 
 interface MedicineDetails {
   id: number;
@@ -20,14 +21,15 @@ interface MedicineDetails {
 }
 
 export default function InputPharmacy() {
-  const [id, setId] = useState("");
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [unit, setUnit] = useState("");
-  const [purchase, setPurchase] = useState("");
-  const [price, setPrice] = useState("");
-  const [production, setProduction] = useState("");
-  const [validity, setValidity] = useState("");
+  const [id, setId] = useState<number>(0);
+  const [name, setName] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [unit, setUnit] = useState<string>("");
+  const [stock, setStock] = useState<number>(0);
+  const [purchase, setPurchase] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+  const [production, setProduction] = useState<string>("");
+  const [validity, setValidity] = useState<string>("");
   const router = useRouter();
   const searchParams = useSearchParams();
   const inputId = searchParams.get("input");
@@ -70,7 +72,7 @@ export default function InputPharmacy() {
   }, [inputId]);
 
   useEffect(() => {
-    console.log("Updated Patient:", medicine.id);
+    // console.log("Updated Patient:", medicine.id);
   }, [medicine]);
 
   const handleSave = async () => {
@@ -78,13 +80,12 @@ export default function InputPharmacy() {
       const response = await axios.post(
         "http://api-simrs.serpihantech.com/api/medicines",
         {
-          id: id,
           name: name,
           category: category,
           unit: unit,
           purchase_price: purchase,
           unit_price: price,
-          stock: 5000,
+          stock: stock,
           production_year: "13-04-2024",
           validity_period: "13-04-2025",
         },
@@ -95,13 +96,13 @@ export default function InputPharmacy() {
             unit: unit,
             purchase_price: purchase,
             unit_price: price,
-            stock: 5000,
+            stock: stock,
             production_year: "13-04-2024",
             validity_period: "13-04-2025",
           },
         }
       );
-      console.log("Post response:", response.data);
+      // console.log("Post response:", response.data);
       router.push("/pharmacy/stock");
     } catch (error) {
       console.error("Failed to post medicine details:", error);
@@ -126,25 +127,29 @@ export default function InputPharmacy() {
         <div className="flex justify-start items-center gap-x-20">
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
             <Input
-              label="Kode Obat"
-              type="number"
-              onChange={(e) => setId(e.target.value)}
-              placeholder={inputId ? medicine.id.toString() : "00"}
-              name=""
-              value={inputId ? medicine.id.toString() : id.toString()}
-            />
-            <Input
               label="Nama Obat"
               type="text"
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setName((medicine.name = e.target.value))}
               placeholder={inputId ? medicine.name : "Nama Obat"}
               name=""
               value={inputId ? medicine.name : name}
             />
             <Input
+              label="Stok"
+              type="number"
+              onChange={(e) =>
+                setStock((medicine.stock = Number(e.target.value)))
+              }
+              placeholder={inputId ? medicine.stock.toString() : "00"}
+              name=""
+              value={inputId ? medicine.stock.toString() : stock.toString()}
+            />
+            <Input
               label="Kategori"
               type="select"
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={(e) =>
+                setCategory((medicine.category = e.target.value))
+              }
               placeholder={inputId ? medicine.category : "Pilih Kategori"}
               name=""
               value={inputId ? medicine.category : category}
@@ -153,7 +158,7 @@ export default function InputPharmacy() {
             <Input
               label="Satuan"
               type="select"
-              onChange={(e) => setUnit(e.target.value)}
+              onChange={(e) => setUnit((medicine.name = e.target.value))}
               placeholder={inputId ? medicine.unit : "Pilih Satuan"}
               name=""
               value={inputId ? medicine.unit : unit}
@@ -164,7 +169,9 @@ export default function InputPharmacy() {
             <Input
               label="Harga Beli"
               type="number"
-              onChange={(e) => setPurchase(e.target.value)}
+              onChange={(e) =>
+                setPurchase((medicine.purchase_price = e.target.value))
+              }
               placeholder={inputId ? medicine.purchase_price : "0000"}
               name=""
               value={inputId ? medicine.purchase_price : purchase}
@@ -172,7 +179,7 @@ export default function InputPharmacy() {
             <Input
               label="Harga Satuan"
               type="number"
-              onChange={(e) => setPrice(e.target.value)}
+              onChange={(e) => setPrice((medicine.unit_price = e.target.value))}
               placeholder={inputId ? medicine.unit_price : "0000"}
               name=""
               value={inputId ? medicine.unit_price : price}

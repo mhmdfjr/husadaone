@@ -17,15 +17,20 @@ interface Cashier {
   registration: Regis[];
 }
 
-// export async function getCashier() {
-//     const response = await fetch(`http://api-simrs.serpihantech.com/api/patients`, {
-//       method: 'GET'
-//     });
-//     return response.json();
-// };
+interface Doctor {
+  id: number;
+  polyclinic_id: number;
+  name: string;
+  specialist: string;
+}
 
-export default function TableCashier() {
-  // const cashiers = await getCashier()
+interface Polyclinic {
+  id: number;
+  name: string;
+  doctor: Doctor[];
+}
+
+export default function TableRecipes() {
   const tableHeaders = [
     "No Reg",
     "Nama Pasien",
@@ -34,8 +39,13 @@ export default function TableCashier() {
     "Dokter",
     "Status Validasi",
   ];
-  const [data, setData] = useState([]);
+
+  const [patient, setPatient] = useState<Cashier[]>([]);
+  const [polyclinics, setPolyclinic] = useState<Polyclinic[]>([]);
+  const [doctors, setDoctor] = useState<Doctor[]>([]);
+  const [id, setId] = useState<number | null>();
   const router = useRouter();
+  // const params = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,8 +53,8 @@ export default function TableCashier() {
         const { data: response } = await axios.get(
           "http://api-simrs.serpihantech.com/api/patients"
         );
-        setData(response.data);
-        console.log(response.data);
+        setPatient(response.data);
+        // console.log(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -52,9 +62,39 @@ export default function TableCashier() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchPolyclinics = async () => {
+      try {
+        const { data: response } = await axios.get(
+          `http://api-simrs.serpihantech.com/api/polyclinics`
+        );
+        setPolyclinic(response.data);
+        // console.log("Response:", response.data);
+      } catch (error) {
+        console.error("Failed to fetch patient details:", error);
+      }
+    };
+    fetchPolyclinics();
+  }, []);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const { data: response } = await axios.get(
+          `http://api-simrs.serpihantech.com/api/doctors`
+        );
+        setDoctor(response.data);
+        console.log("Response:", response.data);
+      } catch (error) {
+        console.error("Failed to fetch patient details:", error);
+      }
+    };
+    fetchDoctors();
+  }, []);
+
   return (
     <Table tableHead={tableHeaders}>
-      {data.map((cashier: Cashier, index: number) => (
+      {patient.map((cashier: Cashier, index: number) => (
         <tr
           key={index}
           className={clsx("bg-basic-white", {
@@ -69,19 +109,47 @@ export default function TableCashier() {
           <td className="px-4 py-4 text-center">
             {cashier.registration.length > 0
               ? cashier.registration[cashier.registration.length - 1].id
-              : "-"}
+              : "No Medic"}
           </td>
-          <td className="px-4 py-4 text-center">
-            {cashier.registration.length > 0
-              ? cashier.registration[cashier.registration.length - 1]
-                  .polyclinic_id
-              : "-"}
-          </td>
-          <td className="px-4 py-4 text-center">
-            {cashier.registration.length > 0
-              ? cashier.registration[cashier.registration.length - 1].doctor_id
-              : "-"}
-          </td>
+
+          {cashier.registration.length > 0 ? (
+            polyclinics.map((polyclinic: Polyclinic, index: number) => {
+              if (
+                cashier.registration[cashier.registration.length - 1]
+                  .polyclinic_id == polyclinic.id
+              ) {
+                return (
+                  <td key={index} className="px-4 py-4 text-center">
+                    {polyclinic.name}
+                  </td>
+                );
+              }
+            })
+          ) : (
+            <td key={index} className="px-4 py-4 text-center">
+              No Polyclinic
+            </td>
+          )}
+
+          {cashier.registration.length > 0 ? (
+            doctors.map((doctor: Doctor, index: number) => {
+              if (
+                cashier.registration[cashier.registration.length - 1]
+                  .doctor_id == doctor.id
+              ) {
+                return (
+                  <td key={index} className="px-4 py-4 text-center">
+                    {doctor.name}
+                  </td>
+                );
+              }
+            })
+          ) : (
+            <td key={index} className="px-4 py-4 text-center">
+              No Doctor
+            </td>
+          )}
+
           <td className="px-4 py-4 text-center text-alert-warning text-body-bold">
             Belum
           </td>

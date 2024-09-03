@@ -42,7 +42,7 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
           `http://api-simrs.serpihantech.com/api/medicines/${id}`
         );
         setMedicine(response.data);
-        console.log("Response:", response.data.id);
+        // console.log("Response:", response.data.id);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
@@ -60,7 +60,7 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
   }, [params]);
 
   useEffect(() => {
-    console.log("Updated Patient:", medicine.id);
+    // console.log("Updated Patient:", medicine.id);
   }, [medicine]);
 
   const handelAction = (isSelected: boolean) => {

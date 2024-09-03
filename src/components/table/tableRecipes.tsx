@@ -17,17 +17,18 @@ interface Recipe {
   registration: Regis[];
 }
 
-// interface Doctor {
-//   id: number;
-//   name: string;
-//   specialist: string;
-// }
+interface Doctor {
+  id: number;
+  polyclinic_id: number;
+  name: string;
+  specialist: string;
+}
 
-// interface Polyclinic {
-//   id: number;
-//   name: string;
-//   doctor: Doctor;
-// }
+interface Polyclinic {
+  id: number;
+  name: string;
+  doctor: Doctor[];
+}
 
 export default function TableRecipes() {
   const tableHeaders = [
@@ -39,9 +40,10 @@ export default function TableRecipes() {
     "Status Validasi",
   ];
 
-  const [patient, setPatient] = useState([]);
-  // const [id, setId] = useState<number | null>();
-  // const [polyclinic, setPolyclinic] = useState<Polyclinic>();
+  const [patients, setPatients] = useState<Recipe[]>([]);
+  const [polyclinics, setPolyclinic] = useState<Polyclinic[]>([]);
+  const [doctors, setDoctor] = useState<Doctor[]>([]);
+  const [id, setId] = useState<number | null>();
   const router = useRouter();
   // const params = useParams();
 
@@ -51,8 +53,8 @@ export default function TableRecipes() {
         const { data: response } = await axios.get(
           "http://api-simrs.serpihantech.com/api/patients"
         );
-        setPatient(response.data);
-        console.log(response.data);
+        setPatients(response.data);
+        // console.log(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -60,36 +62,39 @@ export default function TableRecipes() {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchPolyclinics = async (id: number) => {
-  //     try {
-  //       const { data: response } = await axios.get(
-  //         `http://api-simrs.serpihantech.com/api/polyclinics/${id}`
-  //       );
-  //       setPolyclinic(response.data);
-  //       console.log("Response:", response.data);
-  //     } catch (error) {
-  //       console.error("Failed to fetch patient details:", error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchPolyclinics = async () => {
+      try {
+        const { data: response } = await axios.get(
+          `http://api-simrs.serpihantech.com/api/polyclinics`
+        );
+        setPolyclinic(response.data);
+        // console.log("Response:", response.data);
+      } catch (error) {
+        console.error("Failed to fetch patient details:", error);
+      }
+    };
+    fetchPolyclinics();
+  }, []);
 
-  //   if (polyclinic) {
-  //     const polyclinicId = Number(id);
-  //     if (!isNaN(polyclinicId)) {
-  //       fetchPolyclinics(polyclinicId);
-  //     } else {
-  //       console.error("Invalid polyclinic ID:", id);
-  //       router.push("/error");
-  //     }
-  //   }
-  // }, [polyclinic]);
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const { data: response } = await axios.get(
+          `http://api-simrs.serpihantech.com/api/doctors`
+        );
+        setDoctor(response.data);
+        console.log("Response:", response.data);
+      } catch (error) {
+        console.error("Failed to fetch patient details:", error);
+      }
+    };
+    fetchDoctors();
+  }, []);
 
   return (
     <Table tableHead={tableHeaders}>
-      {patient.map((recipe: Recipe, index: number) => {
-        // if (recipe.registration.length > 0) {
-        //   setId(recipe.registration[recipe.registration.length - 1].id);
-        // }
+      {patients.map((recipe: Recipe, index: number) => {
         return (
           <tr
             key={index}
@@ -105,19 +110,47 @@ export default function TableRecipes() {
             <td className="px-4 py-4 text-center">
               {recipe.registration.length > 0
                 ? recipe.registration[recipe.registration.length - 1].id
-                : "-"}
+                : "No Medic"}
             </td>
-            <td className="px-4 py-4 text-center">
-              {recipe.registration.length > 0
-                ? recipe.registration[recipe.registration.length - 1]
-                    .polyclinic_id
-                : "-"}
-            </td>
-            <td className="px-4 py-4 text-center">
-              {recipe.registration.length > 0
-                ? recipe.registration[recipe.registration.length - 1].doctor_id
-                : "-"}
-            </td>
+
+            {recipe.registration.length > 0 ? (
+              polyclinics.map((polyclinic: Polyclinic, index: number) => {
+                if (
+                  recipe.registration[recipe.registration.length - 1]
+                    .polyclinic_id == polyclinic.id
+                ) {
+                  return (
+                    <td key={index} className="px-4 py-4 text-center">
+                      {polyclinic.name}
+                    </td>
+                  );
+                }
+              })
+            ) : (
+              <td key={index} className="px-4 py-4 text-center">
+                No Polyclinic
+              </td>
+            )}
+
+            {recipe.registration.length > 0 ? (
+              doctors.map((doctor: Doctor, index: number) => {
+                if (
+                  recipe.registration[recipe.registration.length - 1]
+                    .doctor_id == doctor.id
+                ) {
+                  return (
+                    <td key={index} className="px-4 py-4 text-center">
+                      {doctor.name}
+                    </td>
+                  );
+                }
+              })
+            ) : (
+              <td key={index} className="px-4 py-4 text-center">
+                No Doctor
+              </td>
+            )}
+
             <td className="px-4 py-4 text-center text-alert-warning text-body-bold">
               Belum
             </td>
