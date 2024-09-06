@@ -3,7 +3,6 @@ import { useState } from "react";
 import Button from "@/components/button";
 import Input from "@/components/input";
 import Popup from "@/components/popup";
-import Search from "@/components/search";
 import Table from "@/components/table";
 import DatePicker from "@/components/date-picker";
 import TopBar from "@/components/topbar";
@@ -23,21 +22,67 @@ export default function Labs() {
         <li className="text-start font-semibold mb-10">Comp Button</li>
         <div className="flex flex-col items-center gap-5">
           <div className="flex gap-5">
-            <Button label="Masuk" variant="primary" size="big" />
-            <Button label="Daftar" variant="secondary" size="big" />
-            <Button label="Hapus" variant="disable" size="big" />
-            <Button label="Data Peserta" variant="submenu" size="big" />
-            <Button label="Data Peserta" variant="submenu-disable" size="big" />
+            <Button
+              label="Masuk"
+              variant="primary"
+              size="big"
+              onClick={() => {}}
+            />
+            <Button
+              label="Daftar"
+              variant="secondary"
+              size="big"
+              onClick={() => {}}
+            />
+            <Button
+              label="Hapus"
+              variant="disable"
+              size="big"
+              onClick={() => {}}
+            />
+            <Button
+              label="Data Peserta"
+              variant="submenu"
+              size="big"
+              onClick={() => {}}
+            />
+            <Button
+              label="Data Peserta"
+              variant="submenu-disable"
+              size="big"
+              onClick={() => {}}
+            />
           </div>
           <div className="flex gap-5">
-            <Button label="Masuk" variant="primary" size="small" />
-            <Button label="Daftar" variant="secondary" size="small" />
-            <Button label="Hapus" variant="disable" size="small" />
-            <Button label="Data Peserta" variant="submenu" size="small" />
+            <Button
+              label="Masuk"
+              variant="primary"
+              size="small"
+              onClick={() => {}}
+            />
+            <Button
+              label="Daftar"
+              variant="secondary"
+              size="small"
+              onClick={() => {}}
+            />
+            <Button
+              label="Hapus"
+              variant="disable"
+              size="small"
+              onClick={() => {}}
+            />
+            <Button
+              label="Data Peserta"
+              variant="submenu"
+              size="small"
+              onClick={() => {}}
+            />
             <Button
               label="Data Peserta"
               variant="submenu-disable"
               size="small"
+              onClick={() => {}}
             />
           </div>
         </div>
