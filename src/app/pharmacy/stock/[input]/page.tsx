@@ -55,6 +55,14 @@ export default function InputPharmacy() {
         );
         setMedicine(response.data);
         // console.log("Response:", response.data.id);
+        // setName(medicine.name);
+        // setCategory(medicine.category);
+        // setUnit(medicine.unit);
+        // setStock(medicine.stock);
+        // setPurchase(medicine.purchase_price);
+        // setPrice(medicine.unit_price);
+        // setProduction(medicine.production_year);
+        // setValidity(medicine.validity_period);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
@@ -97,6 +105,40 @@ export default function InputPharmacy() {
             purchase_price: purchase,
             unit_price: price,
             stock: stock,
+            production_year: "13-04-2024",
+            validity_period: "13-04-2025",
+          },
+        }
+      );
+      // console.log("Post response:", response.data);
+      router.push("/pharmacy/stock");
+    } catch (error) {
+      console.error("Failed to post medicine details:", error);
+    }
+  };
+
+  const handleEdit = async (id: number) => {
+    try {
+      const response = await axios.put(
+        `http://api-simrs.serpihantech.com/api/medicines/${id}`,
+        {
+          name: name || medicine.name,
+          category: category || medicine.category,
+          unit: unit || medicine.unit,
+          purchase_price: purchase || medicine.purchase_price,
+          unit_price: price || medicine.unit_price,
+          stock: stock || medicine.stock,
+          production_year: "13-04-2024",
+          validity_period: "13-04-2025",
+        },
+        {
+          params: {
+            name: name || medicine.name,
+            category: category || medicine.category,
+            unit: unit || medicine.unit,
+            purchase_price: purchase || medicine.purchase_price,
+            unit_price: price || medicine.unit_price,
+            stock: stock || medicine.stock,
             production_year: "13-04-2024",
             validity_period: "13-04-2025",
           },
@@ -199,7 +241,9 @@ export default function InputPharmacy() {
             label="Simpan"
             variant="primary"
             size="small"
-            onClick={handleSave}
+            onClick={() =>
+              inputId ? handleEdit(Number(inputId)) : handleSave()
+            }
           />
         </div>
       </div>
