@@ -30,6 +30,19 @@ interface Polyclinic {
   doctor: Doctor[];
 }
 
+interface Registration {
+  id: number;
+  patient_id: number;
+  already_paid: string;
+}
+
+interface Payment {
+  id: number;
+  registration_id: number;
+  validation: number;
+  registration: Registration;
+}
+
 export default function TableRecipes() {
   const tableHeaders = [
     "No Reg",
@@ -37,15 +50,14 @@ export default function TableRecipes() {
     "No RM",
     "Poliklinik",
     "Dokter",
-    "Status Validasi",
+    "Status Bayar",
   ];
 
-  const [patient, setPatient] = useState<Cashier[]>([]);
+  const [cashiers, setCashiers] = useState<Cashier[]>([]);
   const [polyclinics, setPolyclinic] = useState<Polyclinic[]>([]);
   const [doctors, setDoctor] = useState<Doctor[]>([]);
-  const [id, setId] = useState<number | null>();
+  const [payments, setPayment] = useState<Payment[]>([]);
   const router = useRouter();
-  // const params = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,14 +65,15 @@ export default function TableRecipes() {
         const { data: response } = await axios.get(
           "http://api-simrs.serpihantech.com/api/patients"
         );
-        setPatient(response.data);
-        // console.log(response.data);
+        setCashiers(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
   }, []);
+
+  // console.log("Cashiers", cashiers);
 
   useEffect(() => {
     const fetchPolyclinics = async () => {
@@ -69,7 +82,6 @@ export default function TableRecipes() {
           `http://api-simrs.serpihantech.com/api/polyclinics`
         );
         setPolyclinic(response.data);
-        // console.log("Response:", response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
@@ -84,7 +96,6 @@ export default function TableRecipes() {
           `http://api-simrs.serpihantech.com/api/doctors`
         );
         setDoctor(response.data);
-        console.log("Response:", response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
@@ -92,12 +103,28 @@ export default function TableRecipes() {
     fetchDoctors();
   }, []);
 
+  useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        const { data: response } = await axios.get(
+          `http://api-simrs.serpihantech.com/api/payments`
+        );
+        setPayment(response.data);
+      } catch (error) {
+        console.error("Failed to fetch patient details:", error);
+      }
+    };
+    fetchPayments();
+  }, []);
+
+  // console.log("Payments :", payments);
+
   return (
     <Table tableHead={tableHeaders}>
-      {patient.map((cashier: Cashier, index: number) => (
+      {cashiers.map((cashier: Cashier, index: number) => (
         <tr
           key={index}
-          className={clsx("bg-basic-white", {
+          className={clsx("bg-basic-white cursor-pointer", {
             "bg-brand-10 bg-opacity-15": index % 2 != 0,
           })}
           onClick={() => {
@@ -109,7 +136,7 @@ export default function TableRecipes() {
           <td className="px-4 py-4 text-center">
             {cashier.registration.length > 0
               ? cashier.registration[cashier.registration.length - 1].id
-              : "No Medic"}
+              : "-"}
           </td>
 
           {cashier.registration.length > 0 ? (
@@ -127,7 +154,7 @@ export default function TableRecipes() {
             })
           ) : (
             <td key={index} className="px-4 py-4 text-center">
-              No Polyclinic
+              -
             </td>
           )}
 
@@ -146,13 +173,34 @@ export default function TableRecipes() {
             })
           ) : (
             <td key={index} className="px-4 py-4 text-center">
-              No Doctor
+              -
             </td>
           )}
 
-          <td className="px-4 py-4 text-center text-alert-warning text-body-bold">
-            Belum
-          </td>
+          {cashier.registration.length > 0 ? (
+            payments.map((payment: Payment, index: number) => {
+              if (cashier.registration[0].id == payment.registration_id) {
+                return (
+                  <td
+                    key={index}
+                    className={clsx("px-4 py-4 text-center text-body-bold", {
+                      "text-alert-success":
+                        payment.registration.already_paid === "yes",
+                      "text-alert-warning": !payment.registration.already_paid,
+                    })}
+                  >
+                    {payment.registration.already_paid === "yes"
+                      ? "Sudah Bayar"
+                      : "Belum Bayar"}
+                  </td>
+                );
+              }
+            })
+          ) : (
+            <td key={index} className="px-4 py-4 text-center">
+              -
+            </td>
+          )}
         </tr>
       ))}
     </Table>
