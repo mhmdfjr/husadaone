@@ -2,11 +2,9 @@
 import { useState, useEffect } from "react";
 import Button from "@/components/button";
 import Input from "@/components/input";
-import DatePicker from "@/components/date-picker";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
-import { setPriority } from "os";
 
 interface Doctor {
   id: number;
