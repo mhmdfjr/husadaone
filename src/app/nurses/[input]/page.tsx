@@ -17,7 +17,7 @@ interface NurseDetails {
   address: string;
 }
 
-export default function InputPharmacy() {
+export default function InputNurse() {
   const [id, setId] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const [gender, setGender] = useState<string>("");

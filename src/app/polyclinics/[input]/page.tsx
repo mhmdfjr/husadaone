@@ -19,7 +19,7 @@ interface PolyclincDetails {
   doctors: Doctor[];
 }
 
-export default function InputPharmacy() {
+export default function InputPolyclinic() {
   const [id, setId] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const router = useRouter();

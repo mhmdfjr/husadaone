@@ -1,7 +1,7 @@
 import Sidebar from "@/components/sidebar";
 import TopBar from "@/components/topbar";
 
-export default function PharmacyLayout({
+export default function NursesLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
