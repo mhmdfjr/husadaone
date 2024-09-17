@@ -3,7 +3,6 @@ import { useState } from "react";
 import Button from "@/components/button";
 import Input from "@/components/input";
 import Popup from "@/components/popup";
-import Search from "@/components/search";
 import Table from "@/components/table";
 import DatePicker from "@/components/date-picker";
 import TopBar from "@/components/topbar";

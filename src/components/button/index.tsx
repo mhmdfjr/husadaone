@@ -31,6 +31,7 @@ export default function Button({
       "items-center",
       "gap-2",
       leftIcon ? "justify-start pl-3" : "justify-center",
+      leftIcon ? "justify-start pl-3" : "justify-center",
     ],
     baseText: ["text-body-bold"],
   };

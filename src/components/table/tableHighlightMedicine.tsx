@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+"use client";
 import Table from "@/components/table";
 import clsx from "clsx";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 interface Medicine {
@@ -11,51 +12,46 @@ interface Medicine {
   stock: number;
 }
 
-function getMedicines() {
-  return axios
-    .get("http://192.168.18.31:8000/api/medicines")
-    .then((response) => response.data)
-    .catch((error) => {
-      console.error("Error fetching medicines:", error);
-      return { data: [] };
-    });
+export async function getMedicines() {
+  const response = await fetch(`http://192.168.18.31/api/medicines`, {
+    method: "GET",
+  });
+  return response.json();
 }
 
 export default function TableHighlightMedicine() {
-  const [medicines, setMedicines] = useState<Medicine[]>([]);
-  const [loading, setLoading] = useState(true);
+  const tableHeaders = ["ID", "Nama", "Kategori", "Harga Satuan", "Stok"];
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    getMedicines().then((data) => {
-      setMedicines(data.data);
-      setLoading(false);
-    });
+    const fetchData = async () => {
+      try {
+        const { data: response } = await axios.get(
+          "http://api-simrs.serpihantech.com/api/medicines"
+        );
+        setData(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
   }, []);
-
-  const tableHeaders = ["ID", "Nama", "Kategori", "Harga Satuan", "Stok"];
-
-  if (loading) {
-    return (
-      <div className="flex justify-start items-center animate-pulse">
-        Loading...
-      </div>
-    );
-  }
 
   return (
     <Table tableHead={tableHeaders}>
-      {medicines.map((medicine: Medicine, index: number) => (
+      {data.map((patient: Medicine, index: number) => (
         <tr
           key={index}
           className={clsx("bg-basic-white", {
-            "bg-brand-10 bg-opacity-15": index % 2 === 0,
+            "bg-brand-10 bg-opacity-15": index % 2 != 0,
           })}
         >
-          <td className="px-4 py-4 text-center">{medicine.id}</td>
-          <td className="px-4 py-4 text-center">{medicine.name}</td>
-          <td className="px-4 py-4 text-center">{medicine.category}</td>
-          <td className="px-4 py-4 text-center">{medicine.unit_price}</td>
-          <td className="px-4 py-4 text-center">{medicine.stock}</td>
+          <td className="px-4 py-4 text-center">{patient.id}</td>
+          <td className="px-4 py-4 text-center">{patient.name}</td>
+          <td className="px-4 py-4 text-center">{patient.category}</td>
+          <td className="px-4 py-4 text-center">{patient.unit_price}</td>
+          <td className="px-4 py-4 text-center">{patient.stock}</td>
         </tr>
       ))}
     </Table>
