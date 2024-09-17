@@ -228,6 +228,7 @@ export default function InputDoctor() {
               }
             />
           </div>
+          Poliklinik
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
             <div className="flex justify-start items-center gap-x-4 w-full">
               <Input
