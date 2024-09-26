@@ -14,10 +14,10 @@ const Registry = () => {
   const [doctor, setDoctor] = useState("");
 
   return (
-    <div>
-      <div className="bg-white py-5 px-10 rounded-2xl ">
-        <div className="flex justify-center gap-x-20">
-          <div className="w-full space-y-5">
+    <div className="mx-4 flex flex-col justify-start items-center gap-4 ">
+      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
+        <div className="flex justify-start items-center gap-x-20">
+          <div className="flex flex-col justify-start items-center gap-y-4 w-full">
             <Input
               label="No. Registrasi"
               name="noreg"
@@ -40,8 +40,8 @@ const Registry = () => {
               onChange={(e) => setNama(e.target.value)}
             />
           </div>
-          <div className="w-full space-y-5">
-            <div className="flex items-end gap-x-5">
+          <div className="flex flex-col justify-start items-center gap-y-4 w-full">
+            <div className="flex gap-x-5 w-full items-end">
               <Input
                 label="No. Rekam Medis"
                 name="noRM"
@@ -56,7 +56,7 @@ const Registry = () => {
                 variant="secondary"
               />
             </div>
-            <div className="flex items-end gap-x-5">
+            <div className="flex gap-x-5 w-full items-end">
               <Input
                 label="Poliklinik yang Dituju"
                 name="poli"
@@ -71,7 +71,7 @@ const Registry = () => {
                 variant="secondary"
               />
             </div>
-            <div className="flex items-end gap-x-5">
+            <div className="flex gap-x-5 w-full items-end">
               <Input
                 label="Dokter yang Dituju"
                 name="doctor"
@@ -88,17 +88,28 @@ const Registry = () => {
             </div>
           </div>
         </div>
-        <div className="ml-96 mt-5 flex items-center gap-x-5">
-          <Button label="Batal" variant={"secondary"} onClick={() => {}} />
+        <div className="w-full flex justify-end items-center gap-4">
           <Button
-            label="Cetak Kartu"
-            variant={"secondary"}
+            label="Batal"
+            variant="secondary"
+            size="big"
             onClick={() => {}}
           />
-          <Button label="Simpan" variant={"primary"} onClick={() => {}} />
+          <Button
+            label="Cetak Kartu"
+            variant="secondary"
+            size="big"
+            onClick={() => {}}
+          />
+          <Button
+            label="Simpan"
+            variant="primary"
+            size="big"
+            onClick={() => {}}
+          />
         </div>
       </div>
-      <div>
+      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
         <TableRegist />
       </div>
     </div>

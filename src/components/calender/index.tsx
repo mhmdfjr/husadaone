@@ -58,7 +58,7 @@ export default function Calender() {
         className={`p-2 text-center text-sm cursor-pointer rounded-lg ${
           isSameMonth(date, currentMonth)
             ? isSameDay(date, selectedDate ?? new Date())
-              ? "bg-brand-base text-white"
+              ? "bg-brand-base text-basic-white"
               : "text-black hover:bg-brand-10"
             : "text-gray-medium "
         }`}
@@ -69,7 +69,7 @@ export default function Calender() {
   };
 
   return (
-    <div className="w-full p-4 bg-white  z-50">
+    <div className="w-full p-4 bg-basic-white  z-50">
       <div className="flex justify-between items-center mb-4">
         <button className="text-xl text-gray-700" onClick={handlePrevMonth}>
           &laquo;

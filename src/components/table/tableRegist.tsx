@@ -62,7 +62,7 @@ function updateRegist(id: number, updatedData: Regist) {
 
 export default function TablePatients() {
   const [regist, setRegist] = useState<Regist[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [selectedRegist, setSelectedRegist] = useState<Regist | null>(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm<Regist>();
@@ -74,7 +74,7 @@ export default function TablePatients() {
   const fetchData = () => {
     getPatients().then((data) => {
       setRegist(Array.isArray(data) ? data : data.data || []);
-      setLoading(false);
+      // setLoading(false);
     });
   };
 
@@ -115,13 +115,13 @@ export default function TablePatients() {
     "Aksi",
   ];
 
-  if (loading) {
-    return (
-      <div className="flex justify-start items-center animate-pulse">
-        Loading...
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-start items-center animate-pulse">
+  //       Loading...
+  //     </div>
+  //   );
+  // }
 
   if (!Array.isArray(regist)) {
     return (
@@ -136,12 +136,7 @@ export default function TablePatients() {
     <>
       <Table tableHead={tableHeaders}>
         {regist.map((regist, index) => (
-          <tr
-            key={index}
-            className={`w-full${
-              index % 2 === 0 ? " bg-brand-10 bg-opacity-15" : " bg-white"
-            }`}
-          >
+          <tr key={index} className="bg-basic-white">
             <td className="px-6 py-4 text-center">
               {regist.id < 10 ? `0${regist.id}` : regist.id}
             </td>

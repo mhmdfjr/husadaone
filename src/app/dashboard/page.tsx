@@ -129,14 +129,14 @@ export default function Register() {
             />
           </div>
 
-          <div className="flex gap-x-5">
-            <div className="flex-grow p-4 bg-white rounded-2xl">
+          <div className="flex gap-4">
+            <div className="flex-grow p-4 bg-basic-white rounded-2xl">
               <p className="text-h8-bold text-basic-black mb-6 mt-2">
                 Pasien Terbaru
               </p>
               <TableRegist />
             </div>
-            <div className="w-[414px] p-4 bg-white rounded-2xl">
+            <div className="w-[414px] p-4 bg-basic-white rounded-2xl">
               <p className="text-h8-bold text-basic-black mb-4">Kalender</p>
               <Calender />
             </div>

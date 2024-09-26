@@ -31,13 +31,13 @@ function getPatients() {
 
 export default function TablePatients() {
   const [regist, setRegist] = useState<Regist[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getPatients().then((data) => {
       console.log("API Response Data:", data);
       setRegist(Array.isArray(data) ? data : data.data || []);
-      setLoading(false);
+      // setLoading(false);
     });
   }, []);
 
@@ -50,13 +50,13 @@ export default function TablePatients() {
     "Poliklinik",
   ];
 
-  if (loading) {
-    return (
-      <div className="flex justify-start items-center animate-pulse">
-        Loading...
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-start items-center animate-pulse">
+  //       Loading...
+  //     </div>
+  //   );
+  // }
 
   if (!Array.isArray(regist)) {
     return (
@@ -82,15 +82,10 @@ export default function TablePatients() {
   return (
     <Table tableHead={tableHeaders}>
       {regist.map((regist, index) => (
-        <tr
-          key={index}
-          className={`w-full${
-            index % 2 === 0 ? "bg-brand-10 bg-opacity-15" : "bg-white"
-          }`}
-        >
-          <td className="px-6 py-4 text-center">{regist.id < 10
-                ? `0${regist.id}`
-                : regist.id}</td>
+        <tr key={index} className="bg-basic-white">
+          <td className="px-6 py-4 text-center">
+            {regist.id < 10 ? `0${regist.id}` : regist.id}
+          </td>
           <td className="px-10 py-4 text-center">{regist.patient.name}</td>
           <td className="px-6 py-4 text-center">
             {regist.patient.id < 10

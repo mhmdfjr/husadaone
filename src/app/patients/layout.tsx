@@ -7,9 +7,9 @@ export default function PatientsLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="flex w-full min-h-screen bg-[#D5E5FF] bg-opacity-15">
+    <main className=" w-full min-h-screen h-full bg-brand-10/[.16] pb-4">
       <Sidebar />
-      <div className="flex-1">
+      <div className="ml-60 flex flex-col gap-4">
         <TopBar />
         {children}
       </div>
