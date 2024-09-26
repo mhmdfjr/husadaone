@@ -14,7 +14,7 @@ export default function RecipesPharmacy() {
         <div className="flex">
           <Button
             label="Resep"
-            variant="submenu"
+            variant="submenu-active"
             size="small"
             onClick={() => router.push("recipe")}
           />

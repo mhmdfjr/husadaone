@@ -95,7 +95,7 @@ const TableMedicineBill: React.FC<TableMedicineBillProps> = ({
     const fetchPayments = async () => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/payments`
+          `https://api-simrs.serpihantech.com/api/payments`
         );
         setPayments(response.data);
       } catch (error) {

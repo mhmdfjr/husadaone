@@ -51,7 +51,7 @@ export default function InputPharmacy() {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/medicines/${id}`
+          `https://api-simrs.serpihantech.com/api/medicines/${id}`
         );
         setMedicine(response.data);
         // console.log("Response:", response.data.id);
@@ -86,7 +86,7 @@ export default function InputPharmacy() {
   const handleSave = async () => {
     try {
       const response = await axios.post(
-        "http://api-simrs.serpihantech.com/api/medicines",
+        "https://api-simrs.serpihantech.com/api/medicines",
         {
           name: name,
           category: category,
@@ -120,7 +120,7 @@ export default function InputPharmacy() {
   const handleEdit = async (id: number) => {
     try {
       const response = await axios.put(
-        `http://api-simrs.serpihantech.com/api/medicines/${id}`,
+        `https://api-simrs.serpihantech.com/api/medicines/${id}`,
         {
           name: name || medicine.name,
           category: category || medicine.category,

@@ -13,7 +13,7 @@ interface Medicine {
 }
 
 export async function getMedicines() {
-  const response = await fetch(`http://192.168.18.31/api/medicines`, {
+  const response = await fetch(`https://192.168.18.31/api/medicines`, {
     method: "GET",
   });
   return response.json();
@@ -27,7 +27,7 @@ export default function TableHighlightMedicine() {
     const fetchData = async () => {
       try {
         const { data: response } = await axios.get(
-          "http://api-simrs.serpihantech.com/api/medicines"
+          "https://api-simrs.serpihantech.com/api/medicines"
         );
         setData(response.data);
         console.log(response.data);

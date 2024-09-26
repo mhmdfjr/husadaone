@@ -57,7 +57,7 @@ export default function InputPatient() {
     const fetchNurseDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/patients/${id}`
+          `https://api-simrs.serpihantech.com/api/patients/${id}`
         );
         setPatients(response.data);
       } catch (error) {
@@ -83,7 +83,7 @@ export default function InputPatient() {
   const handleSave = async () => {
     try {
       const response = await axios.post(
-        "http://api-simrs.serpihantech.com/api/patients",
+        "https://api-simrs.serpihantech.com/api/patients",
         {
           name: name,
           place_of_birth: place,
@@ -115,7 +115,7 @@ export default function InputPatient() {
   const handleEdit = async (id: number) => {
     try {
       const response = await axios.put(
-        `http://api-simrs.serpihantech.com/api/patients/${id}`,
+        `https://api-simrs.serpihantech.com/api/patients/${id}`,
         {
           name: name || patients.name,
           place_of_birth: place || patients.place_of_birth,

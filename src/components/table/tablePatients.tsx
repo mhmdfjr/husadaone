@@ -52,7 +52,7 @@ const TablePatients: React.FC<TablePatientProps> = ({
     const fetchData = async () => {
       try {
         const { data: response } = await axios.get(
-          "http://api-simrs.serpihantech.com/api/patients"
+          "https://api-simrs.serpihantech.com/api/patients"
         );
         setPatients(response.data);
       } catch (error) {

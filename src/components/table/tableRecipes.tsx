@@ -56,7 +56,7 @@ export default function TableRecipes() {
     const fetchData = async () => {
       try {
         const { data: response } = await axios.get(
-          "http://api-simrs.serpihantech.com/api/patients"
+          "https://api-simrs.serpihantech.com/api/patients"
         );
         setPatients(response.data);
         // console.log("Response Patients: ", response.data);
@@ -71,7 +71,7 @@ export default function TableRecipes() {
     const fetchPolyclinics = async () => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/polyclinics`
+          `https://api-simrs.serpihantech.com/api/polyclinics`
         );
         setPolyclinics(response.data);
         // console.log("Response Polyclinics:", response.data);
@@ -86,7 +86,7 @@ export default function TableRecipes() {
     const fetchDoctors = async () => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/doctors`
+          `https://api-simrs.serpihantech.com/api/doctors`
         );
         setDoctors(response.data);
         // console.log("Response Doctors:", response.data);
@@ -101,7 +101,7 @@ export default function TableRecipes() {
     const fetchPayments = async () => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/payments`
+          `https://api-simrs.serpihantech.com/api/payments`
         );
         setPayments(response.data);
         // console.log("Response Payments :", response.data);

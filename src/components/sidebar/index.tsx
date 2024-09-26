@@ -1,142 +1,188 @@
 "use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import {
-  Home2,
   UserEdit,
+  Home2,
   People,
-  ArrowDown2,
   ChemicalGlass,
   Note,
   DocumentLike,
   DocumentText,
   Buildings2,
   LogoutCurve,
-  ArrowUp2,
 } from "iconsax-react";
-import { useState } from "react";
-import Button from "@/components/button";
+import Button from "../button";
 
-interface Menu {
-  title: string;
-  dropdown: boolean;
-  icon: JSX.Element;
-}
-
-const mainMenu: Menu[] = [
-  { title: "Dashboard", dropdown: false, icon: <Home2 size="24" /> },
-  { title: "Registrasi Pasien", dropdown: false, icon: <UserEdit size="24" /> },
-  { title: "Penanganan", dropdown: true, icon: <People size="24" /> },
-  { title: "Apotek", dropdown: false, icon: <ChemicalGlass size="24" /> },
+export const SIDENAV_ITEMS: SideNavItem[] = [
+  {
+    title: "Dashboard",
+    path: "/dashboard",
+    icon: <Home2 size="24" />,
+  },
+  {
+    title: "Registrasi Pasien",
+    path: "/registry",
+    icon: <UserEdit size="24" />,
+  },
+  {
+    title: "Penanganan",
+    path: "/projects",
+    icon: <People size="24" />,
+    submenu: true,
+    subMenuItems: [
+      { title: "Rawat Inap", path: "/dashboard" },
+      { title: "Rawat Jalan", path: "/projects/web-design" },
+    ],
+  },
+  {
+    title: "Apotek",
+    path: "/pharmacy",
+    icon: <ChemicalGlass size="24" />,
+  },
 ];
-
-const moreMenu: Menu[] = [
-  { title: "Daftar Pasien", dropdown: false, icon: <Note size="24" /> },
-  { title: "Daftar Dokter", dropdown: false, icon: <DocumentLike size="24" /> },
+export const SIDENAV_MORE_ITEMS: SideNavItem[] = [
+  {
+    title: "Daftar Pasien",
+    path: "/patients",
+    icon: <Note size="24" />,
+  },
+  {
+    title: "Daftar Dokter",
+    path: "/doctors",
+    icon: <DocumentLike size="24" />,
+  },
   {
     title: "Daftar Perawat",
-    dropdown: false,
+    path: "/nurses",
     icon: <DocumentText size="24" />,
   },
   {
     title: "Daftar Poliklinik",
-    dropdown: false,
+    path: "/polyclinics",
     icon: <Buildings2 size="24" />,
   },
 ];
 
-const childMenu: string[] = ["Rawat Inap", "Rawat Jalan"];
+export type SideNavItem = {
+  title: string;
+  path: string;
+  icon?: JSX.Element;
+  submenu?: boolean;
+  subMenuItems?: SideNavItem[];
+};
 
-export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [childState, setChildState] = useState("Penanganan");
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
+const SideNav = () => {
+  const router = useRouter();
+  const handleLogout = () => {
+    router.push("/");
   };
-
-  const selectChildMenu = (child: string) => {
-    setChildState(child);
-    setIsOpen(false);
-  };
-
-  const handleLogout = () => {};
-
   return (
-    <div className="w-60 bg-basic-white h-full fixed overflow-y-auto min-h-screen flex flex-col justify-start gap-12 px-4 py-4">
-      <div className="logo w-full flex justify-center items-center cursor-pointer">
-        <p className="text-h6-bold text-brand-base">SIMRS</p>
-      </div>
-      <div className="main-menu mb-8">
-        <ul className="flex flex-col gap-4 text-body">
-          <li className="flex justify-start items-center px-4">
-            <p className="text-body-sm text-gray-medium">Menu Utama</p>
-          </li>
-          {mainMenu.map((menu, index) => (
-            <li key={index} className="flex flex-col">
-              <Button
-                variant="tertiary"
-                leftIcon={menu.icon}
-                rightIcon={
-                  menu.title === "Penanganan" ? (
-                    <ArrowDown2
-                      className={
-                        isOpen
-                          ? "transition-transform duration-200 rotate-180"
-                          : ""
-                      }
-                    />
-                  ) : (
-                    ""
-                  )
-                }
-                label={menu.dropdown ? childState : menu.title}
-                onClick={menu.dropdown ? toggleDropdown : undefined}
-              />
-
-              {menu.dropdown && isOpen && (
-                <div className="pl-9">
-                  <ul className="flex flex-col gap-2 text-start">
-                    {childMenu.map((child, index) => (
-                      <li
-                        key={index}
-                        onClick={() => selectChildMenu(child)}
-                        className="px-2 py-2.5 rounded-lg cursor-pointer hover:text-brand-base  active:bg-brand-base text-basic-black active:text-basic-white"
-                      >
-                        {child}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="more-menu mb-8">
-        <ul className="flex flex-col gap-4 text-body text-basic-black">
-          <li className="flex justify-start items-center px-4">
-            <p className="text-body-sm text-gray-medium">Menu Lainnya</p>
-          </li>
-          {moreMenu.map((menu, index) => (
+    <div className="w-64 min-h-screen overflow-y-auto top-0 left-0  bg-white flex flex-col">
+      <Link href="/" className="flex items-center justify-center px-6 h-20 ">
+        <span className="font-bold text-center text-brand-60 text-3xl ml-3">
+          SIMRS
+        </span>
+      </Link>
+      <div className="space-y-5">
+        <div>
+          <p className="font-medium text-sm ml-9 text-gray-medium">
+            Menu Utama
+          </p>
+          <div className="flex flex-col flex-grow ">
+            {SIDENAV_ITEMS.map((item, idx) => (
+              <MenuItem key={idx} item={item} />
+            ))}
+          </div>
+        </div>
+        <div>
+          <p className="font-medium text-sm ml-9 text-gray-medium">
+            Menu Lainnya
+          </p>
+          <div className="flex flex-col flex-grow ">
+            {SIDENAV_MORE_ITEMS.map((item, idx) => (
+              <MenuItem key={idx} item={item} />
+            ))}
+          </div>
+        </div>
+        <div className="logout">
+          <ul className="ml-6 text-body text-basic-black">
             <Button
-              key={index}
-              variant="tertiary"
-              leftIcon={menu.icon}
-              label={menu.dropdown ? childState : menu.title}
-              onClick={() => (menu.dropdown ? toggleDropdown : undefined)}
+              variant="danger"
+              leftIcon={<LogoutCurve size="24px" />}
+              label="Keluar"
+              onClick={handleLogout}
             />
-          ))}
-        </ul>
-      </div>
-      <div className="logout">
-        <ul className="flex flex-col gap-4 text-body text-basic-black">
-          <Button
-            variant="danger"
-            leftIcon={<LogoutCurve size="24px" />}
-            label="Keluar"
-            onClick={handleLogout}
-          />
-        </ul>
+          </ul>
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default SideNav;
+
+const MenuItem = ({ item }: { item: SideNavItem }) => {
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSubmenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <div className="flex flex-col">
+      {item.submenu ? (
+        <button
+          onClick={toggleSubmenu}
+          className={`flex items-center justify-between px-6 py-3 text-gray-700 hover:rounded-lg hover:text-white m-3 hover:bg-brand-base ${
+            pathname.includes(item.path)
+              ? "bg-brand-base text-white rounded-lg m-3 font-semibold"
+              : ""
+          }`}
+        >
+          <div className="flex items-center">
+            {item.icon && <span className="mr-3">{item.icon}</span>}
+            <span>{item.title}</span>
+          </div>
+          {/* <Icon
+            icon={isOpen ? "lucide:chevron-up" : "lucide:chevron-down"}
+            width="24"
+            height="24"
+          /> */}
+        </button>
+      ) : (
+        <Link
+          href={item.path}
+          className={`flex items-center px-6 py-3 text-gray-700 hover:rounded-lg hover:text-white m-3 hover:bg-brand-base ${
+            pathname.includes(item.path)
+              ? "bg-brand-base text-white rounded-lg m-3 font-semibold"
+              : ""
+          }`}
+        >
+          {item.icon && <span className="mr-3">{item.icon}</span>}
+          <span>{item.title}</span>
+        </Link>
+      )}
+
+      {item.submenu && item.subMenuItems && isOpen && (
+        <div className="ml-6 mt-1">
+          {item.subMenuItems.map((subItem, idx) => (
+            <Link
+              key={idx}
+              href={subItem.path}
+              className={`block px-4 py-2 text-sm text-gray-600 hover:bg-zinc-100 ${
+                subItem.path === pathname
+                  ? "bg-brand-base text-white rounded-lg m-3 font-semibold"
+                  : ""
+              }`}
+            >
+              {subItem.title}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};

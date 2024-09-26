@@ -26,7 +26,7 @@ export default function CashierPharmacy() {
           />
           <Button
             label="Kasir"
-            variant="submenu"
+            variant="submenu-active"
             size="small"
             onClick={() => router.push("cashier")}
           />

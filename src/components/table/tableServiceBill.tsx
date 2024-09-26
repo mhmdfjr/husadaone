@@ -69,7 +69,7 @@ const TableServiceBill: React.FC<TableServiceBillProps> = ({
     const fetchPayments = async () => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/payments`
+          `https://api-simrs.serpihantech.com/api/payments`
         );
         setPayments(response.data);
         // console.log("Response Payments:", response.data);
@@ -91,7 +91,7 @@ const TableServiceBill: React.FC<TableServiceBillProps> = ({
         const fetchDoctorById = async (id: number) => {
           try {
             const { data: response } = await axios.get(
-              `http://api-simrs.serpihantech.com/api/payments/${id}`
+              `https://api-simrs.serpihantech.com/api/payments/${id}`
             );
             const newDoctor = response.data.doctor;
             setDoctor(newDoctor);

@@ -23,7 +23,7 @@ export default function ListNurses() {
     if (childData) {
       try {
         const response = await axios.delete(
-          `http://api-simrs.serpihantech.com/api/patients/${childData}`
+          `https://api-simrs.serpihantech.com/api/patients/${childData}`
         );
         console.log("Delete response:", response.data);
       } catch (error) {

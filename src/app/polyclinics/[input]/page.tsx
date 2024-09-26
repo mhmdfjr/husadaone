@@ -38,7 +38,7 @@ export default function InputPolyclinic() {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/polyclinics/${id}`
+          `https://api-simrs.serpihantech.com/api/polyclinics/${id}`
         );
         setPolyclinic(response.data);
       } catch (error) {
@@ -64,7 +64,7 @@ export default function InputPolyclinic() {
   const handleSave = async () => {
     try {
       const response = await axios.post(
-        "http://api-simrs.serpihantech.com/api/polyclinics",
+        "https://api-simrs.serpihantech.com/api/polyclinics",
         {
           name: name,
         },
@@ -84,7 +84,7 @@ export default function InputPolyclinic() {
   const handleEdit = async (id: number) => {
     try {
       const response = await axios.put(
-        `http://api-simrs.serpihantech.com/api/polyclinics/${id}`,
+        `https://api-simrs.serpihantech.com/api/polyclinics/${id}`,
         {
           name: name || polyclinic.name,
         },
