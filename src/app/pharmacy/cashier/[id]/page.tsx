@@ -81,7 +81,7 @@ export default function CashierDetails() {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/patients/${id}`
+          `https://api-simrs.serpihantech.com/api/patients/${id}`
         );
         setPatient(response.data);
         console.log("Patient:", response.data);
@@ -105,7 +105,7 @@ export default function CashierDetails() {
     const fetchPayments = async () => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/payments`
+          `https://api-simrs.serpihantech.com/api/payments`
         );
         setPayments(response.data);
         console.log("Payments", response.data);

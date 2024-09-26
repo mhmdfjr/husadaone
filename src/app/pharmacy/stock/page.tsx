@@ -23,7 +23,7 @@ export default function StockPharmacy() {
     if (childData) {
       try {
         const response = await axios.delete(
-          `http://api-simrs.serpihantech.com/api/medicines/${childData}`
+          `https://api-simrs.serpihantech.com/api/medicines/${childData}`
         );
         console.log("Delete response:", response.data);
       } catch (error) {
@@ -47,7 +47,7 @@ export default function StockPharmacy() {
             />
             <Button
               label="Stok Obat"
-              variant="submenu"
+              variant="submenu-active"
               size="small"
               onClick={() => router.push("stock")}
             />

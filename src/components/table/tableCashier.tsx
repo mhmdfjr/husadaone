@@ -63,7 +63,7 @@ export default function TableRecipes() {
     const fetchData = async () => {
       try {
         const { data: response } = await axios.get(
-          "http://api-simrs.serpihantech.com/api/patients"
+          "https://api-simrs.serpihantech.com/api/patients"
         );
         setCashiers(response.data);
       } catch (error) {
@@ -79,7 +79,7 @@ export default function TableRecipes() {
     const fetchPolyclinics = async () => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/polyclinics`
+          `https://api-simrs.serpihantech.com/api/polyclinics`
         );
         setPolyclinic(response.data);
       } catch (error) {
@@ -93,7 +93,7 @@ export default function TableRecipes() {
     const fetchDoctors = async () => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/doctors`
+          `https://api-simrs.serpihantech.com/api/doctors`
         );
         setDoctor(response.data);
       } catch (error) {
@@ -107,7 +107,7 @@ export default function TableRecipes() {
     const fetchPayments = async () => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/payments`
+          `https://api-simrs.serpihantech.com/api/payments`
         );
         setPayment(response.data);
       } catch (error) {

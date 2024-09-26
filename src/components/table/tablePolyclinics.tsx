@@ -39,7 +39,7 @@ const TablePolyclinics: React.FC<TablePolyclinicsProps> = ({
     const fetchData = async () => {
       try {
         const { data: response } = await axios.get(
-          "http://api-simrs.serpihantech.com/api/polyclinics"
+          "https://api-simrs.serpihantech.com/api/polyclinics"
         );
         setPolyclinics(response.data);
       } catch (error) {

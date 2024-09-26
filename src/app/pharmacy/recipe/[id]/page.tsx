@@ -103,7 +103,7 @@ export default function ValidateRecipe() {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/patients/${id}`
+          `https://api-simrs.serpihantech.com/api/patients/${id}`
         );
         setPatients(response.data);
         // console.log("Response Patient:", response.data);
@@ -127,7 +127,7 @@ export default function ValidateRecipe() {
     const fetchPolyclinicById = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/polyclinics/${id}`
+          `https://api-simrs.serpihantech.com/api/polyclinics/${id}`
         );
         setPolyclinics(response.data);
         // console.log("Response Polyclinic:", polyclinics);
@@ -159,7 +159,7 @@ export default function ValidateRecipe() {
     const fetchDoctorById = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/doctors/${id}`
+          `https://api-simrs.serpihantech.com/api/doctors/${id}`
         );
         setDoctors(response.data);
         // console.log("Response Doctor:", polyclinics);
@@ -194,7 +194,7 @@ export default function ValidateRecipe() {
   const handleEdit = async (id: number) => {
     try {
       const response = await axios.put(
-        `http://api-simrs.serpihantech.com/api/payments-medicines/${id}`,
+        `https://api-simrs.serpihantech.com/api/payments-medicines/${id}`,
         {
           id: childData.id,
           payment_id: childData.payment_id,
@@ -219,7 +219,7 @@ export default function ValidateRecipe() {
   const handleValidation = async (id: number) => {
     try {
       const response = await axios.get(
-        `http://api-simrs.serpihantech.com/api/validation/${id}`
+        `https://api-simrs.serpihantech.com/api/validation/${id}`
       );
       router.push("/pharmacy/recipe");
     } catch (error) {

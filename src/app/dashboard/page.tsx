@@ -5,7 +5,8 @@ import Sidebar from "@/components/sidebar";
 import TopBar from "@/components/topbar";
 import CardDashboard from "@/components/card-dashboard";
 import Calender from "@/components/calender";
-import TableRegist from "@/components/table/tableRegist";
+import TableRegist from "@/components/table/tableDashboard";
+
 export default function Register() {
   const [patients, setPatients] = useState<any[]>([]);
   const [patientCount, setPatientCount] = useState<string>("-");
@@ -16,7 +17,7 @@ export default function Register() {
 
   useEffect(() => {
     axios
-      .get("http://192.168.18.31:8000/api/patients")
+      .get("https://api-simrs.serpihantech.com/api/patients")
       .then((response) => {
         const data = response.data;
         console.log("Patients API response:", data);
@@ -48,7 +49,7 @@ export default function Register() {
       .catch((error) => console.error("Error fetching patients:", error));
 
     axios
-      .get("http://192.168.18.31:8000/api/doctors")
+      .get("https://api-simrs.serpihantech.com/api/doctors")
       .then((response) => {
         const data = response.data;
         console.log("Doctors API response:", data);
@@ -63,7 +64,7 @@ export default function Register() {
       .catch((error) => console.error("Error fetching doctors:", error));
 
     axios
-      .get("http://192.168.18.31:8000/api/nurses")
+      .get("https://api-simrs.serpihantech.com/api/nurses")
       .then((response) => {
         const data = response.data;
         console.log("Nurses API response:", data);
@@ -76,7 +77,7 @@ export default function Register() {
       .catch((error) => console.error("Error fetching nurses:", error));
 
     axios
-      .get("http://192.168.18.31:8000/api/polyclinics")
+      .get("https://api-simrs.serpihantech.com/api/polyclinics")
       .then((response) => {
         const data = response.data;
         console.log("Polyclinic API response:", data);
@@ -96,50 +97,52 @@ export default function Register() {
     : "-";
 
   return (
-    <main className="w-[99%] min-h-screen">
-      <Sidebar />
+    <div className="flex w-full min-h-screen bg-[#D5E5FF]  bg-opacity-15">
+      <div className="fixed left-0 top-0 h-full">
+        <Sidebar />
+      </div>
 
-      <div className="ml-60 -z-50 min-h-screen flex flex-col bg-[#D5E5FF] bg-opacity-15 gap-4">
+      <main className="flex-1 ml-60 ">
         <TopBar />
 
-        <div className="w-full flex  mt-5 justify-center gap-x-12 items-center mx-4">
-          <CardDashboard
-            title="Total Pasien"
-            sum={patientCount}
-            date={formattedLastUpdated}
-          />
-          <CardDashboard
-            title="Total Dokter"
-            sum={doctorsCount}
-            date={formattedLastUpdated}
-          />
-          <CardDashboard
-            title="Total Perawat"
-            sum={nursesCount}
-            date={formattedLastUpdated}
-          />
-          <CardDashboard
-            title="Total Poliklinik"
-            sum={polyclinicCount}
-            date={formattedLastUpdated}
-          />
-        </div>
-
-        <div className="w-full mx-4 h-auto flex justify-center items-start mt-5  gap-x-5">
-          <div className=" p-4 bg-white rounded-2xl">
-            <p className="text-h8-bold text-basic-black mb-6 mt-2">
-              Pasien Terbaru
-            </p>
-            <TableRegist />
+        <div className="p-4">
+          <div className="flex justify-between gap-x-4 mb-6">
+            <CardDashboard
+              title="Total Pasien"
+              sum={patientCount}
+              date={formattedLastUpdated}
+            />
+            <CardDashboard
+              title="Total Dokter"
+              sum={doctorsCount}
+              date={formattedLastUpdated}
+            />
+            <CardDashboard
+              title="Total Perawat"
+              sum={nursesCount}
+              date={formattedLastUpdated}
+            />
+            <CardDashboard
+              title="Total Poliklinik"
+              sum={polyclinicCount}
+              date={formattedLastUpdated}
+            />
           </div>
-          <div className=" w-[414px] h-auto px-5  py-4 bg-white rounded-2xl ">
-            <p className="text-h8-bold text-basic-black  mt-2 ">Kalender</p>
-            <div className="w-full h-full flex items-start">
+
+          <div className="flex gap-4">
+            <div className="flex-grow p-4 bg-basic-white rounded-2xl">
+              <p className="text-h8-bold text-basic-black mb-6 mt-2">
+                Pasien Terbaru
+              </p>
+              <TableRegist />
+            </div>
+            <div className="w-[414px] p-4 bg-basic-white rounded-2xl">
+              <p className="text-h8-bold text-basic-black mb-4">Kalender</p>
               <Calender />
             </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }

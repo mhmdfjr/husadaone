@@ -52,7 +52,7 @@ const TableNurses: React.FC<TableNursesProps> = ({
     const fetchData = async () => {
       try {
         const { data: response } = await axios.get(
-          "http://api-simrs.serpihantech.com/api/nurses"
+          "https://api-simrs.serpihantech.com/api/nurses"
         );
         setNurses(response.data);
       } catch (error) {

@@ -23,7 +23,7 @@ export default function ListPolyclinics() {
     if (childData) {
       try {
         const response = await axios.delete(
-          `http://api-simrs.serpihantech.com/api/polyclinics/${childData}`
+          `https://api-simrs.serpihantech.com/api/polyclinics/${childData}`
         );
         console.log("Delete response:", response.data);
       } catch (error) {

@@ -44,7 +44,7 @@ export default function InputNurse() {
     const fetchNurseDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/nurses/${id}`
+          `https://api-simrs.serpihantech.com/api/nurses/${id}`
         );
         setNurse(response.data);
       } catch (error) {
@@ -70,7 +70,7 @@ export default function InputNurse() {
   const handleSave = async () => {
     try {
       const response = await axios.post(
-        "http://api-simrs.serpihantech.com/api/nurses",
+        "https://api-simrs.serpihantech.com/api/nurses",
         {
           name: name,
           gender: gender,
@@ -100,7 +100,7 @@ export default function InputNurse() {
   const handleEdit = async (id: number) => {
     try {
       const response = await axios.put(
-        `http://api-simrs.serpihantech.com/api/nurses/${id}`,
+        `https://api-simrs.serpihantech.com/api/nurses/${id}`,
         {
           name: name || nurse.name,
           gender: gender || nurse.gender,

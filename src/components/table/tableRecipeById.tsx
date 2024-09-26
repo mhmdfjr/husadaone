@@ -111,7 +111,7 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/patients/${id}`
+          `https://api-simrs.serpihantech.com/api/patients/${id}`
         );
         setPatients(response.data);
         // console.log("Response:", response.data);
@@ -136,7 +136,7 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
     const fetchPayments = async () => {
       try {
         const { data: response } = await axios.get(
-          `http://api-simrs.serpihantech.com/api/payments`
+          `https://api-simrs.serpihantech.com/api/payments`
         );
         setPayments(response.data);
         // console.log("Response Payments:", response.data);
@@ -159,7 +159,7 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
         // const fetchMedicineById = async (id: number) => {
         //   try {
         //     const { data: response } = await axios.get(
-        //       `http://api-simrs.serpihantech.com/api/payments/${id}`
+        //       `https://api-simrs.serpihantech.com/api/payments/${id}`
         //     );
         //     setMedicines([response.data]);
         //     console.log("Response Payments By ID: ", response.data);

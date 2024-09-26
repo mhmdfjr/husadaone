@@ -14,11 +14,10 @@ const Main = () => {
   const router = useRouter();
 
   const handleLogin = () => {
-    // In a real application, replace this with a request to your server
     if (username === "Admin" && password === "admin123") {
       toast.success("Berhasil login");
       setTimeout(() => {
-        router.push("/dashboard"); // Redirect after a short delay
+        router.push("/dashboard"); 
       }, 1000);
     } else {
       toast.error("Username atau kata sandi salah");

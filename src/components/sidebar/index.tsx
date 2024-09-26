@@ -14,32 +14,66 @@ import {
 } from "iconsax-react";
 import { useState } from "react";
 import Button from "@/components/button";
+import { useRouter, useParams, usePathname } from "next/navigation";
 
 interface Menu {
   title: string;
   dropdown: boolean;
   icon: JSX.Element;
+  path: string;
 }
 
 const mainMenu: Menu[] = [
-  { title: "Dashboard", dropdown: false, icon: <Home2 size="24" /> },
-  { title: "Registrasi Pasien", dropdown: false, icon: <UserEdit size="24" /> },
-  { title: "Penanganan", dropdown: true, icon: <People size="24" /> },
-  { title: "Apotek", dropdown: false, icon: <ChemicalGlass size="24" /> },
+  {
+    title: "Dashboard",
+    dropdown: false,
+    icon: <Home2 size="24" />,
+    path: "/dashboard",
+  },
+  {
+    title: "Registrasi Pasien",
+    dropdown: false,
+    icon: <UserEdit size="24" />,
+    path: "/registry",
+  },
+  {
+    title: "Penanganan",
+    dropdown: true,
+    icon: <People size="24" />,
+    path: "/services",
+  },
+  {
+    title: "Apotek",
+    dropdown: false,
+    icon: <ChemicalGlass size="24" />,
+    path: "/pharmacy",
+  },
 ];
 
 const moreMenu: Menu[] = [
-  { title: "Daftar Pasien", dropdown: false, icon: <Note size="24" /> },
-  { title: "Daftar Dokter", dropdown: false, icon: <DocumentLike size="24" /> },
+  {
+    title: "Daftar Pasien",
+    dropdown: false,
+    icon: <Note size="24" />,
+    path: "/patients",
+  },
+  {
+    title: "Daftar Dokter",
+    dropdown: false,
+    icon: <DocumentLike size="24" />,
+    path: "/doctors",
+  },
   {
     title: "Daftar Perawat",
     dropdown: false,
     icon: <DocumentText size="24" />,
+    path: "/nurses",
   },
   {
     title: "Daftar Poliklinik",
     dropdown: false,
     icon: <Buildings2 size="24" />,
+    path: "/polyclinics",
   },
 ];
 
@@ -48,9 +82,16 @@ const childMenu: string[] = ["Rawat Inap", "Rawat Jalan"];
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [childState, setChildState] = useState("Penanganan");
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useParams();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleMenu = (path: string) => {
+    router.push(path);
   };
 
   const selectChildMenu = (child: string) => {
@@ -58,7 +99,9 @@ export default function Sidebar() {
     setIsOpen(false);
   };
 
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    router.push("/");
+  };
 
   return (
     <div className="w-60 bg-basic-white h-full fixed overflow-y-auto min-h-screen flex flex-col justify-start gap-12 px-4 py-4">
@@ -73,7 +116,7 @@ export default function Sidebar() {
           {mainMenu.map((menu, index) => (
             <li key={index} className="flex flex-col">
               <Button
-                variant="tertiary"
+                variant={pathname.includes(menu.path) ? "primary" : "tertiary"}
                 leftIcon={menu.icon}
                 rightIcon={
                   menu.title === "Penanganan" ? (
@@ -89,7 +132,9 @@ export default function Sidebar() {
                   )
                 }
                 label={menu.dropdown ? childState : menu.title}
-                onClick={menu.dropdown ? toggleDropdown : undefined}
+                onClick={
+                  menu.dropdown ? toggleDropdown : () => handleMenu(menu.path)
+                }
               />
 
               {menu.dropdown && isOpen && (
@@ -119,10 +164,12 @@ export default function Sidebar() {
           {moreMenu.map((menu, index) => (
             <Button
               key={index}
-              variant="tertiary"
+              variant={pathname.includes(menu.path) ? "primary" : "tertiary"}
               leftIcon={menu.icon}
               label={menu.dropdown ? childState : menu.title}
-              onClick={() => (menu.dropdown ? toggleDropdown : undefined)}
+              onClick={
+                menu.dropdown ? toggleDropdown : () => handleMenu(menu.path)
+              }
             />
           ))}
         </ul>
