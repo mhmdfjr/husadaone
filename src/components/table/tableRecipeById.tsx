@@ -114,8 +114,6 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
           `https://api-simrs.serpihantech.com/api/patients/${id}`
         );
         setPatients(response.data);
-        // console.log("Response:", response.data);
-        console.log("ID Pasien : ", patients);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
@@ -139,9 +137,6 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
           `https://api-simrs.serpihantech.com/api/payments`
         );
         setPayments(response.data);
-        // console.log("Response Payments:", response.data);
-        // console.log("State Medicine", payments[0].medicines);
-        console.log("Payment : ", payments);
       } catch (error) {
         console.error("Failed to fetch payments:", error);
       }
@@ -155,41 +150,12 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
         (payment: Payment) => payment.registration_id === patients.id
       );
       if (matchingPayments.length > 0) {
-        console.log("Matching payments found:", matchingPayments[0]);
-        // const fetchMedicineById = async (id: number) => {
-        //   try {
-        //     const { data: response } = await axios.get(
-        //       `https://api-simrs.serpihantech.com/api/payments/${id}`
-        //     );
-        //     setMedicines([response.data]);
-        //     console.log("Response Payments By ID: ", response.data);
-        //     console.log("Medicines by Payments :", medicines);
-        //   } catch (error) {
-        //     // setMedicines(medicineData);
-        //     console.error("Failed to fetch payment details:", error);
-        //   }
-        // };
         if (matchingPayments) {
           setMedicines(matchingPayments[0].medicines);
-          // const medicineId = Number(medicines[0].id);
-          // if (!isNaN(medicineId)) {
-          //   fetchMedicineById(medicineId);
-          // } else {
-          //   console.error("Invalid medicine ID:", params.id);
-          //   router.push("/error");
-          // }
-        } else {
-          // setMedicines(medicines);
         }
-      } else {
-        // console.log("No matching payments found for patient ID:", patients.id);
       }
     }
   }, [payments]);
-
-  useEffect(() => {
-    // console.log("Updated Medicines:", medicines);
-  }, [medicines]);
 
   const handelAction = (data: Recipe) => {
     setSelectedOption(!data.isOn);

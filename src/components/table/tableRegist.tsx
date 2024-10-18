@@ -4,6 +4,8 @@ import axios from "axios";
 import { Edit, Trash } from "iconsax-react";
 import { useForm } from "react-hook-form";
 import Button from "../button";
+import { TickSquare } from "iconsax-react";
+import Popup from "@/components/popup";
 
 interface Polyclinic {
   name: string;
@@ -62,9 +64,10 @@ function updateRegist(id: number, updatedData: Regist) {
 
 export default function TablePatients() {
   const [regist, setRegist] = useState<Regist[]>([]);
-  // const [loading, setLoading] = useState(true);
   const [selectedRegist, setSelectedRegist] = useState<Regist | null>(null);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+  const [isSuccess, setIsSuccess] = useState<boolean | null>();
+  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState<boolean>(false);
   const { register, handleSubmit, reset } = useForm<Regist>();
 
   useEffect(() => {
@@ -74,7 +77,6 @@ export default function TablePatients() {
   const fetchData = () => {
     getPatients().then((data) => {
       setRegist(Array.isArray(data) ? data : data.data || []);
-      // setLoading(false);
     });
   };
 
@@ -87,7 +89,7 @@ export default function TablePatients() {
   const handleEditClick = (regist: Regist) => {
     setSelectedRegist(regist);
     reset(regist);
-    setModalOpen(true);
+    setIsModalEditOpen(true);
   };
 
   const handleEditSubmit = (updatedData: Regist) => {
@@ -95,13 +97,13 @@ export default function TablePatients() {
       updateRegist(selectedRegist.id, updatedData).then(() => {
         // Re-fetch data from the server after a successful update
         fetchData();
-        setModalOpen(false);
+        setIsModalEditOpen(false);
       });
     }
   };
 
   const handleCloseModal = () => {
-    setModalOpen(false);
+    setIsModalEditOpen(false);
     setSelectedRegist(null);
   };
 
@@ -114,14 +116,6 @@ export default function TablePatients() {
     "Status Rawat",
     "Aksi",
   ];
-
-  // if (loading) {
-  //   return (
-  //     <div className="flex justify-start items-center animate-pulse">
-  //       Loading...
-  //     </div>
-  //   );
-  // }
 
   if (!Array.isArray(regist)) {
     return (
@@ -170,7 +164,7 @@ export default function TablePatients() {
       </Table>
 
       {/* Modal */}
-      {isModalOpen && selectedRegist && (
+      {isModalEditOpen && selectedRegist && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg w-1/3">
             <h2 className="text-xl font-bold mb-4">Edit Registration</h2>

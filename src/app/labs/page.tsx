@@ -179,7 +179,12 @@ export default function Labs() {
       <div className="w-11/12 my-10 flex flex-row mx-auto ">
         <li className="text-start font-semibold mb-10">DatePicker</li>
         <div className="flex flex-row justify-center items-center gap-8">
-          <DatePicker title="Tanggal Pertama Daftar" name="" />
+          <DatePicker
+            title="Tanggal Pertama Daftar"
+            name=""
+            value={null}
+            onDateChange={() => {}}
+          />
         </div>
       </div>
 

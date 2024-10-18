@@ -4,17 +4,12 @@ import axios from "axios";
 import clsx from "clsx";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import Button from "../button";
+import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
 
-interface Regis {
-  id: number;
-  polyclinic_id: number;
-  doctor_id: number;
-}
-
-interface Recipe {
+interface Patient {
   id: number;
   name: string;
-  registration: Regis[];
 }
 
 interface Doctor {
@@ -36,6 +31,17 @@ interface Payment {
   validation: number;
 }
 
+interface Registration {
+  id: number;
+  patient_id: number;
+  polyclinic_id: number;
+  doctor_id: number;
+  registration_date: string;
+  polyclinic: Polyclinic;
+  patient: Patient;
+  doctor: Doctor;
+}
+
 export default function TableRecipes() {
   const tableHeaders = [
     "No Reg",
@@ -46,55 +52,24 @@ export default function TableRecipes() {
     "Status Validasi",
   ];
 
-  const [patients, setPatients] = useState<Recipe[]>([]);
-  const [polyclinics, setPolyclinics] = useState<Polyclinic[]>([]);
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/patients"
+          "https://api-simrs.serpihantech.com/api/registrations"
         );
-        setPatients(response.data);
-        // console.log("Response Patients: ", response.data);
+        setRegistrations(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchPolyclinics = async () => {
-      try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/polyclinics`
-        );
-        setPolyclinics(response.data);
-        // console.log("Response Polyclinics:", response.data);
-      } catch (error) {
-        console.error("Failed to fetch patient details:", error);
-      }
-    };
-    fetchPolyclinics();
-  }, []);
-
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/doctors`
-        );
-        setDoctors(response.data);
-        // console.log("Response Doctors:", response.data);
-      } catch (error) {
-        console.error("Failed to fetch patient details:", error);
-      }
-    };
-    fetchDoctors();
   }, []);
 
   useEffect(() => {
@@ -104,7 +79,6 @@ export default function TableRecipes() {
           `https://api-simrs.serpihantech.com/api/payments`
         );
         setPayments(response.data);
-        // console.log("Response Payments :", response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
@@ -112,71 +86,53 @@ export default function TableRecipes() {
     fetchPayments();
   }, []);
 
+  // Calculate the start and end indices for pagination
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedRecipes = registrations.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(registrations.length / itemsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
-    <Table tableHead={tableHeaders}>
-      {patients.map((recipe: Recipe, index: number) => {
-        return (
-          <tr
-            key={index}
-            className={clsx("bg-basic-white cursor-pointer", {
-              "bg-brand-10 bg-opacity-15": index % 2 != 0,
-            })}
-            onClick={() => {
-              router.push(`recipe/${recipe.id}`);
-            }}
-          >
-            <td className="px-4 py-4 text-center">{recipe.id}</td>
-            <td className="px-4 py-4 text-center">{recipe.name}</td>
-            <td className="px-4 py-4 text-center">
-              {recipe.registration.length > 0
-                ? recipe.registration[recipe.registration.length - 1].id
-                : "-"}
-            </td>
-
-            {recipe.registration.length > 0 ? (
-              polyclinics.map((polyclinic: Polyclinic, index: number) => {
-                if (
-                  recipe.registration[recipe.registration.length - 1]
-                    .polyclinic_id == polyclinic.id
-                ) {
-                  return (
-                    <td key={index} className="px-4 py-4 text-center">
-                      {polyclinic.name}
-                    </td>
-                  );
-                }
-              })
-            ) : (
-              <td key={index} className="px-4 py-4 text-center">
-                -
+    <div>
+      <Table tableHead={tableHeaders}>
+        {registrations.map((registration: Registration, index: number) => {
+          return (
+            <tr
+              key={index}
+              className={clsx("bg-basic-white cursor-pointer", {
+                "bg-brand-10 bg-opacity-15": index % 2 != 0,
+              })}
+              onClick={() => {
+                router.push(`recipe/${registration.id}`);
+              }}
+            >
+              <td className="px-4 py-4 text-center">{registration.id}</td>
+              <td className="px-4 py-4 text-center">
+                {registration.patient.name}
               </td>
-            )}
-
-            {recipe.registration.length > 0 ? (
-              doctors.map((doctor: Doctor, index: number) => {
-                if (
-                  recipe.registration[recipe.registration.length - 1]
-                    .doctor_id == doctor.id
-                ) {
-                  return (
-                    <td key={index} className="px-4 py-4 text-center">
-                      {doctor.name}
-                    </td>
-                  );
-                }
-              })
-            ) : (
-              <td key={index} className="px-4 py-4 text-center">
-                -
+              <td className="px-4 py-4 text-center">
+                {registration.patient.id}
               </td>
-            )}
-
-            {recipe.registration.length > 0 ? (
-              payments.map((payment: Payment, index: number) => {
-                if (
-                  recipe.registration[recipe.registration.length - 1].id ==
-                  payment.registration_id
-                ) {
+              <td className="px-4 py-4 text-center">
+                {registration.polyclinic.name}
+              </td>
+              <td className="px-4 py-4 text-center">
+                {registration.doctor.name}
+              </td>
+              {payments.map((payment: Payment, index: number) => {
+                if (registration.id === payment.registration_id) {
                   return (
                     <td
                       key={index}
@@ -191,15 +147,31 @@ export default function TableRecipes() {
                     </td>
                   );
                 }
-              })
-            ) : (
-              <td key={index} className="px-4 py-4 text-center">
-                -
-              </td>
-            )}
-          </tr>
-        );
-      })}
-    </Table>
+              })}
+            </tr>
+          );
+        })}
+      </Table>
+
+      <div className="pagination-controls flex justify-center items-center gap-2 mt-4">
+        <Button
+          label=""
+          variant={currentPage === 1 ? "disable" : "primary"}
+          size="very-small"
+          rightIcon={<ArrowLeft2 size="24" />}
+          onClick={handlePrevPage}
+        />
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button
+          label=""
+          variant={currentPage === totalPages ? "disable" : "primary"}
+          size="very-small"
+          rightIcon={<ArrowRight2 size="24" />}
+          onClick={handleNextPage}
+        />
+      </div>
+    </div>
   );
 }

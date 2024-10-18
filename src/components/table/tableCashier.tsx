@@ -3,18 +3,13 @@ import Table from "@/components/table";
 import axios from "axios";
 import clsx from "clsx";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
+import Button from "../button";
+import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
 
-interface Regis {
-  id: number;
-  polyclinic_id: number;
-  doctor_id: number;
-}
-
-interface Cashier {
+interface Patient {
   id: number;
   name: string;
-  registration: Regis[];
 }
 
 interface Doctor {
@@ -33,7 +28,13 @@ interface Polyclinic {
 interface Registration {
   id: number;
   patient_id: number;
+  polyclinic_id: number;
+  doctor_id: number;
+  registration_date: string;
   already_paid: string;
+  polyclinic: Polyclinic;
+  patient: Patient;
+  doctor: Doctor;
 }
 
 interface Payment {
@@ -53,54 +54,25 @@ export default function TableRecipes() {
     "Status Bayar",
   ];
 
-  const [cashiers, setCashiers] = useState<Cashier[]>([]);
-  const [polyclinics, setPolyclinic] = useState<Polyclinic[]>([]);
-  const [doctors, setDoctor] = useState<Doctor[]>([]);
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [payments, setPayment] = useState<Payment[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const router = useRouter();
+  const params = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/patients"
+          "https://api-simrs.serpihantech.com/api/registrations"
         );
-        setCashiers(response.data);
+        setRegistrations(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
-
-  // console.log("Cashiers", cashiers);
-
-  useEffect(() => {
-    const fetchPolyclinics = async () => {
-      try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/polyclinics`
-        );
-        setPolyclinic(response.data);
-      } catch (error) {
-        console.error("Failed to fetch patient details:", error);
-      }
-    };
-    fetchPolyclinics();
-  }, []);
-
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/doctors`
-        );
-        setDoctor(response.data);
-      } catch (error) {
-        console.error("Failed to fetch patient details:", error);
-      }
-    };
-    fetchDoctors();
   }, []);
 
   useEffect(() => {
@@ -115,94 +87,93 @@ export default function TableRecipes() {
       }
     };
     fetchPayments();
-  }, []);
+  }, [params]);
 
-  // console.log("Payments :", payments);
+  // Calculate the start and end indices for pagination
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedRecipes = registrations.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(registrations.length / itemsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
-    <Table tableHead={tableHeaders}>
-      {cashiers.map((cashier: Cashier, index: number) => (
-        <tr
-          key={index}
-          className={clsx("bg-basic-white cursor-pointer", {
-            "bg-brand-10 bg-opacity-15": index % 2 != 0,
-          })}
-          onClick={() => {
-            router.push(`cashier/${cashier.id}`);
-          }}
-        >
-          <td className="px-4 py-4 text-center">{cashier.id}</td>
-          <td className="px-4 py-4 text-center">{cashier.name}</td>
-          <td className="px-4 py-4 text-center">
-            {cashier.registration.length > 0
-              ? cashier.registration[cashier.registration.length - 1].id
-              : "-"}
-          </td>
-
-          {cashier.registration.length > 0 ? (
-            polyclinics.map((polyclinic: Polyclinic, index: number) => {
-              if (
-                cashier.registration[cashier.registration.length - 1]
-                  .polyclinic_id == polyclinic.id
-              ) {
-                return (
-                  <td key={index} className="px-4 py-4 text-center">
-                    {polyclinic.name}
-                  </td>
-                );
-              }
-            })
-          ) : (
-            <td key={index} className="px-4 py-4 text-center">
-              -
+    <div>
+      <Table tableHead={tableHeaders}>
+        {registrations.map((registration: Registration, index: number) => (
+          <tr
+            key={index}
+            className={clsx("bg-basic-white cursor-pointer", {
+              "bg-brand-10 bg-opacity-15": index % 2 != 0,
+            })}
+            onClick={() => {
+              router.push(`cashier/${registration.id}`);
+            }}
+          >
+            <td className="px-4 py-4 text-center">{registration.id}</td>
+            <td className="px-4 py-4 text-center">
+              {registration.patient.name}
             </td>
-          )}
-
-          {cashier.registration.length > 0 ? (
-            doctors.map((doctor: Doctor, index: number) => {
-              if (
-                cashier.registration[cashier.registration.length - 1]
-                  .doctor_id == doctor.id
-              ) {
-                return (
-                  <td key={index} className="px-4 py-4 text-center">
-                    {doctor.name}
-                  </td>
-                );
-              }
-            })
-          ) : (
-            <td key={index} className="px-4 py-4 text-center">
-              -
+            <td className="px-4 py-4 text-center">{registration.patient.id}</td>
+            <td className="px-4 py-4 text-center">
+              {registration.polyclinic.name}
             </td>
-          )}
+            <td className="px-4 py-4 text-center">
+              {registration.doctor.name}
+            </td>
 
-          {cashier.registration.length > 0 ? (
-            payments.map((payment: Payment, index: number) => {
-              if (cashier.registration[0].id == payment.registration_id) {
+            {payments.map((payment: Payment, index: number) => {
+              if (registration.id === payment.registration_id) {
                 return (
                   <td
                     key={index}
                     className={clsx("px-4 py-4 text-center text-body-bold", {
                       "text-alert-success":
-                        payment.registration.already_paid === "yes",
-                      "text-alert-warning": !payment.registration.already_paid,
+                        payment.registration.already_paid == "yes",
+                      "text-alert-warning":
+                        payment.registration.already_paid == null,
                     })}
                   >
-                    {payment.registration.already_paid === "yes"
+                    {payment.registration.already_paid == "yes"
                       ? "Sudah Bayar"
                       : "Belum Bayar"}
                   </td>
                 );
               }
-            })
-          ) : (
-            <td key={index} className="px-4 py-4 text-center">
-              -
-            </td>
-          )}
-        </tr>
-      ))}
-    </Table>
+            })}
+          </tr>
+        ))}
+      </Table>
+
+      <div className="pagination-controls flex justify-center items-center gap-2 mt-4">
+        <Button
+          label=""
+          variant={currentPage === 1 ? "disable" : "primary"}
+          size="very-small"
+          rightIcon={<ArrowLeft2 size="24" />}
+          onClick={handlePrevPage}
+        />
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button
+          label=""
+          variant={currentPage === totalPages ? "disable" : "primary"}
+          size="very-small"
+          rightIcon={<ArrowRight2 size="24" />}
+          onClick={handleNextPage}
+        />
+      </div>
+    </div>
   );
 }

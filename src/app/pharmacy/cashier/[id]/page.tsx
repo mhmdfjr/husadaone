@@ -9,17 +9,41 @@ import axios from "axios";
 import TableMedicineBill from "@/components/table/tableMedicineBill";
 import TableServiceBill from "@/components/table/tableServiceBill";
 
-interface PatientRegistration {
+interface Patient {
   id: number;
+  name: string;
+}
+
+interface Doctor {
+  id: number;
+  polyclinic_id: number;
+  name: string;
+  specialist: string;
+}
+
+interface Polyclinic {
+  id: number;
+  name: string;
+}
+
+interface Registration {
+  id: number;
+  patient_id: number;
   polyclinic_id: number;
   doctor_id: number;
   registration_date: string;
+  already_paid: string;
+  polyclinic: Polyclinic;
+  doctor: Doctor;
+  patient: Patient;
 }
 
-interface PatientDetails {
+interface Pivot {
+  payment_id: number;
+  medicine_id: number;
+  amount: number;
+  usage_rules: string;
   id: number;
-  name: string;
-  registration: PatientRegistration[];
 }
 
 interface Medicine {
@@ -32,12 +56,6 @@ interface Medicine {
   id: number;
 }
 
-interface Registration {
-  id: number;
-  patient_id: number;
-  already_paid: string;
-}
-
 interface Payment {
   id: number;
   registration_id: number;
@@ -45,24 +63,54 @@ interface Payment {
   registration: Registration;
 }
 
+interface MedicineTable {
+  id: number;
+  name: string;
+  category: string;
+  unit: string;
+  purchase_price: string;
+  unit_price: string;
+  stock: number;
+  production_year: string;
+  validity_period: string;
+  pivot: Pivot;
+}
+
 export default function CashierDetails() {
-  const [registration, setRegistration] = useState("");
-  const [medic, setMedic] = useState("");
-  const [name, setName] = useState("");
   const [pay, setPay] = useState<number>(0);
   const [cashback, setCashback] = useState<number>(0);
   const [status, setStatus] = useState<string>("");
-  const [payments, setPayments] = useState<Payment[]>([]);
 
   const router = useRouter();
   const params = useParams();
 
-  const patientData: PatientDetails = {
+  const patientData: Patient = {
     id: 0,
     name: "",
-    registration: [
-      { id: 0, polyclinic_id: 0, doctor_id: 0, registration_date: "" },
-    ],
+  };
+
+  const doctorData: Doctor = {
+    id: 0,
+    polyclinic_id: 0,
+    name: "",
+    specialist: "",
+  };
+
+  const polyclinicData: Polyclinic = {
+    id: 0,
+    name: "",
+  };
+
+  const registrationData: Registration = {
+    id: 0,
+    patient_id: 0,
+    polyclinic_id: 0,
+    doctor_id: 0,
+    registration_date: "",
+    already_paid: "",
+    polyclinic: polyclinicData,
+    patient: patientData,
+    doctor: doctorData,
   };
 
   const medicineData: Medicine = {
@@ -75,25 +123,31 @@ export default function CashierDetails() {
     id: 0,
   };
 
-  const [patient, setPatient] = useState<PatientDetails>(patientData);
+  const [registration, setRegistration] =
+    useState<Registration>(registrationData);
+
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
+  };
 
   useEffect(() => {
-    const fetchPatientDetails = async (id: number) => {
+    const fetchRegistration = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/patients/${id}`
+          `https://api-simrs.serpihantech.com/api/registrations/${id}`
         );
-        setPatient(response.data);
-        console.log("Patient:", response.data);
+        setRegistration(response.data.registration);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
     };
 
     if (params && params.id) {
-      const patientId = Number(params.id);
-      if (!isNaN(patientId)) {
-        fetchPatientDetails(patientId);
+      const registrationId = Number(params.id);
+      if (!isNaN(registrationId)) {
+        fetchRegistration(registrationId);
       } else {
         console.error("Invalid medicine ID:", params.id);
         router.push("/error");
@@ -101,23 +155,9 @@ export default function CashierDetails() {
     }
   }, [params]);
 
-  useEffect(() => {
-    const fetchPayments = async () => {
-      try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/payments`
-        );
-        setPayments(response.data);
-        console.log("Payments", response.data);
-      } catch (error) {
-        console.error("Failed to fetch patient details:", error);
-      }
-    };
-    fetchPayments();
-  }, []);
-
   const [totalPriceMedicine, setTotalPriceMedicine] = useState<number>(0);
   const [doctorCost, setDoctorCost] = useState<number>(0);
+  const [medicinesTable, setMedicinesTable] = useState<MedicineTable[]>([]);
 
   const handleTotalPriceChange = (totalPrice: number) => {
     setTotalPriceMedicine(totalPrice);
@@ -127,21 +167,88 @@ export default function CashierDetails() {
     setDoctorCost(cost);
   };
 
+  const handleMedicinesChange = (medicines: MedicineTable[]) => {
+    setMedicinesTable(medicines);
+  };
+
   const totalBills: number = totalPriceMedicine + doctorCost;
 
   useEffect(() => {
     {
-      patient.registration.length > 0
-        ? payments.map((payment: Payment, index: number) => {
-            if (patient.registration[0].id == payment.registration_id) {
-              payment.registration.already_paid === "yes"
-                ? setStatus("Sudah Bayar")
-                : setStatus("Belum Bayar");
-            }
-          })
-        : "";
+      registration.already_paid === "yes"
+        ? setStatus("Sudah Bayar")
+        : setStatus("Belum Bayar");
     }
-  }, [payments]);
+  }, [registration]);
+
+  const handleSave = async (
+    medicinesTable: MedicineTable[],
+    registrationData: Registration
+  ) => {
+    try {
+      const response = axios.put(
+        `https://api-simrs.serpihantech.com/api/registrations/${registrationData.id}`,
+        {
+          patient_id: registrationData.patient_id,
+          polyclinic_id: registrationData.polyclinic_id,
+          doctor_id: registrationData.doctor_id,
+          registration_date: registrationData.registration_date,
+          already_paid: status === "Sudah Bayar" ? "yes" : null,
+        },
+        {
+          params: {
+            patient_id: registrationData.patient_id,
+            polyclinic_id: registrationData.polyclinic_id,
+            doctor_id: registrationData.doctor_id,
+            registration_date: registrationData.registration_date,
+            already_paid: status === "Sudah Bayar" ? "yes" : null,
+          },
+        }
+      );
+      router.push("/pharmacy/cashier");
+    } catch (error) {
+      console.error("Failed to post medicine details:", error);
+    }
+
+    medicinesTable.map((medicineTable: MedicineTable, index: number) => {
+      try {
+        const response = axios.put(
+          `https://api-simrs.serpihantech.com/api/medicines/${medicineTable.id}`,
+          {
+            name: medicineTable.name,
+            category: medicineTable.category,
+            unit: medicineTable.unit,
+            purchase_price: medicineTable.purchase_price,
+            unit_price: medicineTable.unit_price,
+            stock:
+              status === "Sudah Bayar"
+                ? medicineTable.stock - medicineTable.pivot.amount
+                : medicineTable.stock,
+            production_year: medicineTable.production_year,
+            validity_period: medicineTable.validity_period,
+          },
+          {
+            params: {
+              name: medicineTable.name,
+              category: medicineTable.category,
+              unit: medicineTable.unit,
+              purchase_price: medicineTable.purchase_price,
+              unit_price: medicineTable.unit_price,
+              stock:
+                status === "Sudah Bayar"
+                  ? medicineTable.stock - medicineTable.pivot.amount
+                  : medicineTable.stock,
+              production_year: medicineTable.production_year,
+              validity_period: medicineTable.validity_period,
+            },
+          }
+        );
+        router.push("/pharmacy/cashier");
+      } catch (error) {
+        console.error("Failed to post medicine details:", error);
+      }
+    });
+  };
 
   const handleCLick = () => {};
 
@@ -165,42 +272,39 @@ export default function CashierDetails() {
               <Input
                 label="No Reg"
                 type="text"
-                onChange={(e) => setRegistration(e.target.value)}
-                placeholder={patient ? patient.id.toString() : "000"}
+                onChange={() => {}}
+                placeholder={registration ? registration.id.toString() : ""}
                 name=""
-                value={patient ? patient.id.toString() : ""}
+                value={registration ? registration.id.toString() : ""}
               />
             </div>
             <div className="basis-1/4">
               <Input
                 label="No RM"
                 type="text"
-                onChange={(e) => setMedic(e.target.value)}
+                onChange={() => {}}
                 placeholder={
-                  patient.registration.length > 0
-                    ? patient.registration[
-                        patient.registration.length - 1
-                      ].id.toString()
-                    : "00000"
+                  registration ? registration.patient.id.toString() : ""
                 }
                 name=""
                 value={
-                  patient.registration.length > 0
-                    ? patient.registration[
-                        patient.registration.length - 1
-                      ].id.toString()
-                    : ""
+                  registration ? registration.patient.id.toString() : "000"
                 }
               />
             </div>
-            <DatePicker title="Tanggal Penanganan" name="" />
+            <DatePicker
+              title="Tanggal Penanganan"
+              name=""
+              value={registration ? registration.registration_date : null}
+              onDateChange={handleDateChange}
+            />
             <Input
               label="Nama Pasien"
               type="text"
-              onChange={(e) => setName(e.target.value)}
-              placeholder={patient ? patient.name : "Nama Pasien"}
+              onChange={() => {}}
+              placeholder={registration ? registration.patient.name : ""}
               name=""
-              value={patient ? patient.name : ""}
+              value={registration ? registration.patient.name : ""}
             />
           </div>
         </div>
@@ -212,7 +316,7 @@ export default function CashierDetails() {
             Tagihan Jasa Pemeriksaan
           </p>
           <TableServiceBill
-            dataPatient={patient}
+            registrationId={registration.id}
             onDoctorCostChange={handleDoctorCostChange}
           />
           <div className="w-full flex justify-end items-center gap-4">
@@ -228,8 +332,9 @@ export default function CashierDetails() {
         <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
           <p className="text-h8-bold text-basic-black">Tagihan Obat</p>
           <TableMedicineBill
-            dataPatient={patient}
+            registrationId={registration.id}
             onTotalPriceChange={handleTotalPriceChange}
+            onMedicinesChange={handleMedicinesChange}
           />
           <div className="w-full flex justify-end items-center gap-4">
             <p className="text-h8-bold text-basic-black">Subtotal : </p>
@@ -259,7 +364,7 @@ export default function CashierDetails() {
                 label="Nominal Bayar"
                 type="number"
                 onChange={(e) => setPay(Number(e.target.value))}
-                placeholder="0000"
+                placeholder=""
                 name=""
                 value={pay.toString()}
               />
@@ -267,7 +372,7 @@ export default function CashierDetails() {
                 label="Kembali"
                 type="number"
                 onChange={() => {}}
-                placeholder="0000"
+                placeholder=""
                 name=""
                 value={pay === 0 ? "000" : (pay - totalBills).toString()}
               />
@@ -277,7 +382,7 @@ export default function CashierDetails() {
                 label="Jenis Pembayaran"
                 type="select"
                 onChange={(e) => {}}
-                placeholder="Pilih Pembayaran"
+                placeholder="Pilih"
                 name=""
                 value="Tunai"
                 options={["Tunai", "Non Tunai"]}
@@ -286,7 +391,7 @@ export default function CashierDetails() {
                 label="Status Pembayaran"
                 type="select"
                 onChange={(e) => setStatus(e.target.value)}
-                placeholder="Status"
+                placeholder=""
                 name=""
                 value={status}
                 options={["Sudah Bayar", "Belum Bayar"]}
@@ -310,7 +415,7 @@ export default function CashierDetails() {
               label="Simpan"
               variant="primary"
               size="small"
-              onClick={() => {}}
+              onClick={() => handleSave(medicinesTable, registration)}
             />
           </div>
         </div>

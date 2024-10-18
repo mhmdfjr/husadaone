@@ -26,7 +26,6 @@ export default function Calender() {
 
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
-    console.log("Selected Date: ", date);
   };
 
   const renderDays = () => {
@@ -69,8 +68,8 @@ export default function Calender() {
   };
 
   return (
-    <div className="w-full p-4 bg-basic-white  z-50">
-      <div className="flex justify-between items-center mb-4">
+    <div className="w-full p-4 bg-basic-white z-50 flex flex-col gap-4">
+      <div className="flex justify-between items-center ">
         <button className="text-xl text-gray-700" onClick={handlePrevMonth}>
           &laquo;
         </button>
@@ -81,10 +80,8 @@ export default function Calender() {
           &raquo;
         </button>
       </div>
-      <div className="grid grid-cols-7 text-center mt-10 mb-2">
-        {renderDays()}
-      </div>
-      <div className="grid grid-cols-7 gap-1 text-center">{renderDates()}</div>
+      <div className="grid grid-cols-7 text-center ">{renderDays()}</div>
+      <div className="grid grid-cols-7 gap-2 text-center">{renderDates()}</div>
     </div>
   );
 }

@@ -5,22 +5,10 @@ import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import clsx from "clsx";
 
-interface PatientRegistration {
-  id: number;
-  polyclinic_id: number;
-  doctor_id: number;
-  registration_date: string;
-}
-
-interface PatientDetails {
-  id: number;
-  name: string;
-  registration: PatientRegistration[];
-}
-
 interface TableMedicineBillProps {
-  dataPatient: PatientDetails;
+  registrationId: number;
   onTotalPriceChange: (totalPrice: number) => void;
+  onMedicinesChange: (medicines: Medicine[]) => void;
 }
 
 interface Pivot {
@@ -34,8 +22,13 @@ interface Pivot {
 interface Medicine {
   id: number;
   name: string;
-  stock: number;
+  category: string;
+  unit: string;
+  purchase_price: string;
   unit_price: string;
+  stock: number;
+  production_year: string;
+  validity_period: string;
   pivot: Pivot;
 }
 
@@ -47,8 +40,9 @@ interface Payment {
 }
 
 const TableMedicineBill: React.FC<TableMedicineBillProps> = ({
-  dataPatient,
+  registrationId,
   onTotalPriceChange,
+  onMedicinesChange,
 }) => {
   const router = useRouter();
   const params = useParams();
@@ -73,8 +67,13 @@ const TableMedicineBill: React.FC<TableMedicineBillProps> = ({
     {
       id: 0,
       name: "",
-      stock: 0,
+      category: "",
+      unit: "",
+      purchase_price: "",
       unit_price: "",
+      stock: 0,
+      production_year: "",
+      validity_period: "",
       pivot: pivotData,
     },
   ];
@@ -92,31 +91,31 @@ const TableMedicineBill: React.FC<TableMedicineBillProps> = ({
   const [medicines, setMedicines] = useState<Medicine[]>(medicineData);
 
   useEffect(() => {
-    const fetchPayments = async () => {
+    const fetchRegistration = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/payments`
+          `https://api-simrs.serpihantech.com/api/registrations/${id}`
         );
-        setPayments(response.data);
+        setMedicines(response.data.keranjang[0].medicines);
       } catch (error) {
-        console.error("Failed to fetch payments:", error);
+        console.error("Failed to fetch patient details:", error);
       }
     };
-    fetchPayments();
+
+    if (params && params.id) {
+      const registrationId = Number(params.id);
+      if (!isNaN(registrationId)) {
+        fetchRegistration(registrationId);
+      } else {
+        console.error("Invalid medicine ID:", params.id);
+        router.push("/error");
+      }
+    }
   }, [params]);
 
   useEffect(() => {
-    if (dataPatient && dataPatient.id && payments.length > 0) {
-      const matchingPayments = payments.filter(
-        (payment: Payment) => payment.registration_id === dataPatient.id
-      );
-      if (matchingPayments.length > 0) {
-        if (matchingPayments) {
-          setMedicines(matchingPayments[0].medicines);
-        }
-      }
-    }
-  }, [payments]);
+    onMedicinesChange(medicines);
+  }, [medicines, onMedicinesChange]);
 
   let totalPriceMedicine: number = 0;
   const countPriceMedicine = (unit_price: string, amount: number) => {
@@ -134,10 +133,6 @@ const TableMedicineBill: React.FC<TableMedicineBillProps> = ({
       );
     });
     onTotalPriceChange(newTotalPrice);
-  }, [medicines]);
-
-  useEffect(() => {
-    // console.log("Updated Medicines:", medicines);
   }, [medicines]);
 
   return (

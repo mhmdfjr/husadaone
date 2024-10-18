@@ -14,11 +14,11 @@ const Main = () => {
   const router = useRouter();
 
   const handleLogin = () => {
-    if (username === "Admin" && password === "admin123") {
+    if (username === "admin" && password === "admin") {
       toast.success("Berhasil login");
       setTimeout(() => {
-        router.push("/dashboard"); 
-      }, 1000);
+        router.push("/dashboard");
+      }, 500);
     } else {
       toast.error("Username atau kata sandi salah");
     }
@@ -35,45 +35,59 @@ const Main = () => {
           className="rounded-l-lg"
           alt="login"
         />
-        <div className="flex flex-col w-[600px] items-start pl-24 text-start justify-center bg-brand-10 bg-opacity-15">
-          <div className="mb-8">
+        <div className="flex flex-col gap-y-10 w-full items-start px-24 text-start justify-center bg-brand-10 bg-opacity-15">
+          <div className="flex flex-col gap-2">
             <p className="text-h6 text-start">
               Selamat datang di{" "}
               <span className="text-brand-base text-h6-bold">SIMRS</span>
             </p>
-            <p className="text-body-regular text-start">
+            <p className="text-body-regular text-gray-medium text-start">
               Isi data di bawah ini dengan benar.
             </p>
           </div>
           <form
             onSubmit={(e) => {
-              e.preventDefault(); // Prevent default form submission
+              e.preventDefault();
               handleLogin();
             }}
-            className="w-full pr-24"
+            className="w-full flex flex-col gap-y-10"
           >
-            <Input
-              type="text"
-              label="Nama Pengguna"
-              name="username"
-              value={username}
-              placeholder="Masukan nama pengguna Anda"
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <Input
-              type="password"
-              label="Kata Sandi"
-              name="password"
-              value={password}
-              placeholder="Masukan kata sandi Anda"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <div className="flex justify-center gap-x-5 mt-8">
+            <div className="flex flex-col justify-center items-center gap-y-4">
+              <Input
+                type="text"
+                label="Nama Pengguna"
+                name="username"
+                value={username}
+                placeholder="Masukan nama pengguna Anda"
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              <Input
+                type="password"
+                label="Kata Sandi"
+                name="password"
+                value={password}
+                placeholder="Masukan kata sandi Anda"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col justify-center items-center gap-y-4">
               <Button
                 variant={"primary"}
                 label={"Masuk"}
                 size={"full"}
-                onClick={() => handleLogin()} // Ensure login logic is called
+                onClick={() => handleLogin()}
+              />
+              <Button
+                variant={"secondary"}
+                label={"Masuk Sistem Antrian"}
+                size={"full"}
+                onClick={() => router.push("/guest")}
+              />
+              <Button
+                variant={"secondary"}
+                label={"Buat Tiket Antrian"}
+                size={"full"}
+                onClick={() => router.push("/add")}
               />
             </div>
           </form>

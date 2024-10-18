@@ -4,33 +4,98 @@ import Input from "@/components/input";
 import TableRegist from "@/components/table/tableRegist";
 import { Add } from "iconsax-react";
 import React, { useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import DatePicker from "@/components/date-picker";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+
+interface Data {
+  name: string;
+  age: number;
+  address: string;
+}
 
 const Registry = () => {
-  const [noreg, setNoreg] = useState("");
-  const [tanggalReg, setTanggalReg] = useState("");
+  const router = useRouter();
+  const [regis, setRegis] = useState("");
   const [nama, setNama] = useState("");
   const [noRM, setNoRM] = useState("");
   const [poli, setPoli] = useState("");
   const [doctor, setDoctor] = useState("");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  const [state, setState] = useState<Data>({
+    name: "John Doe",
+    age: 30,
+    address: "1234 Example St, City, Country",
+  });
+
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await axios.post(
+        "https://api-simrs.serpihantech.com/api/registrations",
+        {
+          patient_id: nama,
+          polyclinic_id: poli,
+          doctor_id: doctor,
+          registration_date: selectedDate,
+        },
+        {
+          params: {
+            patient_id: nama,
+            polyclinic_id: poli,
+            doctor_id: doctor,
+            registration_date: selectedDate,
+          },
+        }
+      );
+      router.push("/registry");
+    } catch (error) {
+      console.error("Failed to post medicine details:", error);
+    }
+  };
+
+  const handlePrint = () => {
+    const doc = new jsPDF();
+    doc.text("Rumah Sakit Harapan Sehat", 10, 10);
+    doc.text("Regitrasi Pasien", 10, 20);
+    const tableData = [
+      ["Name", state.name],
+      ["Age", state.age.toString()],
+      ["Address", state.address],
+    ];
+
+    autoTable(doc, {
+      startY: 30,
+      head: [["Field", "Value"]],
+      body: tableData,
+    });
+
+    doc.save("state-object-table.pdf");
+  };
 
   return (
     <div className="mx-4 flex flex-col justify-start items-center gap-4 ">
-      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
+      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible ">
         <div className="flex justify-start items-center gap-x-20">
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
             <Input
-              label="No. Registrasi"
-              name="noreg"
+              label="No Registrasi"
+              name="regis"
               type="text"
-              value={noreg}
-              onChange={(e) => setNoreg(e.target.value)}
+              value={regis}
+              onChange={(e) => setRegis(e.target.value)}
             />
-            <Input
-              label="Tanggal Registrasi"
-              name="tanggalReg"
-              type="text"
-              value={tanggalReg}
-              onChange={(e) => setTanggalReg(e.target.value)}
+            <DatePicker
+              title="Tanggal Registrasi"
+              name=""
+              value={null}
+              onDateChange={handleDateChange}
             />
             <Input
               label="Nama"
@@ -43,7 +108,7 @@ const Registry = () => {
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
             <div className="flex gap-x-5 w-full items-end">
               <Input
-                label="No. Rekam Medis"
+                label="No Rekam Medis"
                 name="noRM"
                 type="text"
                 value={noRM}
@@ -51,7 +116,7 @@ const Registry = () => {
               />
               <Button
                 label={<Add size="32" color="#2F7BFE" />}
-                onClick={() => {}}
+                onClick={() => router.push("/registry/medic")}
                 size="very-small"
                 variant="secondary"
               />
@@ -92,20 +157,20 @@ const Registry = () => {
           <Button
             label="Batal"
             variant="secondary"
-            size="big"
+            size="small"
             onClick={() => {}}
           />
           <Button
-            label="Cetak Kartu"
+            label="Cetak"
             variant="secondary"
-            size="big"
-            onClick={() => {}}
+            size="small"
+            onClick={() => handlePrint()}
           />
           <Button
             label="Simpan"
             variant="primary"
-            size="big"
-            onClick={() => {}}
+            size="small"
+            onClick={() => handleSave()}
           />
         </div>
       </div>

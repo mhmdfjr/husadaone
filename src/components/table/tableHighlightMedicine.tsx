@@ -30,7 +30,6 @@ export default function TableHighlightMedicine() {
           "https://api-simrs.serpihantech.com/api/medicines"
         );
         setData(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error(error);
       }

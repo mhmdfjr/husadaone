@@ -27,8 +27,8 @@ interface DoctorDetails {
 }
 
 export default function InputDoctor() {
-  const [id, setId] = useState<number>(0);
   const [polyId, setPolyId] = useState<number>(0);
+  const [polyName, setPolyName] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [specialist, setSpecialist] = useState<string>("");
   const [gender, setGender] = useState<string>("");
@@ -61,7 +61,14 @@ export default function InputDoctor() {
     polyclinic: polyclinicData,
   };
   const [doctor, setDoctor] = useState<DoctorDetails>(doctorData);
-  const [polyclinic, setPolyclinic] = useState<Polyclinic>(polyclinicData);
+  const [polyclinics, setPolyclinics] = useState<Polyclinic[]>([]);
+  const [polyNames, setPolyNames] = useState<string[]>([]);
+
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
+  };
 
   useEffect(() => {
     const fetchDoctorDetails = async (id: number) => {
@@ -70,7 +77,6 @@ export default function InputDoctor() {
           `https://api-simrs.serpihantech.com/api/doctors/${id}`
         );
         setDoctor(response.data);
-        setPolyclinic(response.data.polyclinic);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
@@ -88,8 +94,23 @@ export default function InputDoctor() {
   }, [inputId]);
 
   useEffect(() => {
-    // console.log("Updated Patient:", medicine.id);
-  }, [doctor]);
+    const fetchData = async () => {
+      try {
+        const { data: response } = await axios.get(
+          "https://api-simrs.serpihantech.com/api/polyclinics"
+        );
+        setPolyclinics(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const names = polyclinics.map((polyclinic: Polyclinic) => polyclinic.name);
+    setPolyNames(names);
+  }, [polyclinics]);
 
   const handleSave = async () => {
     try {
@@ -101,7 +122,7 @@ export default function InputDoctor() {
           specialist: specialist,
           gender: gender,
           place_of_birth: place,
-          date_of_birth: "2003-04-13",
+          date_of_birth: selectedDate,
           phone_number: phone,
           address: address,
           cost: cost,
@@ -113,14 +134,13 @@ export default function InputDoctor() {
             specialist: specialist,
             gender: gender,
             place_of_birth: place,
-            date_of_birth: "2003-04-13",
+            date_of_birth: selectedDate,
             phone_number: phone,
             address: address,
             cost: cost,
           },
         }
       );
-      console.log("Post response:", response.data);
       router.push("/doctors");
     } catch (error) {
       console.error("Failed to post medicine details:", error);
@@ -137,7 +157,7 @@ export default function InputDoctor() {
           specialist: specialist || doctor.specialist,
           gender: gender || doctor.gender,
           place_of_birth: place || doctor.place_of_birth,
-          date_of_birth: "2003-04-13",
+          date_of_birth: selectedDate || doctor.date_of_birth,
           phone_number: phone || doctor.phone_number,
           address: address || doctor.address,
           cost: cost || doctor.cost,
@@ -149,14 +169,13 @@ export default function InputDoctor() {
             specialist: specialist || doctor.specialist,
             gender: gender || doctor.gender,
             place_of_birth: place || doctor.place_of_birth,
-            date_of_birth: "2003-04-13",
+            date_of_birth: selectedDate || doctor.date_of_birth,
             phone_number: phone || doctor.phone_number,
             address: address || doctor.address,
             cost: cost || doctor.cost,
           },
         }
       );
-      // console.log("Post response:", response.data);
       router.push("/doctors");
     } catch (error) {
       console.error("Failed to post medicine details:", error);
@@ -181,18 +200,10 @@ export default function InputDoctor() {
         <div className="flex justify-start items-center gap-x-20">
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
             <Input
-              label="ID Dokter"
-              type="number"
-              onChange={(e) => setId((doctor.id = Number(e.target.value)))}
-              placeholder={inputId ? doctor.id.toString() : "000"}
-              name=""
-              value={inputId ? doctor.id.toString() : id.toString()}
-            />
-            <Input
               label="Nama Dokter"
               type="text"
               onChange={(e) => setName((doctor.name = e.target.value))}
-              placeholder={inputId ? doctor.name : "Nama Dokter"}
+              placeholder={inputId ? doctor.name : ""}
               name=""
               value={inputId ? doctor.name : name}
             />
@@ -202,7 +213,7 @@ export default function InputDoctor() {
               onChange={(e) =>
                 setSpecialist((doctor.specialist = e.target.value))
               }
-              placeholder={inputId ? doctor.specialist : "Spesialis"}
+              placeholder={inputId ? doctor.specialist : ""}
               name=""
               value={inputId ? doctor.specialist : specialist}
             />
@@ -210,25 +221,32 @@ export default function InputDoctor() {
               label="Jenis Kelamin"
               type="select"
               onChange={(e) => setGender((doctor.gender = e.target.value))}
-              placeholder={inputId ? doctor.gender : "Pilih Jenis Kelamin"}
+              placeholder={inputId ? doctor.gender : "Pilih"}
               name=""
               value={inputId ? doctor.gender : gender}
               options={["L", "P"]}
             />
             <Input
-              label="ID Poliklinik"
-              type="number"
-              onChange={(e) =>
-                setPolyId((doctor.polyclinic_id = Number(e.target.value)))
-              }
-              placeholder={inputId ? doctor.polyclinic_id.toString() : "000"}
+              label="Nama Poliklinik"
+              type="select"
+              onChange={(e) => {
+                const selectedPolyName = e.target.value;
+                const selectedPolyclinic = polyclinics.find(
+                  (polyclinic: Polyclinic) =>
+                    polyclinic.name === selectedPolyName
+                );
+                if (selectedPolyclinic) {
+                  setPolyName(selectedPolyName);
+                  setPolyId(selectedPolyclinic.id);
+                }
+              }}
+              placeholder={inputId ? doctor.polyclinic.name : "Pilih"}
               name=""
-              value={
-                inputId ? doctor.polyclinic_id.toString() : polyId.toString()
-              }
+              value={inputId ? doctor.polyclinic.name : polyName}
+              options={polyNames}
             />
           </div>
-          Poliklinik
+
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
             <div className="flex justify-start items-center gap-x-4 w-full">
               <Input
@@ -237,17 +255,22 @@ export default function InputDoctor() {
                 onChange={(e) =>
                   setPlace((doctor.place_of_birth = e.target.value))
                 }
-                placeholder={inputId ? doctor.place_of_birth : "Tempat Lahir"}
+                placeholder={inputId ? doctor.place_of_birth : ""}
                 name=""
                 value={inputId ? doctor.place_of_birth : place}
               />
-              <DatePicker title="Tanggal Lahir" name="" />
+              <DatePicker
+                title="Tanggal Lahir"
+                name=""
+                value={doctor.date_of_birth}
+                onDateChange={handleDateChange}
+              />
             </div>
             <Input
               label="Nomor Telepon"
               type="text"
               onChange={(e) => setPhone((doctor.phone_number = e.target.value))}
-              placeholder={inputId ? doctor.phone_number : "000"}
+              placeholder={inputId ? doctor.phone_number : ""}
               name=""
               value={inputId ? doctor.phone_number : phone}
             />
@@ -255,7 +278,7 @@ export default function InputDoctor() {
               label="Alamat Dokter"
               type="text"
               onChange={(e) => setAddress((doctor.address = e.target.value))}
-              placeholder={inputId ? doctor.address : "Alamat Dokter"}
+              placeholder={inputId ? doctor.address : ""}
               name=""
               value={inputId ? doctor.address : address}
             />
@@ -263,7 +286,7 @@ export default function InputDoctor() {
               label="Harga Jasa"
               type="text"
               onChange={(e) => setCost((doctor.cost = e.target.value))}
-              placeholder={inputId ? doctor.cost : "000"}
+              placeholder={inputId ? doctor.cost : ""}
               name=""
               value={inputId ? doctor.cost : cost}
             />

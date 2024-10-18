@@ -9,17 +9,9 @@ import axios from "axios";
 import clsx from "clsx";
 import TableRecipeById from "@/components/table/tableRecipeById";
 
-interface Registration {
-  id: number;
-  polyclinic_id: number;
-  doctor_id: number;
-  registration_date: string;
-}
-
 interface Patient {
   id: number;
   name: string;
-  registration: Registration[];
 }
 
 interface Doctor {
@@ -32,7 +24,17 @@ interface Doctor {
 interface Polyclinic {
   id: number;
   name: string;
-  doctor: Doctor[];
+}
+
+interface Registration {
+  id: number;
+  patient_id: number;
+  polyclinic_id: number;
+  doctor_id: number;
+  registration_date: string;
+  polyclinic: Polyclinic;
+  patient: Patient;
+  doctor: Doctor;
 }
 
 interface Recipe {
@@ -46,12 +48,6 @@ interface Recipe {
 }
 
 export default function ValidateRecipe() {
-  const [registration, setRegistration] = useState<number>();
-  const [medic, setMedic] = useState<number>();
-  const [name, setName] = useState<string>("");
-  const [doctor, setDoctor] = useState<string>("");
-  const [polyclinic, setPolylcinic] = useState<string>("");
-  const [medicineId, setMedicineId] = useState<number>();
   const [medicineName, setMedicineName] = useState<string>("");
   const [amount, setAmount] = useState<number>();
   const [usage, setUsage] = useState<string>("");
@@ -62,15 +58,11 @@ export default function ValidateRecipe() {
   const patientData: Patient = {
     id: 0,
     name: "",
-    registration: [
-      { id: 0, polyclinic_id: 0, doctor_id: 0, registration_date: "" },
-    ],
   };
 
   const polyclinicData: Polyclinic = {
     id: 0,
     name: "",
-    doctor: [{ id: 0, polyclinic_id: 0, name: "", specialist: "" }],
   };
 
   const doctorData: Doctor = {
@@ -78,6 +70,17 @@ export default function ValidateRecipe() {
     polyclinic_id: 0,
     name: "",
     specialist: "",
+  };
+
+  const registrationData: Registration = {
+    id: 0,
+    patient_id: 0,
+    polyclinic_id: 0,
+    doctor_id: 0,
+    registration_date: "",
+    polyclinic: polyclinicData,
+    patient: patientData,
+    doctor: doctorData,
   };
 
   const recipeData: Recipe = {
@@ -90,11 +93,16 @@ export default function ValidateRecipe() {
     id: 0,
   };
 
-  const [patients, setPatients] = useState<Patient>(patientData);
-  const [polyclinics, setPolyclinics] = useState<Polyclinic>(polyclinicData);
-  const [doctors, setDoctors] = useState<Doctor>(doctorData);
+  const [registration, setRegistration] =
+    useState<Registration>(registrationData);
 
   const [childData, setChildData] = useState<Recipe>(recipeData);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
+  };
+
   const handleChildData = (data: Recipe) => {
     setChildData(data);
   };
@@ -103,93 +111,24 @@ export default function ValidateRecipe() {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/patients/${id}`
+          `https://api-simrs.serpihantech.com/api/registrations/${id}`
         );
-        setPatients(response.data);
-        // console.log("Response Patient:", response.data);
+        setRegistration(response.data.registration);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
     };
 
     if (params && params.id) {
-      const patientId = Number(params.id);
-      if (!isNaN(patientId)) {
-        fetchPatientDetails(patientId);
+      const registrationId = Number(params.id);
+      if (!isNaN(registrationId)) {
+        fetchPatientDetails(registrationId);
       } else {
         console.error("Invalid patient ID:", params.id);
         router.push("/error");
       }
     }
   }, [params]);
-
-  useEffect(() => {
-    const fetchPolyclinicById = async (id: number) => {
-      try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/polyclinics/${id}`
-        );
-        setPolyclinics(response.data);
-        // console.log("Response Polyclinic:", polyclinics);
-      } catch (error) {
-        setPolyclinics(polyclinicData);
-        console.error("Failed to fetch polyclinic details:", error);
-      }
-    };
-
-    if (
-      // patients.registration && // patients.registrations[] is empty so it cannot send id to fetch polyclinics data, how to handle if patients.registrations is empty
-      // patients.registration[patients.registration.length - 1].polyclinic_id
-      patients.registration.length > 0
-    ) {
-      const polyclinicId =
-        patients.registration[patients.registration.length - 1].polyclinic_id;
-      if (!isNaN(polyclinicId)) {
-        fetchPolyclinicById(polyclinicId);
-      } else {
-        console.error("Invalid polyclinic ID:", params.id);
-        router.push("/error");
-      }
-    } else {
-      setPolyclinics(polyclinicData);
-    }
-  }, [patients]);
-
-  useEffect(() => {
-    const fetchDoctorById = async (id: number) => {
-      try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/doctors/${id}`
-        );
-        setDoctors(response.data);
-        // console.log("Response Doctor:", polyclinics);
-      } catch (error) {
-        setDoctors(doctorData);
-        console.error("Failed to fetch doctor details:", error);
-      }
-    };
-
-    if (
-      // patients.registration &&
-      // patients.registration[patients.registration.length - 1].doctor_id
-      patients.registration.length > 0
-    ) {
-      const doctorId =
-        patients.registration[patients.registration.length - 1].doctor_id;
-      if (!isNaN(doctorId)) {
-        fetchDoctorById(doctorId);
-      } else {
-        console.error("Invalid doctor ID:", params.id);
-        router.push("/error");
-      }
-    } else {
-      setDoctors(doctorData);
-    }
-  }, [patients]);
-
-  useEffect(() => {
-    // console.log("Updated Patient:", patients.id);
-  }, [patients]);
 
   const handleEdit = async (id: number) => {
     try {
@@ -209,8 +148,7 @@ export default function ValidateRecipe() {
           },
         }
       );
-      // console.log("Post response:", response.data);
-      router.push(`/pharmacy/recipe/${patients.id}`);
+      router.push(`/pharmacy/recipe/${registration.id}`);
     } catch (error) {
       console.error("Failed to update recipe details:", error);
     }
@@ -248,76 +186,54 @@ export default function ValidateRecipe() {
                 <Input
                   label="No Reg"
                   type="text"
-                  onChange={
-                    () => {}
-                    // (e) => setRegistration((patients.id = Number(e.target.value)))
-                  }
-                  placeholder={patients ? patients.id.toString() : "000"}
+                  onChange={() => {}}
+                  placeholder=""
                   name=""
-                  value={patients ? patients.id.toString() : ""}
+                  value={registration.id.toString()}
                 />
               </div>
               <div className="basis-1/4">
                 <Input
                   label="No RM"
                   type="text"
-                  onChange={
-                    () => {}
-                    // (e) => setMedic((patients.registration[patients.registration.length - 1].id = Number(e.target.value)))
-                  }
-                  placeholder={
-                    patients.registration.length > 0
-                      ? patients.registration[
-                          patients.registration.length - 1
-                        ].id.toString()
-                      : "00000"
-                  }
+                  onChange={() => {}}
+                  placeholder=""
                   name=""
-                  value={
-                    patients.registration.length > 0
-                      ? patients.registration[
-                          patients.registration.length - 1
-                        ].id.toString()
-                      : ""
-                  }
+                  value={registration.patient_id.toString()}
                 />
               </div>
-              <DatePicker title="Tanggal Penanganan" name="" />
+              <DatePicker
+                title="Tanggal Penanganan"
+                name=""
+                value={registration ? registration.registration_date : null}
+                onDateChange={handleDateChange}
+              />
             </div>
             <Input
               label="Nama Pasien"
               type="text"
-              onChange={
-                () => {}
-                // (e) => setName((patients.name = e.target.value))
-              }
-              placeholder={patients ? patients.name : "Nama Pasien"}
+              onChange={() => {}}
+              placeholder=""
               name=""
-              value={patients ? patients.name : ""}
+              value={registration.patient.name}
             />
           </div>
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
             <Input
               label="Poliklinik"
               type="text"
-              onChange={
-                () => {}
-                // (e) => setPolylcinic((polyclinics.name = e.target.value))
-              }
-              placeholder={polyclinics ? polyclinics.name : "Nama Poliklinik"}
+              onChange={() => {}}
+              placeholder=""
               name=""
-              value={polyclinics ? polyclinics.name : "Nama Poliklinik"}
+              value={registration.polyclinic.name}
             />
             <Input
               label="Dokter"
               type="text"
-              onChange={
-                () => {}
-                // (e) => setDoctor((doctors.name = e.target.value))
-              }
-              placeholder={doctors ? doctors.name : "Nama Dokter"}
+              onChange={() => {}}
+              placeholder=""
               name=""
-              value={doctors ? doctors.name : ""}
+              value={registration.doctor.name}
             />
           </div>
         </div>
@@ -341,7 +257,7 @@ export default function ValidateRecipe() {
               onChange={(e) =>
                 setMedicineName((childData.name = e.target.value))
               }
-              placeholder={childData ? childData.name : "Nama Pasien"}
+              placeholder={childData ? childData.name : ""}
               name=""
               value={childData ? childData.name : ""}
             />
@@ -353,7 +269,7 @@ export default function ValidateRecipe() {
               onChange={(e) =>
                 setAmount((childData.amount = Number(e.target.value)))
               }
-              placeholder={childData ? childData.amount.toString() : "0"}
+              placeholder={childData ? childData.amount.toString() : ""}
               name=""
               value={childData ? childData.amount.toString() : ""}
             />
@@ -365,9 +281,9 @@ export default function ValidateRecipe() {
               onChange={(e) =>
                 setUsage((childData.usage_rules = e.target.value))
               }
-              placeholder={childData ? childData.usage_rules : "Aturan pakai"}
+              placeholder={childData ? childData.usage_rules : "Pilih"}
               name=""
-              value={childData ? childData.usage_rules : ""}
+              value={childData ? childData.usage_rules : usage}
               options={[childData.usage_rules, "3x1", "2x1"]}
             />
           </div>
@@ -377,12 +293,9 @@ export default function ValidateRecipe() {
           label="Simpan"
           variant="primary"
           size="small"
-          onClick={
-            // handleCLick
-            () => {
-              handleEdit(childData.id);
-            }
-          }
+          onClick={() => {
+            handleEdit(childData.id);
+          }}
         />
       </div>
 
@@ -397,11 +310,7 @@ export default function ValidateRecipe() {
           label="Validasi"
           variant="primary"
           size="big"
-          onClick={() =>
-            handleValidation(
-              patients.registration[patients.registration.length - 1].id
-            )
-          }
+          onClick={() => handleValidation(registration.id)}
         />
       </div>
     </div>

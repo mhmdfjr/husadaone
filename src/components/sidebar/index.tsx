@@ -10,9 +10,9 @@ import {
   DocumentText,
   Buildings2,
   LogoutCurve,
-  ArrowUp2,
+  Task,
 } from "iconsax-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/components/button";
 import { useRouter, useParams, usePathname } from "next/navigation";
 
@@ -21,6 +21,7 @@ interface Menu {
   dropdown: boolean;
   icon: JSX.Element;
   path: string;
+  children: string[];
 }
 
 const mainMenu: Menu[] = [
@@ -29,24 +30,35 @@ const mainMenu: Menu[] = [
     dropdown: false,
     icon: <Home2 size="24" />,
     path: "/dashboard",
+    children: [],
   },
   {
     title: "Registrasi Pasien",
     dropdown: false,
     icon: <UserEdit size="24" />,
     path: "/registry",
+    children: [],
   },
   {
     title: "Penanganan",
     dropdown: true,
     icon: <People size="24" />,
     path: "/services",
+    children: ["Rawat Inap", "Rawat Jalan"],
   },
   {
     title: "Apotek",
     dropdown: false,
     icon: <ChemicalGlass size="24" />,
     path: "/pharmacy",
+    children: [],
+  },
+  {
+    title: "Antrean",
+    dropdown: false,
+    icon: <Task size="24" />,
+    path: "/queue",
+    children: [],
   },
 ];
 
@@ -56,47 +68,57 @@ const moreMenu: Menu[] = [
     dropdown: false,
     icon: <Note size="24" />,
     path: "/patients",
+    children: [],
   },
   {
     title: "Daftar Dokter",
     dropdown: false,
     icon: <DocumentLike size="24" />,
     path: "/doctors",
+    children: [],
   },
   {
     title: "Daftar Perawat",
     dropdown: false,
     icon: <DocumentText size="24" />,
     path: "/nurses",
+    children: [],
   },
   {
     title: "Daftar Poliklinik",
     dropdown: false,
     icon: <Buildings2 size="24" />,
     path: "/polyclinics",
+    children: [],
   },
 ];
 
-const childMenu: string[] = ["Rawat Inap", "Rawat Jalan"];
-
 export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [childState, setChildState] = useState("Penanganan");
+  const [isPenangananOpen, setIsPenangananOpen] = useState(false);
+  const [selectedPenanganan, setSelectedPenanganan] = useState<string | null>(
+    null
+  );
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
+  const selectPenangananChild = (child: string) => {
+    setSelectedPenanganan(child);
+    setIsPenangananOpen(false);
+
+    if (child === "Rawat Inap") {
+      router.push("/services/inpatient");
+    } else if (child === "Rawat Jalan") {
+      router.push("/services/outpatient");
+    }
   };
 
-  const handleMenu = (path: string) => {
-    router.push(path);
-  };
-
-  const selectChildMenu = (child: string) => {
-    setChildState(child);
-    setIsOpen(false);
+  const handleMenu = (menu: Menu) => {
+    if (menu.dropdown && menu.title === "Penanganan") {
+      setIsPenangananOpen(!isPenangananOpen);
+    } else {
+      router.push(menu.path);
+    }
   };
 
   const handleLogout = () => {
@@ -119,39 +141,39 @@ export default function Sidebar() {
                 variant={pathname.includes(menu.path) ? "primary" : "tertiary"}
                 leftIcon={menu.icon}
                 rightIcon={
-                  menu.title === "Penanganan" ? (
-                    <ArrowDown2
-                      className={
-                        isOpen
-                          ? "transition-transform duration-200 rotate-180"
-                          : ""
-                      }
-                    />
-                  ) : (
-                    ""
-                  )
+                  menu.dropdown ? (
+                    menu.title === "Penanganan" && isPenangananOpen ? (
+                      <ArrowDown2 className="rotate-180 transition-transform" />
+                    ) : (
+                      <ArrowDown2 />
+                    )
+                  ) : null
                 }
-                label={menu.dropdown ? childState : menu.title}
-                onClick={
-                  menu.dropdown ? toggleDropdown : () => handleMenu(menu.path)
+                label={
+                  menu.title === "Penanganan" && selectedPenanganan
+                    ? selectedPenanganan
+                    : menu.title
                 }
+                onClick={() => handleMenu(menu)}
               />
 
-              {menu.dropdown && isOpen && (
-                <div className="pl-9">
-                  <ul className="flex flex-col gap-2 text-start">
-                    {childMenu.map((child, index) => (
-                      <li
-                        key={index}
-                        onClick={() => selectChildMenu(child)}
-                        className="px-2 py-2.5 rounded-lg cursor-pointer hover:text-brand-base  active:bg-brand-base text-basic-black active:text-basic-white"
-                      >
-                        {child}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              {menu.dropdown &&
+                isPenangananOpen &&
+                menu.title === "Penanganan" && (
+                  <div className="pl-9">
+                    <ul className="flex flex-col gap-2 text-start">
+                      {menu.children.map((child, index) => (
+                        <li
+                          key={index}
+                          onClick={() => selectPenangananChild(child)}
+                          className="px-2 py-2.5 rounded-lg cursor-pointer hover:text-brand-base active:bg-brand-base text-basic-black active:text-basic-white"
+                        >
+                          {child}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
             </li>
           ))}
         </ul>
@@ -166,10 +188,8 @@ export default function Sidebar() {
               key={index}
               variant={pathname.includes(menu.path) ? "primary" : "tertiary"}
               leftIcon={menu.icon}
-              label={menu.dropdown ? childState : menu.title}
-              onClick={
-                menu.dropdown ? toggleDropdown : () => handleMenu(menu.path)
-              }
+              label={menu.title}
+              onClick={() => handleMenu(menu)}
             />
           ))}
         </ul>
@@ -177,7 +197,7 @@ export default function Sidebar() {
       <div className="logout">
         <ul className="flex flex-col gap-4 text-body text-basic-black">
           <Button
-            variant="danger"
+            variant="tertiary-danger"
             leftIcon={<LogoutCurve size="24px" />}
             label="Keluar"
             onClick={handleLogout}

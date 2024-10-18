@@ -1,13 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Sidebar from "@/components/sidebar";
-import TopBar from "@/components/topbar";
 import CardDashboard from "@/components/card-dashboard";
 import Calender from "@/components/calender";
-import TableRegist from "@/components/table/tableDashboard";
+import TableDashboard from "@/components/table/tableDashboard";
 
-export default function Register() {
+export default function Dashboard() {
   const [patients, setPatients] = useState<any[]>([]);
   const [patientCount, setPatientCount] = useState<string>("-");
   const [lastUpdated, setLastUpdated] = useState<string>("");
@@ -20,7 +18,6 @@ export default function Register() {
       .get("https://api-simrs.serpihantech.com/api/patients")
       .then((response) => {
         const data = response.data;
-        console.log("Patients API response:", data);
         if (data && Array.isArray(data.data)) {
           const patientsData = data.data;
           setPatients(patientsData);
@@ -29,7 +26,6 @@ export default function Register() {
               ? `0${patientsData.length}`
               : patientsData.length
           );
-          console.log("Patient count:", patientsData.length);
 
           const latestUpdate = patientsData.reduce(
             (latest: string, patient: any) => {
@@ -52,7 +48,6 @@ export default function Register() {
       .get("https://api-simrs.serpihantech.com/api/doctors")
       .then((response) => {
         const data = response.data;
-        console.log("Doctors API response:", data);
         if (data && Array.isArray(data.data)) {
           setDoctorsCount(
             data.data.length < 10 ? `0${data.data.length}` : data.data.length
@@ -67,7 +62,6 @@ export default function Register() {
       .get("https://api-simrs.serpihantech.com/api/nurses")
       .then((response) => {
         const data = response.data;
-        console.log("Nurses API response:", data);
         if (data && Array.isArray(data.data)) {
           setNursesCount(`0${data.data.length}`);
         } else {
@@ -80,7 +74,6 @@ export default function Register() {
       .get("https://api-simrs.serpihantech.com/api/polyclinics")
       .then((response) => {
         const data = response.data;
-        console.log("Polyclinic API response:", data);
         if (data && Array.isArray(data.data)) {
           setPolyclinicCount(
             data.data.length < 10 ? `0${data.data.length}` : data.data.length
@@ -97,52 +90,40 @@ export default function Register() {
     : "-";
 
   return (
-    <div className="flex w-full min-h-screen bg-[#D5E5FF]  bg-opacity-15">
-      <div className="fixed left-0 top-0 h-full">
-        <Sidebar />
+    <div className="mx-4 flex flex-col justify-start items-center gap-4 ">
+      <div className="flex w-full justify-between gap-x-4">
+        <CardDashboard
+          title="Total Pasien"
+          sum={patientCount}
+          date={formattedLastUpdated}
+        />
+        <CardDashboard
+          title="Total Dokter"
+          sum={doctorsCount}
+          date={formattedLastUpdated}
+        />
+        <CardDashboard
+          title="Total Perawat"
+          sum={nursesCount}
+          date={formattedLastUpdated}
+        />
+        <CardDashboard
+          title="Total Poliklinik"
+          sum={polyclinicCount}
+          date={formattedLastUpdated}
+        />
       </div>
 
-      <main className="flex-1 ml-60 ">
-        <TopBar />
-
-        <div className="p-4">
-          <div className="flex justify-between gap-x-4 mb-6">
-            <CardDashboard
-              title="Total Pasien"
-              sum={patientCount}
-              date={formattedLastUpdated}
-            />
-            <CardDashboard
-              title="Total Dokter"
-              sum={doctorsCount}
-              date={formattedLastUpdated}
-            />
-            <CardDashboard
-              title="Total Perawat"
-              sum={nursesCount}
-              date={formattedLastUpdated}
-            />
-            <CardDashboard
-              title="Total Poliklinik"
-              sum={polyclinicCount}
-              date={formattedLastUpdated}
-            />
-          </div>
-
-          <div className="flex gap-4">
-            <div className="flex-grow p-4 bg-basic-white rounded-2xl">
-              <p className="text-h8-bold text-basic-black mb-6 mt-2">
-                Pasien Terbaru
-              </p>
-              <TableRegist />
-            </div>
-            <div className="w-[414px] p-4 bg-basic-white rounded-2xl">
-              <p className="text-h8-bold text-basic-black mb-4">Kalender</p>
-              <Calender />
-            </div>
-          </div>
+      <div className="mx-4 flex justify-start items-start gap-4 ">
+        <div className="py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll basis-3/4">
+          <p className="text-h8-bold text-basic-black">Pasien Terbaru</p>
+          <TableDashboard />
         </div>
-      </main>
+        <div className="py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
+          <p className="text-h8-bold text-basic-black mb-4">Kalender</p>
+          <Calender />
+        </div>
+      </div>
     </div>
   );
 }
