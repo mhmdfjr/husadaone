@@ -1,11 +1,70 @@
 "use client";
-import Button from "@/components/button";
-import Input from "@/components/input";
 import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import Button from "@/components/button";
+import axios from "axios";
 
-export default function PharmacyQueue() {
+import Input from "@/components/input";
+
+interface Payment {
+  id: number;
+  registration_id: number;
+  payment_queue: number;
+  path_audio: string;
+}
+
+export default function TicketQueue() {
+  const [id, setId] = useState<number>(0);
+  const [queue, setQueue] = useState<number>(0);
+  const [path, setPath] = useState<string>("");
+
+  const paymentsData = [
+    {
+      id: 0,
+      registration_id: 0,
+      payment_queue: 0,
+      path_audio: "",
+    },
+  ];
+
+  const [payments, setPayments] = useState<Payment[]>(paymentsData);
+  const [current, setCurrent] = useState<number>(0);
   const router = useRouter();
-  const handleCLick = () => {};
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: response } = await axios.get(
+          "https://api-simrs.serpihantech.com/api/payments"
+        );
+        setPayments(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleNext = () => {
+    setCurrent(current + 1);
+  };
+
+  const handleCall = async () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  };
+
+  const handleStop = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    } else {
+    }
+  };
+
+  const handleReset = () => {};
 
   return (
     <div className="mx-4 flex justify-start items-center gap-4 ">
@@ -27,12 +86,12 @@ export default function PharmacyQueue() {
             label="Apotek"
             variant="submenu-active"
             size="small"
-            onClick={() => {}}
+            onClick={() => router.push("pharmacies")}
           />
         </div>
         <div className="flex justify-start items-center gap-x-20 w-full">
           <Input
-            label="Apotek"
+            label="Loket"
             type="select"
             onChange={(e) => {}}
             placeholder="Pilih Apotek"
@@ -46,27 +105,38 @@ export default function PharmacyQueue() {
             onChange={() => {}}
             placeholder=""
             name=""
-            value=""
+            value={payments ? payments[current].payment_queue.toString() : ""}
+          />
+          {/* // this line is error */}
+          <audio
+            ref={audioRef}
+            src={payments ? payments[current].path_audio : ""}
           />
         </div>
         <div className="w-full flex justify-end items-center gap-4">
           <Button
-            label="Batal"
+            label="Stop"
             variant="secondary"
             size="small"
-            onClick={() => router.push("/queue/pharmacies")}
+            onClick={handleStop}
           />
           <Button
             label="Reset"
             variant="secondary"
             size="small"
-            onClick={() => router.push("/queue/pharmacies")}
+            onClick={handleReset}
+          />
+          <Button
+            label="Lanjut"
+            variant="secondary"
+            size="small"
+            onClick={handleNext}
           />
           <Button
             label="Panggil"
             variant="primary"
             size="small"
-            onClick={() => {}}
+            onClick={handleCall}
           />
         </div>
       </div>

@@ -28,12 +28,12 @@ interface Payment {
 
 interface TablePrescription {
   medicineName?: Medicine;
-  onDataChange: (data: Medicine[]) => void;
+  // onDataChange: (data: Medicine[]) => void;
 }
 
 const TablePrescription: React.FC<TablePrescription> = ({
   medicineName,
-  onDataChange,
+  // onDataChange,
 }) => {
   const router = useRouter();
   const params = useParams();
@@ -60,68 +60,61 @@ const TablePrescription: React.FC<TablePrescription> = ({
   const [medicine, setMedicine] = useState<Medicine>(medicineData);
   const [medicines, setMedicines] = useState<Medicine[]>(medicinesData);
 
-  useEffect(() => {
-    const fetchPayments = async () => {
-      try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/medicines`
-        );
-        setMedicines(response.data);
-        onDataChange(response.data);
-      } catch (error) {
-        console.error("Failed to fetch payments:", error);
-      }
-    };
-    fetchPayments();
-  }, [params]);
-
-  const [filteredMedicines, setFilteredMedicines] = useState<Medicine[]>([]); // Track the filtered medicines based on search input
-
-  useEffect(() => {
-    // Filter the medicines based on "Nama Obat" input
-    const filtered = medicines.filter((medicineItem) =>
-      medicineItem.name.toLowerCase().includes(medicine.name.toLowerCase())
-    );
-    setFilteredMedicines(filtered);
-  }, [medicine, medicines]); // Update filtered medicines when the input or childData changes
-
-  const handleClick = () => {
-    // Handle the click event for adding the prescription
+  const paymentData: Payment = {
+    id: 0,
+    registration_id: 0,
+    total_cost: "",
+    medicines: medicinesData,
   };
 
-  const paymentData: Payment[] = [
-    {
-      id: 0,
-      registration_id: 0,
-      total_cost: "",
-      medicines: medicinesData,
-    },
-  ];
-
-  const [payments, setPayments] = useState<Payment[]>(paymentData);
+  const [payment, setPayment] = useState<Payment>(paymentData);
 
   useEffect(() => {
-    const fetchPayments = async () => {
+    const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/payments`
+          `https://api-simrs.serpihantech.com/api/payments/${id}`
         );
-        setPayments(response.data);
+        setPayment(response.data.payment);
       } catch (error) {
-        console.error("Failed to fetch payments:", error);
+        console.error("Failed to fetch patient details:", error);
       }
     };
-    fetchPayments();
+
+    if (params && params.id) {
+      const paymentId = Number(params.id);
+      if (!isNaN(paymentId)) {
+        fetchPatientDetails(paymentId);
+      } else {
+        console.error("Invalid patient ID:", params.input);
+        router.push("/error");
+      }
+    }
   }, [params]);
+  // useEffect(() => {
+  //   // Filter the medicines based on "Nama Obat" input
+  //   const filtered = medicines.filter((medicineItem) =>
+  //     medicineItem.name.toLowerCase().includes(medicine.name.toLowerCase())
+  //   );
+  //   setFilteredMedicines(filtered);
+  // }, [medicine, medicines]); // Update filtered medicines when the input or childData changes
+
+  // const handleClick = () => {
+  //   // Handle the click event for adding the prescription
+  // };
 
   return (
     <Table tableHead={tableHeaders}>
-      <tr className="bg-basic-white">
-        <td className="px-4 py-4 text-center">{medicine.name || "N/A"}</td>
-        <td className="px-4 py-4 text-center">{medicine.name || "N/A"}</td>
-        <td className="px-4 py-4 text-center">{medicine.name || "N/A"}</td>
-        <td className="px-4 py-4 text-center">{medicine.name || "N/A"}</td>
-      </tr>
+      {payment.medicines.map((medicine: Medicine, index: number) => (
+        <tr key={index} className="bg-basic-white">
+          <td className="px-4 py-4 text-center">{medicine.id}</td>
+          <td className="px-4 py-4 text-center">{medicine.name}</td>
+          <td className="px-4 py-4 text-center">{medicine.pivot.amount}</td>
+          <td className="px-4 py-4 text-center">
+            {medicine.pivot.usage_rules}
+          </td>
+        </tr>
+      ))}
     </Table>
   );
 };

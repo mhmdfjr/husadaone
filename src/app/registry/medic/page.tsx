@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Button from "@/components/button";
 import Input from "@/components/input";
 import DatePicker from "@/components/date-picker";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
 import { setPriority } from "os";
@@ -24,8 +24,6 @@ export default function InputMedic() {
   const [birthDate, setBirthDate] = useState<string | null>(null);
   const [registerDate, setRegisterDate] = useState<string | null>(null);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const inputId = searchParams.get("input");
 
   const handleBirthDate = (date: string) => {
     setBirthDate(date);

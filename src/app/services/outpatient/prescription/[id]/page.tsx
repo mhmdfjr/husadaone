@@ -62,6 +62,7 @@ interface Recipe {
 export default function InputOutpatient() {
   const [amount, setAmount] = useState<number>(0);
   const [usage, setUsage] = useState<string>("");
+  const [audio, setAudio] = useState<string>("");
 
   const router = useRouter();
   const params = useParams();
@@ -113,6 +114,7 @@ export default function InputOutpatient() {
 
   const [medicineName, setMedicineName] = useState<string>(""); // Medicine name typed in input
   const [medicine, setMedicine] = useState<Medicine>(medicineData); // Selected medicine object
+  const [medicines, setMedicines] = useState<Medicine[]>(medicinesData);
   const [registration, setRegistration] =
     useState<Registration>(registrationData);
 
@@ -139,25 +141,79 @@ export default function InputOutpatient() {
     }
   }, [params]);
 
-  const [childData, setChildData] = useState<Medicine[]>(medicinesData);
+  useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        const { data: response } = await axios.get(
+          `https://api-simrs.serpihantech.com/api/medicines`
+        );
+        setMedicines(response.data);
+      } catch (error) {
+        console.error("Failed to fetch payments:", error);
+      }
+    };
+    fetchPayments();
+  }, [params]);
 
-  const handleChildData = (data: Medicine[]) => {
-    setChildData(data);
+  const handleAdd = async () => {
+    try {
+      const response = await axios.post(
+        `https://api-simrs.serpihantech.com/api/payments-medicines`,
+        {
+          payment_id: registration.id,
+          medicine_id: filteredMedicines
+            ? filteredMedicines[0].id
+            : medicine.id,
+          amount: amount,
+          usage_rules: usage,
+        },
+        {
+          params: {
+            payment_id: registration.id,
+            medicine_id: filteredMedicines
+              ? filteredMedicines[0].id
+              : medicine.id,
+            amount: amount,
+            usage_rules: usage,
+          },
+        }
+      );
+      router.push(`/services/outpatient/prescription/${registration.id}`);
+    } catch (error) {
+      console.error("Failed to post medicine details:", error);
+    }
   };
+
+  const handleSave = async (id: number) => {
+    try {
+      const response = await axios.post(
+        `https://api-simrs.serpihantech.com/api/apotek/${id}`,
+        {},
+        {}
+      );
+      setAudio(response.data);
+      router.push(`/services/outpatient/prescription/${registration.id}`);
+    } catch (error) {
+      console.error("Failed to post medicine details:", error);
+    }
+  };
+
+  // const [childData, setChildData] = useState<Medicine[]>(medicinesData);
+
+  // const handleChildData = (data: Medicine[]) => {
+  //   setChildData(data);
+  // };
 
   const [filteredMedicines, setFilteredMedicines] = useState<Medicine[]>([]); // Track filtered medicines based on search input
   const [isFocused, setIsFocused] = useState<boolean>(false); // Track focus state
 
   useEffect(() => {
     // Filter the medicines based on the "Nama Obat" input
-    const filtered = childData.filter((medicineItem) =>
+    const filtered = medicines.filter((medicineItem) =>
       medicineItem.name.toLowerCase().includes(medicineName.toLowerCase())
     );
     setFilteredMedicines(filtered);
-    console.log(medicineName);
-    console.log(medicine);
-    console.log(childData);
-  }, [medicineName, medicine, childData]); // Update filtered medicines when the input or childData changes
+  }, [medicineName, medicine, medicines]); // Update filtered medicines when the input or childData changes
 
   const handleMedicineSelect = (selectedMedicine: Medicine) => {
     setMedicine(selectedMedicine);
@@ -282,7 +338,7 @@ export default function InputOutpatient() {
             label="Simpan"
             variant="primary"
             size="small"
-            onClick={() => {}}
+            onClick={() => handleSave(registration.id)}
           />
         </div>
       </div>
@@ -342,7 +398,7 @@ export default function InputOutpatient() {
           label="Tambah"
           variant="primary"
           size="small"
-          onClick={() => {}}
+          onClick={() => handleAdd()}
         />
       </div>
 
@@ -350,7 +406,7 @@ export default function InputOutpatient() {
       <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
         <TablePrescription
           medicineName={medicine}
-          onDataChange={handleChildData}
+          // onDataChange={handleChildData}
         />
       </div>
     </div>

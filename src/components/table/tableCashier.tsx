@@ -87,7 +87,7 @@ export default function TableRecipes() {
       }
     };
     fetchPayments();
-  }, [params]);
+  }, [params, payments]);
 
   // Calculate the start and end indices for pagination
   const startIndex = (currentPage - 1) * itemsPerPage;

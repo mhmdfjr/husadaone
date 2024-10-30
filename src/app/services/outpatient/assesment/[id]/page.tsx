@@ -27,7 +27,16 @@ interface Registration {
   patient_id: number;
   polyclinic_id: number;
   doctor_id: number;
+  poly_queue: number;
+  path_audio: string;
   registration_date: string;
+  subjective: string;
+  objective: string;
+  assessment: string;
+  plan: string;
+  diagnosis: string;
+  recipe: string;
+  already_paid: string;
   polyclinic: Polyclinic;
   patient: Patient;
   doctor: Doctor;
@@ -35,14 +44,14 @@ interface Registration {
 
 export default function InputOutpatient() {
   const [subjective, setSubjective] = useState<string>("");
-  const [assesment, setAssesment] = useState<string>("");
+  const [assessment, setAssessment] = useState<string>("");
   const [objective, setObjective] = useState<string>("");
   const [plan, setPlan] = useState<string>("");
 
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-  const inputId = searchParams.get("input");
+  const inputId = searchParams.get("id");
 
   const patientData: Patient = {
     id: 0,
@@ -64,7 +73,16 @@ export default function InputOutpatient() {
     patient_id: 0,
     polyclinic_id: 0,
     doctor_id: 0,
+    poly_queue: 0,
+    path_audio: "",
     registration_date: "",
+    subjective: "",
+    objective: "",
+    assessment: "",
+    plan: "",
+    diagnosis: "",
+    recipe: "",
+    already_paid: "",
     polyclinic: polyclinicData,
     patient: patientData,
     doctor: doctorData,
@@ -72,6 +90,7 @@ export default function InputOutpatient() {
 
   const [registration, setRegistration] =
     useState<Registration>(registrationData);
+  const [cart, setCart] = useState();
 
   useEffect(() => {
     const fetchPatientDetails = async (id: number) => {
@@ -80,7 +99,7 @@ export default function InputOutpatient() {
           `https://api-simrs.serpihantech.com/api/registrations/${id}`
         );
         setRegistration(response.data.registration);
-        console.log(response.data.registration);
+        setCart(response.data.keranjang);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
@@ -96,6 +115,37 @@ export default function InputOutpatient() {
       }
     }
   }, [params]);
+
+  const handleSave = async (id: number) => {
+    try {
+      const response = await axios.put(
+        `https://api-simrs.serpihantech.com/api/registrations/${id}`,
+        {
+          patient_id: registration.patient_id,
+          polyclinic_id: registration.polyclinic_id,
+          doctor_id: registration.doctor_id,
+          registration_date: registration.registration_date,
+          subjective: subjective,
+          objective: objective,
+          assessment: assessment,
+          plan: plan,
+          diagnosis: registration.diagnosis,
+          already_paid: registration.already_paid,
+        },
+        {
+          params: {
+            patient_id: registration.patient_id,
+            polyclinic_id: registration.polyclinic_id,
+            doctor_id: registration.doctor_id,
+            registration_date: registration.registration_date,
+          },
+        }
+      );
+      router.push(`/services/outpatient/assesment/${registration.id}`);
+    } catch (error) {
+      console.error("Failed to post medicine details:", error);
+    }
+  };
 
   const handleCLick = () => {};
 
@@ -184,18 +234,22 @@ export default function InputOutpatient() {
             <Input
               label="Subjektif"
               type="text"
-              onChange={(e) => setSubjective(e.target.value)}
+              onChange={(e) =>
+                setSubjective((registration.subjective = e.target.value))
+              }
               placeholder=""
               name=""
-              value={subjective}
+              value={registration ? registration.subjective : subjective}
             />
             <Input
               label="Pemeriksaan"
               type="text"
-              onChange={(e) => setAssesment(e.target.value)}
+              onChange={(e) =>
+                setAssessment((registration.assessment = e.target.value))
+              }
               placeholder=""
               name=""
-              value={assesment}
+              value={registration ? registration.assessment : assessment}
             />
           </div>
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
@@ -218,18 +272,20 @@ export default function InputOutpatient() {
             <Input
               label="Objektif"
               type="text"
-              onChange={(e) => setObjective(e.target.value)}
+              onChange={(e) =>
+                setObjective((registration.objective = e.target.value))
+              }
               placeholder=""
               name=""
-              value={objective}
+              value={registration ? registration.objective : objective}
             />
             <Input
               label="Rencana"
               type="text"
-              onChange={(e) => setPlan(e.target.value)}
+              onChange={(e) => setPlan((registration.plan = e.target.value))}
               placeholder=""
               name=""
-              value={plan}
+              value={registration ? registration.plan : plan}
             />
           </div>
         </div>
@@ -244,7 +300,7 @@ export default function InputOutpatient() {
             label="Simpan"
             variant="primary"
             size="small"
-            onClick={() => {}}
+            onClick={() => handleSave(registration.id)}
           />
         </div>
       </div>

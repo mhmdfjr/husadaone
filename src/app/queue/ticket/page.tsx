@@ -25,7 +25,7 @@ export default function TicketQueue() {
         const { data: response } = await axios.get(
           "https://api-simrs.serpihantech.com/api/queue"
         );
-        console.log(response);
+        // console.log(response);
         setCurrent(response.current_queue);
         setWaiting(response.waiting_queue);
       } catch (error) {
