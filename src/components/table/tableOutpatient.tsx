@@ -37,6 +37,7 @@ interface Registration {
   polyclinic_id: number;
   doctor_id: number;
   registration_date: string;
+  already_paid: string;
   polyclinic: Polyclinic;
   patient: Patient;
   doctor: Doctor;
@@ -136,11 +137,14 @@ export default function TableOutpatient() {
                     <td
                       key={index}
                       className={clsx("px-4 py-4 text-center text-body-bold", {
-                        "text-alert-warning": payment.validation == 0,
-                        "text-alert-success": payment.validation == 1,
+                        "text-alert-success":
+                          registration.already_paid == "yes",
+                        "text-alert-warning": registration.already_paid == null,
                       })}
                     >
-                      {payment.validation == 1 ? "Sudah Rawat" : "Belum Rawat"}
+                      {registration.already_paid == "yes"
+                        ? "Sudah Rawat"
+                        : "Belum Rawat"}
                     </td>
                   );
                 }

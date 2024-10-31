@@ -67,7 +67,7 @@ export default function TicketQueue() {
         {},
         {}
       );
-      console.log(response);
+      // console.log(response);
     } catch (error) {
       console.error("Failed to post medicine details:", error);
     }
@@ -119,16 +119,16 @@ export default function TicketQueue() {
         </div>
         <div className="w-full flex justify-end items-center gap-4">
           <Button
+            label="Reset"
+            variant="secondary-danger"
+            size="small"
+            onClick={handleReset}
+          />
+          <Button
             label="Stop"
             variant="secondary"
             size="small"
             onClick={handleStop}
-          />
-          <Button
-            label="Reset"
-            variant="secondary"
-            size="small"
-            onClick={handleReset}
           />
           <Button
             label="Lanjut"

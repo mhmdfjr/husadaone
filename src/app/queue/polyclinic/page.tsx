@@ -51,13 +51,13 @@ export default function PolyclinicQueue() {
         </div>
         <div className="w-full flex justify-end items-center gap-4">
           <Button
-            label="Stop"
-            variant="secondary"
+            label="Reset"
+            variant="secondary-danger"
             size="small"
             onClick={() => router.push("/queue/polyclinic")}
           />
           <Button
-            label="Reset"
+            label="Stop"
             variant="secondary"
             size="small"
             onClick={() => router.push("/queue/polyclinic")}

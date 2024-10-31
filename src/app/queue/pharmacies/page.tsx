@@ -38,17 +38,38 @@ export default function TicketQueue() {
         const { data: response } = await axios.get(
           "https://api-simrs.serpihantech.com/api/payments"
         );
-        setPayments(response.data);
-        console.log(response.data);
+        const responses = response.data.filter(
+          (res: Payment) => res.path_audio !== null
+        );
+        setPayments(responses);
+        setCurrent(responses[0].id);
+        // console.log(responses);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [current]);
 
-  const handleNext = () => {
-    setCurrent(current + 1);
+  const findPayment = payments.find((payment) => payment.id == current);
+
+  const deletePayment = async (id: number) => {
+    try {
+      // const response = await axios.delete(
+      //   `https://api-simrs.serpihantech.com/api/payments/${id}`
+      // );
+      // console.log(`deleted : ${id}`);
+    } catch (error) {
+      console.error("Failed to delete payment:", error);
+    }
+  };
+
+  const handleNext = async () => {
+    if (current < payments.length) {
+      setCurrent(current + 1);
+    }
+    // console.log(current);
+    deletePayment(current);
   };
 
   const handleCall = async () => {
@@ -105,26 +126,26 @@ export default function TicketQueue() {
             onChange={() => {}}
             placeholder=""
             name=""
-            value={payments ? payments[current].payment_queue.toString() : ""}
+            value={findPayment ? findPayment.id.toString() : ""}
           />
           {/* // this line is error */}
           <audio
             ref={audioRef}
-            src={payments ? payments[current].path_audio : ""}
+            src={findPayment ? findPayment.path_audio : ""}
           />
         </div>
         <div className="w-full flex justify-end items-center gap-4">
+          <Button
+            label="Reset"
+            variant="secondary-danger"
+            size="small"
+            onClick={handleReset}
+          />
           <Button
             label="Stop"
             variant="secondary"
             size="small"
             onClick={handleStop}
-          />
-          <Button
-            label="Reset"
-            variant="secondary"
-            size="small"
-            onClick={handleReset}
           />
           <Button
             label="Lanjut"

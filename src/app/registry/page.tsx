@@ -3,7 +3,7 @@ import Button from "@/components/button";
 import Input from "@/components/input";
 import TableRegist from "@/components/table/tableRegist";
 import { Add } from "iconsax-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import DatePicker from "@/components/date-picker";
@@ -16,6 +16,39 @@ interface Data {
   address: string;
 }
 
+interface Patient {
+  id: number;
+  name: string;
+  gender: string;
+  blood_type: string;
+  place_of_birth: string;
+  date_of_birth: string;
+  phone_number: string;
+  address: string;
+  insurance: string;
+  allergy: string;
+  disability: string;
+  pic_name: string;
+  pic_status: string;
+  pic_address: string;
+}
+
+interface Registration {
+  id: number;
+  patient_id: number;
+  polyclinic_id: number;
+  doctor_id: number;
+  registration_date: string;
+  subjective: string;
+  objective: string;
+  assessment: string;
+  plan: string;
+  diagnosis: string;
+  recipe: string;
+  already_paid: string;
+  patient: Patient;
+}
+
 const Registry = () => {
   const router = useRouter();
   const [regis, setRegis] = useState("");
@@ -25,11 +58,66 @@ const Registry = () => {
   const [doctor, setDoctor] = useState("");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
+  const registrationData = {
+    id: 0,
+    patient_id: 0,
+    polyclinic_id: 0,
+    doctor_id: 0,
+    registration_date: "",
+    subjective: "",
+    objective: "",
+    assessment: "",
+    plan: "",
+    diagnosis: "",
+    recipe: "",
+    already_paid: "",
+    patient: {
+      id: 0,
+      name: "",
+      gender: "",
+      blood_type: "",
+      place_of_birth: "",
+      date_of_birth: "",
+      phone_number: "",
+      address: "",
+      insurance: "",
+      allergy: "",
+      disability: "",
+      pic_name: "",
+      pic_status: "",
+      pic_address: "",
+    },
+  };
+
   const [state, setState] = useState<Data>({
     name: "John Doe",
     age: 30,
     address: "1234 Example St, City, Country",
   });
+
+  const [savedValue, setSavedValue] = useState<Registration>(registrationData);
+  const [polyclinicId, setPolyclinicId] = useState<number>(0);
+  const [doctorId, setDoctorId] = useState<number>(0);
+
+  useEffect(() => {
+    const storageRegistration = localStorage.getItem("stateValue");
+    const storagePolyclinic = localStorage.getItem("polyclinicId");
+    const storageDoctor = localStorage.getItem("doctorId");
+    if (storageRegistration) {
+      setSavedValue(JSON.parse(storageRegistration) as Registration);
+    }
+    if (storagePolyclinic) {
+      setPolyclinicId(Number(storagePolyclinic));
+    }
+    if (storageDoctor) {
+      setDoctorId(Number(storageDoctor));
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   console.log(savedValue.registration_date);
+  //   console.log(savedValue.patient.name);
+  // }, [savedValue]);
 
   const handleDateChange = (date: string) => {
     setSelectedDate(date);
@@ -89,20 +177,20 @@ const Registry = () => {
               name="regis"
               type="text"
               value={regis}
-              onChange={(e) => setRegis(e.target.value)}
+              onChange={() => {}}
             />
             <DatePicker
               title="Tanggal Registrasi"
               name=""
-              value={null}
+              value={selectedDate}
               onDateChange={handleDateChange}
             />
             <Input
               label="Nama"
               name="nama"
               type="text"
-              value={nama}
-              onChange={(e) => setNama(e.target.value)}
+              value={savedValue ? savedValue.patient.name : nama}
+              onChange={() => {}}
             />
           </div>
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
@@ -111,8 +199,8 @@ const Registry = () => {
                 label="No Rekam Medis"
                 name="noRM"
                 type="text"
-                value={noRM}
-                onChange={(e) => setNoRM(e.target.value)}
+                value={savedValue ? savedValue.patient_id.toString() : noRM}
+                onChange={() => {}}
               />
               <Button
                 label={<Add size="32" color="#2F7BFE" />}
@@ -126,12 +214,12 @@ const Registry = () => {
                 label="Poliklinik yang Dituju"
                 name="poli"
                 type="text"
-                value={poli}
-                onChange={(e) => setPoli(e.target.value)}
+                value={polyclinicId ? polyclinicId.toString() : ""}
+                onChange={() => {}}
               />
               <Button
                 label={<Add size="32" color="#2F7BFE" />}
-                onClick={() => {}}
+                onClick={() => router.push("/registry/polyclinic")}
                 size="very-small"
                 variant="secondary"
               />
@@ -141,12 +229,12 @@ const Registry = () => {
                 label="Dokter yang Dituju"
                 name="doctor"
                 type="text"
-                value={doctor}
-                onChange={(e) => setDoctor(e.target.value)}
+                value={doctorId ? doctorId.toString() : ""}
+                onChange={() => {}}
               />
               <Button
                 label={<Add size="32" color="#2F7BFE" />}
-                onClick={() => {}}
+                onClick={() => router.push("/registry/doctor")}
                 size="very-small"
                 variant="secondary"
               />
