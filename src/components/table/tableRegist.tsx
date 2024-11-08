@@ -1,18 +1,16 @@
-import { useState, useEffect } from "react";
+"use client";
 import Table from "@/components/table";
 import axios from "axios";
+import clsx from "clsx";
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { Edit, Trash } from "iconsax-react";
-import { useForm } from "react-hook-form";
-import Button from "../button";
-
-interface Polyclinic {
-  name: string;
-}
 
 interface Patient {
   id: number;
   name: string;
   gender: string;
+  date_of_birth: string;
 }
 
 interface Doctor {
@@ -20,94 +18,27 @@ interface Doctor {
   name: string;
 }
 
-interface Regist {
+interface Polyclinic {
   id: number;
-  patient: Patient;
+  name: string;
+}
+
+interface Registration {
+  id: number;
+  patient_id: number;
+  polyclinic_id: number;
+  doctor_id: number;
+  registration_date: string;
+  already_paid: string;
   polyclinic: Polyclinic;
+  patient: Patient;
   doctor: Doctor;
 }
 
-function getPatients() {
-  return axios
-    .get("https://api-simrs.serpihantech.com/api/registrations")
-    .then((response) => response.data)
-    .catch((error) => {
-      console.error("Error fetching patients:", error);
-      return { data: [] };
-    });
-}
-
-function deleteRegist(id: number) {
-  return axios
-    .delete(`https://api-simrs.serpihantech.com/api/registrations/${id}`)
-    .then((response) => response.data)
-    .catch((error) => {
-      console.error("Error deleting data:", error);
-      throw error;
-    });
-}
-
-function updateRegist(id: number, updatedData: Regist) {
-  return axios
-    .put(
-      `https://api-simrs.serpihantech.com/api/registrations/${id}`,
-      updatedData
-    )
-    .then((response) => response.data)
-    .catch((error) => {
-      console.error("Error updating data:", error);
-      throw error;
-    });
-}
-
-export default function TablePatients() {
-  const [regist, setRegist] = useState<Regist[]>([]);
-  // const [loading, setLoading] = useState(true);
-  const [selectedRegist, setSelectedRegist] = useState<Regist | null>(null);
-  const [isModalOpen, setModalOpen] = useState(false);
-  const { register, handleSubmit, reset } = useForm<Regist>();
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = () => {
-    getPatients().then((data) => {
-      setRegist(Array.isArray(data) ? data : data.data || []);
-      // setLoading(false);
-    });
-  };
-
-  const handleDelete = (id: number) => {
-    deleteRegist(id).then(() => {
-      setRegist((prevRegist) => prevRegist.filter((item) => item.id !== id));
-    });
-  };
-
-  const handleEditClick = (regist: Regist) => {
-    setSelectedRegist(regist);
-    reset(regist);
-    setModalOpen(true);
-  };
-
-  const handleEditSubmit = (updatedData: Regist) => {
-    if (selectedRegist) {
-      updateRegist(selectedRegist.id, updatedData).then(() => {
-        // Re-fetch data from the server after a successful update
-        fetchData();
-        setModalOpen(false);
-      });
-    }
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-    setSelectedRegist(null);
-  };
-
+export default function TableRegist() {
   const tableHeaders = [
-    "No Regis",
-    "Nama",
+    "No Reg",
+    "Nama Pasien",
     "No RM",
     "Poliklinik",
     "Dokter",
@@ -115,117 +46,88 @@ export default function TablePatients() {
     "Aksi",
   ];
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex justify-start items-center animate-pulse">
-  //       Loading...
-  //     </div>
-  //   );
-  // }
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const router = useRouter();
 
-  if (!Array.isArray(regist)) {
-    return (
-      <div>
-        Error: Expected an array of registrations. Data received:{" "}
-        {JSON.stringify(regist)}
-      </div>
-    );
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: response } = await axios.get(
+          "https://api-simrs.serpihantech.com/api/registrations"
+        );
+        setRegistrations(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [registrations]);
+
+  const deleteRegistration = async (id: number) => {
+    try {
+      const response = await axios.delete(
+        `https://api-simrs.serpihantech.com/api/registrations/${id}`
+      );
+      router.push("/registry");
+    } catch (error) {
+      console.error("Failed to delete registration:", error);
+    }
+  };
 
   return (
-    <>
-      <Table tableHead={tableHeaders}>
-        {regist.map((regist, index) => (
-          <tr key={index} className="bg-basic-white">
-            <td className="px-6 py-4 text-center">
-              {regist.id < 10 ? `0${regist.id}` : regist.id}
+    <Table tableHead={tableHeaders}>
+      {registrations.map((registration: Registration, index: number) => {
+        return (
+          <tr
+            key={index}
+            className={clsx("bg-basic-white cursor-pointer", {
+              "bg-brand-10 bg-opacity-15": index % 2 != 0,
+            })}
+          >
+            <td className="px-4 py-4 text-center">{registration.id}</td>
+            <td className="px-4 py-4 text-center">
+              {registration.patient.name}
             </td>
-            <td className="px-8 py-4 text-center">{regist.patient.name}</td>
-            <td className="px-6 py-4 text-center">
-              {regist.patient.id < 10
-                ? `0${regist.patient.id}`
-                : regist.patient.id}
+            <td className="px-4 py-4 text-center">{registration.patient.id}</td>
+            <td className="px-4 py-4 text-center">
+              {registration.polyclinic.name}
             </td>
-            <td className="px-2 py-4 text-center">{regist.polyclinic.name}</td>
-            <td className="px-2 py-4 text-center">{regist.doctor.name}</td>
-            <td className="px-1 py-4 text-center">{"-"}</td>
+            <td className="px-4 py-4 text-center">
+              {registration.doctor.name}
+            </td>
+            <td
+              className={clsx("px-4 py-4 text-center text-body-bold", {
+                "text-alert-success": registration.already_paid == "yes",
+                "text-alert-warning": registration.already_paid == null,
+              })}
+            >
+              {registration.already_paid == "yes"
+                ? "Sudah Rawat"
+                : "Belum Rawat"}
+            </td>
             <td className="px-2 py-4 text-center">
               <div className="flex items-center gap-x-5 ml-12">
                 <Edit
                   size="24"
                   color="#2F7BFE"
                   className="cursor-pointer"
-                  onClick={() => handleEditClick(regist)}
+                  onClick={() => {
+                    router.push(
+                      `registry/medic/input?input=${registration.id}`
+                    );
+                  }}
                 />
                 <Trash
                   size="24"
                   color="#E90C1B"
                   className="cursor-pointer"
-                  onClick={() => handleDelete(regist.id)}
+                  onClick={() => deleteRegistration(registration.id)}
                 />
               </div>
             </td>
           </tr>
-        ))}
-      </Table>
-
-      {/* Modal */}
-      {isModalOpen && selectedRegist && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg w-1/3">
-            <h2 className="text-xl font-bold mb-4">Edit Registration</h2>
-            <form onSubmit={handleSubmit(handleEditSubmit)}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium">
-                  Patient Name
-                </label>
-                <input
-                  {...register("patient.name", { required: true })}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  defaultValue={selectedRegist?.patient.name}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium">Gender</label>
-                <input
-                  {...register("patient.gender", { required: true })}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  defaultValue={selectedRegist?.patient.gender}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium">Polyclinic</label>
-                <input
-                  {...register("polyclinic.name", { required: true })}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  defaultValue={selectedRegist?.polyclinic.name}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium">Doctor</label>
-                <input
-                  {...register("doctor.name", { required: true })}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  defaultValue={selectedRegist?.doctor.name}
-                />
-              </div>
-              <div className="flex justify-end gap-4">
-                <Button
-                  label={"Cancel"}
-                  variant="secondary"
-                  onClick={handleCloseModal}
-                />
-                <Button
-                  type="submit"
-                  label={"Edit"}
-                  variant="primary"
-                  onClick={() => {}}
-                />
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </>
+        );
+      })}
+    </Table>
   );
 }

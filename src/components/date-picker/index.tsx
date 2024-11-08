@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   format,
+  parse,
   startOfMonth,
   endOfMonth,
   startOfWeek,
@@ -9,7 +10,6 @@ import {
   isSameDay,
   addMonths,
   subMonths,
-  getDay,
 } from "date-fns";
 import { id } from "date-fns/locale";
 import { FaCalendarAlt } from "react-icons/fa";
@@ -17,12 +17,27 @@ import { FaCalendarAlt } from "react-icons/fa";
 interface DatePickerProps {
   title: string;
   name: string;
+  value: null | string;
+  onDateChange: (date: string) => void;
 }
 
-const DatePicker: React.FC<DatePickerProps> = ({ title, name }) => {
+const DatePicker: React.FC<DatePickerProps> = ({
+  title,
+  name,
+  value,
+  onDateChange,
+}) => {
   const [showDatepicker, setShowDatepicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+
+  useEffect(() => {
+    if (value) {
+      const parsedDate = parse(value, "yyyy-MM-dd", new Date());
+      setSelectedDate(parsedDate);
+      setCurrentMonth(parsedDate);
+    }
+  }, [value]);
 
   const toggleDatepicker = () => {
     setShowDatepicker(!showDatepicker);
@@ -39,6 +54,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ title, name }) => {
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
     setShowDatepicker(false);
+    onDateChange(format(date, "yyyy-MM-dd"));
   };
 
   const renderDays = () => {
@@ -79,15 +95,17 @@ const DatePicker: React.FC<DatePickerProps> = ({ title, name }) => {
   };
 
   return (
-    <div className="relative  bg-basic-white h-auto w-full rounded-lg">
+    <div className="relative bg-basic-white h-auto w-full rounded-lg">
       <input
-        type="text"
+        type="hidden"
         value={selectedDate ? format(selectedDate, "yyyy-MM-dd") : ""}
         name={name}
-        className="hidden"
       />
-      <div className="flex flex-col items-start gap-y-2 ">
-        <label htmlFor="date-picker-input" className="">
+      <div className="flex flex-col justify-start items-start">
+        <label
+          htmlFor="date-picker-input"
+          className="text-body text-basic-black mb-2"
+        >
           <div>
             {title} <span></span>
           </div>
@@ -101,7 +119,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ title, name }) => {
             readOnly
             value={
               selectedDate
-                ? format(selectedDate, "dd-MMMM-yyyy", { locale: id })
+                ? format(selectedDate, "yyyy-MM-dd", { locale: id })
                 : ""
             }
             onClick={toggleDatepicker}

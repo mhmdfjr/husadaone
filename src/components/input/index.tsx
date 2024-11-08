@@ -1,4 +1,3 @@
-
 import clsx from "clsx";
 import { Eye, EyeSlash } from "iconsax-react";
 import React, { useState } from "react";
@@ -14,6 +13,16 @@ interface InputProps {
     >
   ) => void;
   name: string;
+  onFocus?: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => void;
+  onBlur?: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => void;
   options?: string[];
 }
 
@@ -22,6 +31,8 @@ const Input: React.FC<InputProps> = ({
   placeholder,
   type,
   value,
+  onFocus,
+  onBlur,
   onChange,
   name,
   options = [],
@@ -43,6 +54,8 @@ const Input: React.FC<InputProps> = ({
           name={name}
           placeholder={placeholder}
           value={value}
+          onFocus={onFocus}
+          onBlur={onBlur}
           onChange={onChange}
           className={clsx(
             "border",
@@ -57,6 +70,8 @@ const Input: React.FC<InputProps> = ({
           id={name}
           name={name}
           value={value}
+          onFocus={onFocus}
+          onBlur={onBlur}
           onChange={onChange}
           className={clsx(
             "border",
@@ -83,6 +98,8 @@ const Input: React.FC<InputProps> = ({
             name={name}
             placeholder={placeholder}
             value={value}
+            onFocus={onFocus}
+            onBlur={onBlur}
             onChange={onChange}
             className={clsx(
               "border",
@@ -90,7 +107,7 @@ const Input: React.FC<InputProps> = ({
               "rounded-md",
               "w-full",
               "focus:outline-none",
-              "pr-10" // Extra padding to make room for the eye icon
+              "pr-10"
             )}
           />
           {type === "password" && (

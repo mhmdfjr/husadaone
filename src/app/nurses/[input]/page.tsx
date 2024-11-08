@@ -40,6 +40,12 @@ export default function InputNurse() {
   };
   const [nurse, setNurse] = useState<NurseDetails>(nurseData);
 
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
+  };
+
   useEffect(() => {
     const fetchNurseDetails = async (id: number) => {
       try {
@@ -63,10 +69,6 @@ export default function InputNurse() {
     }
   }, [inputId]);
 
-  useEffect(() => {
-    // console.log("Updated Patient:", medicine.id);
-  }, [nurse]);
-
   const handleSave = async () => {
     try {
       const response = await axios.post(
@@ -75,7 +77,7 @@ export default function InputNurse() {
           name: name,
           gender: gender,
           place_of_birth: place,
-          date_of_birth: "2003-04-13",
+          date_of_birth: selectedDate,
           phone_number: phone,
           address: address,
         },
@@ -84,13 +86,12 @@ export default function InputNurse() {
             name: name,
             gender: gender,
             place_of_birth: place,
-            date_of_birth: "2003-04-13",
+            date_of_birth: selectedDate,
             phone_number: phone,
             address: address,
           },
         }
       );
-      console.log("Post response:", response.data);
       router.push("/nurses");
     } catch (error) {
       console.error("Failed to post medicine details:", error);
@@ -105,7 +106,7 @@ export default function InputNurse() {
           name: name || nurse.name,
           gender: gender || nurse.gender,
           place_of_birth: place || nurse.place_of_birth,
-          date_of_birth: "2003-04-13",
+          date_of_birth: selectedDate || nurse.date_of_birth,
           phone_number: phone || nurse.phone_number,
           address: address || nurse.address,
         },
@@ -114,13 +115,12 @@ export default function InputNurse() {
             name: name || nurse.name,
             gender: gender || nurse.gender,
             place_of_birth: place || nurse.place_of_birth,
-            date_of_birth: "2003-04-13",
+            date_of_birth: selectedDate || nurse.date_of_birth,
             phone_number: phone || nurse.phone_number,
             address: address || nurse.address,
           },
         }
       );
-      // console.log("Post response:", response.data);
       router.push("/nurses");
     } catch (error) {
       console.error("Failed to post medicine details:", error);
@@ -145,18 +145,10 @@ export default function InputNurse() {
         <div className="flex justify-start items-center gap-x-20">
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
             <Input
-              label="ID Perawat"
-              type="number"
-              onChange={(e) => setId((nurse.id = Number(e.target.value)))}
-              placeholder={inputId ? nurse.id.toString() : "000"}
-              name=""
-              value={inputId ? nurse.id.toString() : name}
-            />
-            <Input
               label="Nama Perawat"
               type="text"
               onChange={(e) => setName((nurse.name = e.target.value))}
-              placeholder={inputId ? nurse.name : "Nama Perawat"}
+              placeholder={inputId ? nurse.name : ""}
               name=""
               value={inputId ? nurse.name : name}
             />
@@ -164,39 +156,42 @@ export default function InputNurse() {
               label="Jenis Kelamin"
               type="select"
               onChange={(e) => setGender((nurse.gender = e.target.value))}
-              placeholder={inputId ? nurse.gender : "Pilih Jenis Kelamin"}
+              placeholder={inputId ? nurse.gender : "Pilih"}
               name=""
               value={inputId ? nurse.gender : gender}
               options={["L", "P"]}
             />
-          </div>
-          <div className="flex flex-col justify-start items-center gap-y-4 w-full">
-            <div className="flex justify-start items-center gap-x-4 w-full">
-              <Input
-                label="Tempat Lahir"
-                type="text"
-                onChange={(e) =>
-                  setPlace((nurse.place_of_birth = e.target.value))
-                }
-                placeholder={inputId ? nurse.place_of_birth : "Tempat Lahir"}
-                name=""
-                value={inputId ? nurse.place_of_birth : place}
-              />
-              <DatePicker title="Tanggal Lahir" name="" />
-            </div>
             <Input
               label="Nomor Telepon"
               type="text"
               onChange={(e) => setPhone((nurse.phone_number = e.target.value))}
-              placeholder={inputId ? nurse.phone_number : "000"}
+              placeholder={inputId ? nurse.phone_number : ""}
               name=""
               value={inputId ? nurse.phone_number : phone}
+            />
+          </div>
+          <div className="flex flex-col justify-start items-center gap-y-4 w-full">
+            <Input
+              label="Tempat Lahir"
+              type="text"
+              onChange={(e) =>
+                setPlace((nurse.place_of_birth = e.target.value))
+              }
+              placeholder={inputId ? nurse.place_of_birth : ""}
+              name=""
+              value={inputId ? nurse.place_of_birth : place}
+            />
+            <DatePicker
+              title="Tanggal Lahir"
+              name=""
+              value={nurse.date_of_birth}
+              onDateChange={handleDateChange}
             />
             <Input
               label="Alamat Perawat"
               type="text"
               onChange={(e) => setAddress((nurse.address = e.target.value))}
-              placeholder={inputId ? nurse.address : "Alamat Perawat"}
+              placeholder={inputId ? nurse.address : ""}
               name=""
               value={inputId ? nurse.address : address}
             />

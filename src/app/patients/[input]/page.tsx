@@ -5,7 +5,6 @@ import Input from "@/components/input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
-import DatePicker from "@/components/date-picker";
 
 interface PatientDetails {
   id: number;
@@ -76,10 +75,6 @@ export default function InputPatient() {
     }
   }, [inputId]);
 
-  useEffect(() => {
-    // console.log("Updated Patient:", medicine.id);
-  }, [patients]);
-
   const handleSave = async () => {
     try {
       const response = await axios.post(
@@ -105,7 +100,6 @@ export default function InputPatient() {
           },
         }
       );
-      console.log("Post response:", response.data);
       router.push("/patients");
     } catch (error) {
       console.error("Failed to post medicine details:", error);
@@ -137,7 +131,6 @@ export default function InputPatient() {
           },
         }
       );
-      // console.log("Post response:", response.data);
       router.push("/patients");
     } catch (error) {
       console.error("Failed to post medicine details:", error);
@@ -165,7 +158,7 @@ export default function InputPatient() {
               label="Nama Pasien"
               type="text"
               onChange={(e) => setName((patients.name = e.target.value))}
-              placeholder={inputId ? patients.name : "Nama Pasien"}
+              placeholder={inputId ? patients.name : ""}
               name=""
               value={inputId ? patients.name : name}
             />
@@ -176,7 +169,7 @@ export default function InputPatient() {
                 onChange={(e) =>
                   setPlace((patients.place_of_birth = e.target.value))
                 }
-                placeholder={inputId ? patients.place_of_birth : "Tempat Lahir"}
+                placeholder={inputId ? patients.place_of_birth : ""}
                 name=""
                 value={inputId ? patients.place_of_birth : place}
               />
@@ -184,7 +177,7 @@ export default function InputPatient() {
                 label="Usia"
                 type="number"
                 onChange={(e) => setAge((patients.id = Number(e.target.value)))}
-                placeholder={inputId ? patients.id.toString() : "Usia"}
+                placeholder={inputId ? patients.id.toString() : ""}
                 name=""
                 value={inputId ? patients.id.toString() : age.toString()}
               />
@@ -192,7 +185,7 @@ export default function InputPatient() {
                 label="Jenis Kelamin"
                 type="select"
                 onChange={(e) => setGender((patients.gender = e.target.value))}
-                placeholder={inputId ? patients.gender : "Jenis Kelamin"}
+                placeholder={inputId ? patients.gender : "Pilih"}
                 name=""
                 value={inputId ? patients.gender : gender}
                 options={["L", "P"]}
@@ -204,7 +197,7 @@ export default function InputPatient() {
               onChange={(e) =>
                 setInsurance((patients.insurance = e.target.value))
               }
-              placeholder={inputId ? patients.insurance : "Jenis Asuransi"}
+              placeholder={inputId ? patients.insurance : "Pilih"}
               name=""
               value={inputId ? patients.insurance : insurance}
               options={["BPJS", "Umum"]}
@@ -215,9 +208,7 @@ export default function InputPatient() {
               onChange={(e) =>
                 setPhone((patients.phone_number = e.target.value))
               }
-              placeholder={
-                inputId ? patients.phone_number : "Nomor Telepon Pasien"
-              }
+              placeholder={inputId ? patients.phone_number : ""}
               name=""
               value={inputId ? patients.phone_number : phone}
             />
@@ -225,7 +216,7 @@ export default function InputPatient() {
               label="Alamat Pasien"
               type="text"
               onChange={(e) => setAddress((patients.address = e.target.value))}
-              placeholder={inputId ? patients.address : "Nomor Telepon Pasien"}
+              placeholder={inputId ? patients.address : ""}
               name=""
               value={inputId ? patients.address : address}
             />
@@ -235,9 +226,7 @@ export default function InputPatient() {
               label="Nama Penanggung Jawab"
               type="text"
               onChange={(e) => setPicName((patients.pic_name = e.target.value))}
-              placeholder={
-                inputId ? patients.pic_name : "Nama Penanggung Jawab"
-              }
+              placeholder={inputId ? patients.pic_name : ""}
               name=""
               value={inputId ? patients.pic_name : picName}
             />
@@ -247,9 +236,7 @@ export default function InputPatient() {
               onChange={(e) =>
                 setPicStatus((patients.pic_status = e.target.value))
               }
-              placeholder={
-                inputId ? patients.pic_status : "Status Penanggung Jawab"
-              }
+              placeholder={inputId ? patients.pic_status : "Pilih"}
               name=""
               value={inputId ? patients.pic_status : picStatus}
               options={["Ayah", "Ibu", "Anak", "Saudara"]}
@@ -260,9 +247,7 @@ export default function InputPatient() {
               onChange={(e) =>
                 setPicAddress((patients.pic_address = e.target.value))
               }
-              placeholder={
-                inputId ? patients.pic_address : "Alamat Penanggung Jawab"
-              }
+              placeholder={inputId ? patients.pic_address : ""}
               name=""
               value={inputId ? patients.pic_address : picAddress}
             />

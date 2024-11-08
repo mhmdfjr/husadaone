@@ -4,18 +4,18 @@ import { Notification, ProfileCircle } from "iconsax-react";
 export default function TopBar(props: any) {
   return (
     <div className="sticky top-0 z-50 flex bg-basic-white justify-between items-center w-full p-4">
-      <div className="leading flex flex-col justify-center gap-2">
+      <div className="leading w-full flex flex-col justify-center gap-2">
         <p className="text-body-bold text-basic-black">Selamat datang!</p>
         <p className="text-body-sm-regular text-gray-medium">
           Rumah Sakit Harapan Kamu
         </p>
       </div>
 
-      <div className="search w-[560px]">
+      <div className="search w-full">
         <Search placeholder="Cari" />
       </div>
 
-      <div className="flex justify-center items-center gap-4">
+      <div className="w-full flex justify-end items-center gap-4">
         <div>
           <Notification
             size="28"

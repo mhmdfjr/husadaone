@@ -57,10 +57,6 @@ export default function InputPolyclinic() {
     }
   }, [inputId]);
 
-  useEffect(() => {
-    // console.log("Updated Patient:", medicine.id);
-  }, [polyclinic]);
-
   const handleSave = async () => {
     try {
       const response = await axios.post(
@@ -74,7 +70,6 @@ export default function InputPolyclinic() {
           },
         }
       );
-      // console.log("Post response:", response.data);
       router.push("/polyclinics");
     } catch (error) {
       console.error("Failed to post medicine details:", error);
@@ -94,7 +89,6 @@ export default function InputPolyclinic() {
           },
         }
       );
-      // console.log("Post response:", response.data);
       router.push("/polyclinics");
     } catch (error) {
       console.error("Failed to post medicine details:", error);
@@ -116,39 +110,31 @@ export default function InputPolyclinic() {
           <ArrowRight2 size="16" className="text-gray-medium-light" />
           <p className="text-brand-40 p-2">Tambah Data</p>
         </div>
-        <div className="flex justify-start items-center gap-x-20 gap-y-4 w-full">
+        <div className="flex justify-start items-end gap-x-20 gap-y-4 w-full">
           <Input
-            label="Kode Unit"
-            type="text"
-            onChange={(e) => setId((polyclinic.id = Number(e.target.value)))}
-            placeholder={inputId ? polyclinic.id.toString() : "00"}
-            name=""
-            value={inputId ? polyclinic.id.toString() : id.toString()}
-          />
-          <Input
-            label="Nama Unit"
+            label="Nama Poliklinik"
             type="text"
             onChange={(e) => setName((polyclinic.name = e.target.value))}
-            placeholder={inputId ? polyclinic.name : "Nama Obat"}
+            placeholder={inputId ? polyclinic.name : ""}
             name=""
             value={inputId ? polyclinic.name : name}
           />
-        </div>
-        <div className="w-full flex justify-end items-center gap-4">
-          <Button
-            label="Batal"
-            variant="secondary"
-            size="small"
-            onClick={() => router.push("/polyclinics")}
-          />
-          <Button
-            label="Simpan"
-            variant="primary"
-            size="small"
-            onClick={() =>
-              inputId ? handleEdit(Number(inputId)) : handleSave()
-            }
-          />
+          <div className="w-full flex justify-start items-center gap-4">
+            <Button
+              label="Batal"
+              variant="secondary"
+              size="small"
+              onClick={() => router.push("/polyclinics")}
+            />
+            <Button
+              label="Simpan"
+              variant="primary"
+              size="small"
+              onClick={() =>
+                inputId ? handleEdit(Number(inputId)) : handleSave()
+              }
+            />
+          </div>
         </div>
       </div>
     </div>

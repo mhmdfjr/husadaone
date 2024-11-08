@@ -11,8 +11,7 @@ interface CardDashboardProps {
 // Functional component with typed props
 const CardDashboard: React.FC<CardDashboardProps> = ({ title, sum, date }) => {
   return (
-    <div className="relative w-[280px] h-[137px] flex flex-col justify-between pl-4 py-4 rounded-2xl bg-brand-base overflow-hidden">
-      {/* Background Rectangle */}
+    <div className="relative w-full flex flex-col justify-center items-start gap-8 p-4 rounded-2xl bg-brand-base overflow-hidden">
       <div
         className="absolute top-[5px] right-[-30px] w-[120px] h-[120px] rounded-3xl transform rotate-45 opacity-30"
         style={{
