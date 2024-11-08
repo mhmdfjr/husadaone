@@ -32,37 +32,29 @@ export default function TicketQueue() {
   const router = useRouter();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const fetchData = async () => {
+    try {
+      const { data: response } = await axios.get(
+        "https://api-simrs.serpihantech.com/api/payments"
+      );
+      const responses = response.data.filter(
+        (res: Payment) => res.path_audio !== null
+      );
+      setPayments(responses);
+      setCurrent(responses[0].id);
+      console.log(responses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/payments"
-        );
-        const responses = response.data.filter(
-          (res: Payment) => res.path_audio !== null
-        );
-        setPayments(responses);
-        setCurrent(responses[0].id);
-        // console.log(responses);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     fetchData();
-  }, [current]);
+  }, []);
 
   const findPayment = payments.find((payment) => payment.id == current);
 
-  const deletePayment = async (id: number) => {
-    try {
-      // const response = await axios.delete(
-      //   `https://api-simrs.serpihantech.com/api/payments/${id}`
-      // );
-      // console.log(`deleted : ${id}`);
-    } catch (error) {
-      console.error("Failed to delete payment:", error);
-    }
-  };
+  const deletePayment = async (id: number) => {};
 
   const handleNext = async () => {
     if (current < payments.length) {
@@ -85,7 +77,9 @@ export default function TicketQueue() {
     }
   };
 
-  const handleReset = () => {};
+  const handleReset = () => {
+    fetchData();
+  };
 
   return (
     <div className="mx-4 flex justify-start items-center gap-4 ">
@@ -112,7 +106,7 @@ export default function TicketQueue() {
         </div>
         <div className="flex justify-start items-center gap-x-20 w-full">
           <Input
-            label="Loket"
+            label="Apotek"
             type="select"
             onChange={(e) => {}}
             placeholder="Pilih Apotek"
@@ -128,7 +122,6 @@ export default function TicketQueue() {
             name=""
             value={findPayment ? findPayment.id.toString() : ""}
           />
-          {/* // this line is error */}
           <audio
             ref={audioRef}
             src={findPayment ? findPayment.path_audio : ""}

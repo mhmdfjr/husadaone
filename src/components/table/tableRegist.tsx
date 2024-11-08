@@ -63,6 +63,17 @@ export default function TableRegist() {
     fetchData();
   }, [registrations]);
 
+  const deleteRegistration = async (id: number) => {
+    try {
+      const response = await axios.delete(
+        `https://api-simrs.serpihantech.com/api/registrations/${id}`
+      );
+      router.push("/registry");
+    } catch (error) {
+      console.error("Failed to delete registration:", error);
+    }
+  };
+
   return (
     <Table tableHead={tableHeaders}>
       {registrations.map((registration: Registration, index: number) => {
@@ -110,7 +121,7 @@ export default function TableRegist() {
                   size="24"
                   color="#E90C1B"
                   className="cursor-pointer"
-                  onClick={() => {}}
+                  onClick={() => deleteRegistration(registration.id)}
                 />
               </div>
             </td>

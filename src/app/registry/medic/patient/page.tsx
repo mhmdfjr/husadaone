@@ -2,18 +2,53 @@
 import Button from "@/components/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import TablePatients from "@/components/table/tablePatients";
+import TableRegisterPatients from "@/components/table/tableRegisterPatient";
 import { TickSquare, ArrowRight2 } from "iconsax-react";
+
+interface Patient {
+  id: number;
+  name: string;
+  gender: string;
+  blood_type: string;
+  place_of_birth: string;
+  date_of_birth: string;
+  phone_number: string;
+  address: string;
+  insurance: string;
+  allergy: string;
+  disability: string;
+  pic_name: string;
+  pic_status: string;
+  pic_address: string;
+}
 
 export default function InputPatientData() {
   const [select, setSelect] = useState<boolean>(false);
   const router = useRouter();
-  const [childData, setChildData] = useState<number>();
-  const handleChildData = (data: number) => {
+  const [childData, setChildData] = useState<Patient>({
+    id: 0,
+    name: "",
+    gender: "",
+    blood_type: "",
+    place_of_birth: "",
+    date_of_birth: "",
+    phone_number: "",
+    address: "",
+    insurance: "",
+    allergy: "",
+    disability: "",
+    pic_name: "",
+    pic_status: "",
+    pic_address: "",
+  });
+  const handleChildData = (data: Patient) => {
     setChildData(data);
   };
 
-  const handleCLick = () => {};
+  const handleCLick = () => {
+    localStorage.setItem("patientId", JSON.stringify(childData));
+    router.push("/registry");
+  };
 
   const handleSelect = () => {
     setSelect(!select);
@@ -63,14 +98,23 @@ export default function InputPatientData() {
               onClick={() => {
                 {
                   childData
-                    ? router.push(`patients/input?input=${childData}`)
+                    ? router.push(`patient/input?input=${childData.id}`)
                     : null;
                 }
               }}
             />
+            <Button
+              label="Simpan"
+              variant="primary"
+              size="small"
+              onClick={() => handleCLick()}
+            />
           </div>
         </div>
-        <TablePatients onSelect={select} onDataChange={handleChildData} />
+        <TableRegisterPatients
+          onSelect={select}
+          onDataChange={handleChildData}
+        />
       </div>
     </div>
   );

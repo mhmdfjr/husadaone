@@ -5,14 +5,19 @@ import Input from "@/components/input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
-import TableDashboard from "@/components/table/tableDashboard";
+import TableRegisterPatientDetail from "@/components/table/tableRegisterPatientDetail";
 
-interface PatientDetails {
+interface Patient {
   id: number;
-  medic: number;
   name: string;
   allergy: string;
   disability: string;
+}
+
+interface Registration {
+  id: number;
+  patient_id: number;
+  patient: Patient;
 }
 
 export default function EditPatientData() {
@@ -25,22 +30,26 @@ export default function EditPatientData() {
   const searchParams = useSearchParams();
   const inputId = searchParams.get("input");
 
-  const patientData: PatientDetails = {
+  const registrationData: Registration = {
     id: 0,
-    medic: 0,
-    name: "",
-    allergy: "",
-    disability: "",
+    patient_id: 0,
+    patient: {
+      id: 0,
+      name: "",
+      allergy: "",
+      disability: "",
+    },
   };
-  const [patients, setPatients] = useState<PatientDetails>(patientData);
+  const [registration, setRegistration] =
+    useState<Registration>(registrationData);
 
   useEffect(() => {
     const fetchNurseDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/patients/${id}`
+          `https://api-simrs.serpihantech.com/api/registrations/${id}`
         );
-        setPatients(response.data);
+        setRegistration(response.data.registration);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
@@ -72,7 +81,7 @@ export default function EditPatientData() {
           <ArrowRight2 size="16" className="text-gray-medium-light" />
           <p
             className="text-gray-medium-light p-2"
-            onClick={() => router.push("/registry/patient")}
+            onClick={() => router.push("/registry/medic/patient")}
           >
             Data Pasien
           </p>
@@ -88,7 +97,7 @@ export default function EditPatientData() {
                 onChange={(e) => setId(Number(e.target.value))}
                 placeholder="000"
                 name=""
-                value={id.toString()}
+                value={inputId ? registration.id.toString() : ""}
               />
               <Input
                 label="No RM"
@@ -96,7 +105,7 @@ export default function EditPatientData() {
                 onChange={(e) => setMedic(Number(e.target.value))}
                 placeholder="000"
                 name=""
-                value={medic.toString()}
+                value={inputId ? registration.patient_id.toString() : ""}
               />
             </div>
             <Input
@@ -105,7 +114,7 @@ export default function EditPatientData() {
               onChange={(e) => setName(e.target.value)}
               placeholder="Nama"
               name=""
-              value={name}
+              value={inputId ? registration.patient.name.toString() : ""}
             />
           </div>
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
@@ -115,7 +124,7 @@ export default function EditPatientData() {
               onChange={(e) => setAllergy(e.target.value)}
               placeholder="Alergi"
               name=""
-              value={allergy}
+              value={inputId ? registration.patient.allergy.toString() : ""}
             />
             <Input
               label="Kecacatan"
@@ -123,7 +132,7 @@ export default function EditPatientData() {
               onChange={(e) => setDisability(e.target.value)}
               placeholder="Kecacatan"
               name=""
-              value={disability}
+              value={inputId ? registration.patient.disability.toString() : ""}
             />
           </div>
         </div>
@@ -131,7 +140,7 @@ export default function EditPatientData() {
 
       <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible">
         <p className="text-h8-bold text-basic-black">Riwayat Pemeriksaan</p>
-        <TableDashboard />
+        <TableRegisterPatientDetail />
       </div>
     </div>
   );

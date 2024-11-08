@@ -5,7 +5,7 @@ import TableRegist from "@/components/table/tableRegist";
 import { Add } from "iconsax-react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import DatePicker from "@/components/date-picker";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -49,8 +49,19 @@ interface Registration {
   patient: Patient;
 }
 
+interface Polyclinic {
+  id: number;
+  name: string;
+}
+
+interface SelectDoctor {
+  id: number;
+  name: string;
+}
+
 const Registry = () => {
   const router = useRouter();
+  // const searchParams = useSearchParams();
   const [regis, setRegis] = useState("");
   const [nama, setNama] = useState("");
   const [noRM, setNoRM] = useState("");
@@ -95,29 +106,46 @@ const Registry = () => {
     address: "1234 Example St, City, Country",
   });
 
-  const [savedValue, setSavedValue] = useState<Registration>(registrationData);
-  const [polyclinicId, setPolyclinicId] = useState<number>(0);
-  const [doctorId, setDoctorId] = useState<number>(0);
+  const [patientId, setPatientId] = useState<Patient>({
+    id: 0,
+    name: "",
+    gender: "",
+    blood_type: "",
+    place_of_birth: "",
+    date_of_birth: "",
+    phone_number: "",
+    address: "",
+    insurance: "",
+    allergy: "",
+    disability: "",
+    pic_name: "",
+    pic_status: "",
+    pic_address: "",
+  });
+  const [polyclinicId, setPolyclinicId] = useState<Polyclinic>({
+    id: 0,
+    name: "",
+  });
+  const [doctorId, setDoctorId] = useState<SelectDoctor>({
+    id: 0,
+    name: "",
+  });
 
   useEffect(() => {
-    const storageRegistration = localStorage.getItem("stateValue");
+    const storagePatient = localStorage.getItem("patientId");
     const storagePolyclinic = localStorage.getItem("polyclinicId");
     const storageDoctor = localStorage.getItem("doctorId");
-    if (storageRegistration) {
-      setSavedValue(JSON.parse(storageRegistration) as Registration);
+
+    if (storagePatient) {
+      setPatientId(JSON.parse(storagePatient) as Patient);
     }
     if (storagePolyclinic) {
-      setPolyclinicId(Number(storagePolyclinic));
+      setPolyclinicId(JSON.parse(storagePolyclinic) as Polyclinic);
     }
     if (storageDoctor) {
-      setDoctorId(Number(storageDoctor));
+      setDoctorId(JSON.parse(storageDoctor) as SelectDoctor);
     }
   }, []);
-
-  // useEffect(() => {
-  //   console.log(savedValue.registration_date);
-  //   console.log(savedValue.patient.name);
-  // }, [savedValue]);
 
   const handleDateChange = (date: string) => {
     setSelectedDate(date);
@@ -128,16 +156,16 @@ const Registry = () => {
       const response = await axios.post(
         "https://api-simrs.serpihantech.com/api/registrations",
         {
-          patient_id: nama,
-          polyclinic_id: poli,
-          doctor_id: doctor,
+          patient_id: patientId.id,
+          polyclinic_id: polyclinicId.id,
+          doctor_id: doctorId.id,
           registration_date: selectedDate,
         },
         {
           params: {
-            patient_id: nama,
-            polyclinic_id: poli,
-            doctor_id: doctor,
+            patient_id: patientId.id,
+            polyclinic_id: polyclinicId.id,
+            doctor_id: doctorId.id,
             registration_date: selectedDate,
           },
         }
@@ -189,7 +217,7 @@ const Registry = () => {
               label="Nama"
               name="nama"
               type="text"
-              value={savedValue ? savedValue.patient.name : nama}
+              value={patientId ? patientId.name : nama}
               onChange={() => {}}
             />
           </div>
@@ -199,7 +227,7 @@ const Registry = () => {
                 label="No Rekam Medis"
                 name="noRM"
                 type="text"
-                value={savedValue ? savedValue.patient_id.toString() : noRM}
+                value={patientId ? patientId.id.toString() : ""}
                 onChange={() => {}}
               />
               <Button
@@ -214,7 +242,7 @@ const Registry = () => {
                 label="Poliklinik yang Dituju"
                 name="poli"
                 type="text"
-                value={polyclinicId ? polyclinicId.toString() : ""}
+                value={polyclinicId ? polyclinicId.name : ""}
                 onChange={() => {}}
               />
               <Button
@@ -229,7 +257,7 @@ const Registry = () => {
                 label="Dokter yang Dituju"
                 name="doctor"
                 type="text"
-                value={doctorId ? doctorId.toString() : ""}
+                value={doctorId ? doctorId.name : ""}
                 onChange={() => {}}
               />
               <Button

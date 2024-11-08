@@ -2,20 +2,24 @@
 import Button from "@/components/button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import TableDoctors from "@/components/table/tableDoctors";
+import TableRegisterDoctor from "@/components/table/tableRegisterDoctor";
 import { TickSquare, ArrowRight2 } from "iconsax-react";
+
+interface SelectDoctor {
+  id: number;
+  name: string;
+}
 
 export default function ListDoctors() {
   const [select, setSelect] = useState<boolean>(false);
   const router = useRouter();
-  const [childData, setChildData] = useState<number>(0);
-  const handleChildData = (data: number) => {
+  const [childData, setChildData] = useState<SelectDoctor>({ id: 0, name: "" });
+  const handleChildData = (data: SelectDoctor) => {
     setChildData(data);
   };
 
   const handleCLick = () => {
-    localStorage.setItem("doctorId", childData.toString());
+    localStorage.setItem("doctorId", JSON.stringify(childData));
     router.push("/registry");
   };
 
@@ -53,7 +57,7 @@ export default function ListDoctors() {
             />
           </div>
         </div>
-        <TableDoctors onSelect={select} onDataChange={handleChildData} />
+        <TableRegisterDoctor onSelect={select} onDataChange={handleChildData} />
       </div>
     </div>
   );

@@ -1,15 +1,20 @@
 "use client";
 import Button from "@/components/button";
-import TablePolyclinics from "@/components/table/tablePolyclinics";
+import TableRegisterPolyclinic from "@/components/table/tableRegisterPolyclinic";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { TickSquare, ArrowRight2 } from "iconsax-react";
 
+interface Polyclinic {
+  id: number;
+  name: string;
+}
+
 export default function ListPolyclinics() {
   const [select, setSelect] = useState<boolean>(false);
   const router = useRouter();
-  const [childData, setChildData] = useState<number>(0);
-  const handleChildData = (data: number) => {
+  const [childData, setChildData] = useState<Polyclinic>({ id: 0, name: "" });
+  const handleChildData = (data: Polyclinic) => {
     setChildData(data);
   };
 
@@ -18,7 +23,8 @@ export default function ListPolyclinics() {
   };
 
   const handleCLick = () => {
-    localStorage.setItem("polyclinicId", childData.toString());
+    localStorage.setItem("polyclinicId", JSON.stringify(childData));
+    // router.push(`/registry?polyclinic=${childData}`);
     router.push("/registry");
   };
 
@@ -52,7 +58,10 @@ export default function ListPolyclinics() {
             />
           </div>
         </div>
-        <TablePolyclinics onSelect={select} onDataChange={handleChildData} />
+        <TableRegisterPolyclinic
+          onSelect={select}
+          onDataChange={handleChildData}
+        />
       </div>
     </div>
   );

@@ -131,6 +131,20 @@ export default function InputMedic() {
     }
   }, [inputId]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: response } = await axios.get(
+          "https://api-simrs.serpihantech.com/api/patients"
+        );
+        setMedic(response.data[response.data.length - 1].id + 1);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const handleUpdateRegistration = async (id: number) => {
     try {
       const response = await axios.put(
@@ -197,19 +211,53 @@ export default function InputMedic() {
     }
   };
 
-  const handleUpdate = async (id: number, patient_id: number) => {
+  const handleCreatePatient = async () => {
     try {
-      handleUpdateRegistration(id);
-      handleUpdatePatient(patient_id);
+      const response = await axios.post(
+        `https://api-simrs.serpihantech.com/api/patients`,
+        {
+          name: name || registration.patient.name,
+          place_of_birth: birthPlace || registration.patient.place_of_birth,
+          date_of_birth: birthDate || registration.patient.date_of_birth,
+          gender: gender || registration.patient.gender,
+          address: addressPatient || registration.patient.address,
+          blood_type: bloodType || registration.patient.blood_type,
+          insurance: insurance || registration.patient.insurance,
+          pic_name: namePic || registration.patient.pic_name,
+          pic_status: statusPic || registration.patient.pic_status,
+          pic_address: addressPic || registration.patient.pic_address,
+          allergy: allergy || registration.patient.allergy,
+          disability: disability || registration.patient.disability,
+        },
+        {
+          params: {
+            name: name || registration.patient.name,
+            place_of_birth: birthPlace || registration.patient.place_of_birth,
+            date_of_birth: birthDate || registration.patient.date_of_birth,
+            gender: gender || registration.patient.gender,
+            phone_number: "085700072350",
+            address: addressPatient || registration.patient.address,
+            blood_type: bloodType || registration.patient.blood_type,
+            insurance: insurance || registration.patient.insurance,
+          },
+        }
+      );
+      localStorage.setItem("patientId", JSON.stringify(registration.patient));
       router.push("/registry");
     } catch (error) {
       console.error("Failed to post medicine details:", error);
     }
   };
 
-  const handleCLick = () => {
-    localStorage.setItem("stateValue", JSON.stringify(registration));
-    router.push("/registry");
+  const handleUpdate = async (id: number, patient_id: number) => {
+    try {
+      handleUpdateRegistration(id);
+      handleUpdatePatient(patient_id);
+      localStorage.setItem("patientId", JSON.stringify(registration.patient));
+      router.push("/registry");
+    } catch (error) {
+      console.error("Failed to post medicine details:", error);
+    }
   };
 
   return (
@@ -247,12 +295,12 @@ export default function InputMedic() {
               label="No Rekam Medis"
               type="number"
               onChange={(e) =>
-                setMedic((registration.patient_id = Number(e.target.value)))
+                setMedic((registration.patient.id = Number(e.target.value)))
               }
-              placeholder={inputId ? registration.patient_id.toString() : ""}
+              placeholder={inputId ? registration.patient.id.toString() : ""}
               name=""
               value={
-                inputId ? registration.patient_id.toString() : medic.toString()
+                inputId ? registration.patient.id.toString() : medic.toString()
               }
             />
             <DatePicker
@@ -417,7 +465,7 @@ export default function InputMedic() {
             onClick={
               inputId
                 ? () => handleUpdate(registration.id, registration.patient_id)
-                : () => handleCLick()
+                : () => handleCreatePatient()
             }
           />
         </div>
