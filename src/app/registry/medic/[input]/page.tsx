@@ -59,6 +59,8 @@ export default function InputMedic() {
   const searchParams = useSearchParams();
   const inputId = searchParams.get("input");
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const registrationData = {
     id: 0,
     patient_id: 0,
@@ -111,7 +113,7 @@ export default function InputMedic() {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/registrations/${inputId}`
+          `${apiUrl}/registrations/${inputId}`
         );
         setRegistration(response.data.registration);
         setCart(response.data.keranjang);
@@ -134,9 +136,7 @@ export default function InputMedic() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/patients"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/patients`);
         setMedic(response.data[response.data.length - 1].id + 1);
       } catch (error) {
         console.error(error);
@@ -148,7 +148,7 @@ export default function InputMedic() {
   const handleUpdateRegistration = async (id: number) => {
     try {
       const response = await axios.put(
-        `https://api-simrs.serpihantech.com/api/registrations/${id}`,
+        `${apiUrl}/registrations/${id}`,
         {
           patient_id: medic || registration.patient_id,
           polyclinic_id: registration.polyclinic_id,
@@ -178,7 +178,7 @@ export default function InputMedic() {
   const handleUpdatePatient = async (id: number) => {
     try {
       const response = await axios.put(
-        `https://api-simrs.serpihantech.com/api/patients/${id}`,
+        `${apiUrl}/patients/${id}`,
         {
           name: name || registration.patient.name,
           place_of_birth: birthPlace || registration.patient.place_of_birth,
@@ -214,7 +214,7 @@ export default function InputMedic() {
   const handleCreatePatient = async () => {
     try {
       const response = await axios.post(
-        `https://api-simrs.serpihantech.com/api/patients`,
+        `${apiUrl}/patients`,
         {
           name: name || registration.patient.name,
           place_of_birth: birthPlace || registration.patient.place_of_birth,
@@ -253,7 +253,6 @@ export default function InputMedic() {
     try {
       handleUpdateRegistration(id);
       handleUpdatePatient(patient_id);
-      localStorage.setItem("patientId", JSON.stringify(registration.patient));
       router.push("/registry");
     } catch (error) {
       console.error("Failed to post medicine details:", error);

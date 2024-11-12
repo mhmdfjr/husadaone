@@ -49,12 +49,12 @@ export default function TableRegist() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const router = useRouter();
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/registrations"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/registrations`);
         setRegistrations(response.data);
       } catch (error) {
         console.error(error);
@@ -65,9 +65,7 @@ export default function TableRegist() {
 
   const deleteRegistration = async (id: number) => {
     try {
-      const response = await axios.delete(
-        `https://api-simrs.serpihantech.com/api/registrations/${id}`
-      );
+      const response = await axios.delete(`${apiUrl}/registrations/${id}`);
       router.push("/registry");
     } catch (error) {
       console.error("Failed to delete registration:", error);

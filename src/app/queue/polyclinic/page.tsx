@@ -27,6 +27,8 @@ export default function TicketQueue() {
   const [queue, setQueue] = useState<number>(0);
   const [path, setPath] = useState<string>("");
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const registrationData = [
     {
       id: 0,
@@ -54,9 +56,7 @@ export default function TicketQueue() {
 
   const fetchData = async () => {
     try {
-      const { data: response } = await axios.get(
-        "https://api-simrs.serpihantech.com/api/registrations"
-      );
+      const { data: response } = await axios.get(`${apiUrl}/registrations`);
       const responses = response.data.filter(
         (res: Registration) => res.path_audio !== null
       );
@@ -79,41 +79,37 @@ export default function TicketQueue() {
     (registration) => registration.id == current
   );
 
-  const handleUpdatePatient = async (id: number) => {
-    try {
-      const response = await axios.put(
-        `https://api-simrs.serpihantech.com/api/patients/${id}`,
-        {
-          name: registration.patient.name,
-          place_of_birth: registration.patient.place_of_birth,
-          date_of_birth: registration.patient.date_of_birth,
-          gender: registration.patient.gender,
-          address: registration.patient.address,
-          blood_type: registration.patient.blood_type,
-          insurance: registration.patient.insurance,
-          pic_name: registration.patient.pic_name,
-          pic_status: registration.patient.pic_status,
-          pic_address: registration.patient.pic_address,
-          allergy: registration.patient.allergy,
-          disability: registration.patient.disability,
-        },
-        {
-          params: {
-            name: registration.patient.name,
-            place_of_birth: registration.patient.place_of_birth,
-            date_of_birth: registration.patient.date_of_birth,
-            gender: registration.patient.gender,
-            phone_number: registration.patient.phone_number,
-            address: registration.patient.address,
-            blood_type: registration.patient.blood_type,
-            insurance: registration.patient.insurance,
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Failed to post medicine details:", error);
-    }
-  };
+  // const handleDeleteQueue = async (id: number) => {
+  //   try {
+  //     const response = await axios.put(
+  //       `${apiUrl}/registrations/${id}`,
+  //       {
+  //         patient_id: registration.patient_id,
+  //         polyclinic_id: registration.polyclinic_id,
+  //         doctor_id: registration.doctor_id,
+  //         registration_date: registration.registration_date,
+  //         poly_queue: registration.poly_queue,
+  //         path_audio: registration.path_queue,
+  //         subjective: registration.subjective,
+  //         objective: registration.objective,
+  //         assessment: registration.assessment,
+  //         plan: registration.plan,
+  //         diagnosis: registration.diagnosis,
+  //         already_paid: registration.already_paid,
+  //       },
+  //       {
+  //         params: {
+  //           patient_id: registration.patient_id,
+  //           polyclinic_id: registration.polyclinic_id,
+  //           doctor_id: registration.doctor_id,
+  //           registration_date: registration.registration_date,
+  //         },
+  //       }
+  //     );
+  //   } catch (error) {
+  //     console.error("Failed to post medicine details:", error);
+  //   }
+  // };
 
   const handleNext = () => {
     if (current < registrations.length) {

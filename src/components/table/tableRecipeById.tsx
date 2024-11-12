@@ -106,13 +106,12 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
   const [medicines, setMedicines] = useState<Medicine[]>(medicineData);
 
   const [selectedOption, setSelectedOption] = useState<boolean>(false);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const fetchPatientDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/patients/${id}`
-        );
+        const { data: response } = await axios.get(`${apiUrl}/patients/${id}`);
         setPatients(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
@@ -133,9 +132,7 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/payments`
-        );
+        const { data: response } = await axios.get(`${apiUrl}/payments`);
         setPayments(response.data);
       } catch (error) {
         console.error("Failed to fetch payments:", error);

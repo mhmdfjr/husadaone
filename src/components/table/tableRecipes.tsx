@@ -58,12 +58,12 @@ export default function TableRecipes() {
   const itemsPerPage = 10;
   const router = useRouter();
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/registrations"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/registrations`);
         setRegistrations(response.data);
       } catch (error) {
         console.error(error);
@@ -75,9 +75,7 @@ export default function TableRecipes() {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/payments`
-        );
+        const { data: response } = await axios.get(`${apiUrl}/payments`);
         setPayments(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);

@@ -52,12 +52,12 @@ const TablePatients: React.FC<TablePatientProps> = ({
     }
   }, [onSelect]);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/patients"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/patients`);
         setPatients(response.data);
       } catch (error) {
         console.error(error);

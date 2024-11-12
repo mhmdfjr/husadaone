@@ -25,6 +25,8 @@ export default function AddQueue() {
   const [current, setCurrent] = useState<Queue>(currentData);
   const [waiting, setWaiting] = useState<Queue[]>(waitingData);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const handlePrint = () => {
     // if (waiting) {
     //   const doc = new jsPDF();
@@ -45,9 +47,7 @@ export default function AddQueue() {
 
   const fetchData = async () => {
     try {
-      const { data: response } = await axios.get(
-        "https://api-simrs.serpihantech.com/api/queue"
-      );
+      const { data: response } = await axios.get(`${apiUrl}/queue`);
       setCurrent(response.current_queue);
       setWaiting(response.waiting_queue);
     } catch (error) {
@@ -59,11 +59,7 @@ export default function AddQueue() {
 
   const handleClick = async () => {
     try {
-      const response = await axios.post(
-        "https://api-simrs.serpihantech.com/api/queue/add",
-        {},
-        {}
-      );
+      const response = await axios.post(`${apiUrl}/queue/add`, {}, {});
       setIsSuccess(true);
     } catch (error) {
       console.error("Failed to post medicine details:", error);

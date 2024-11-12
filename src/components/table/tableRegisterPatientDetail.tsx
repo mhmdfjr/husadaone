@@ -55,14 +55,13 @@ export default function TableRegisterPatientDetail() {
 
   const [patient, setPatient] = useState<Patient>(patientData);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchNurseDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/patients/${id}`
-        );
+        const { data: response } = await axios.get(`${apiUrl}/patients/${id}`);
         setPatient(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }

@@ -92,11 +92,13 @@ export default function InputOutpatient() {
     useState<Registration>(registrationData);
   const [cart, setCart] = useState();
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/registrations/${id}`
+          `${apiUrl}/registrations/${id}`
         );
         setRegistration(response.data.registration);
         setCart(response.data.keranjang);
@@ -119,7 +121,7 @@ export default function InputOutpatient() {
   const handleSave = async (id: number) => {
     try {
       const response = await axios.put(
-        `https://api-simrs.serpihantech.com/api/registrations/${id}`,
+        `${apiUrl}/registrations/${id}`,
         {
           patient_id: registration.patient_id,
           polyclinic_id: registration.polyclinic_id,

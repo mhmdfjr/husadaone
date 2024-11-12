@@ -12,6 +12,9 @@ export default function ListPolyclinics() {
   const [isSuccess, setIsSuccess] = useState<boolean | null>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const router = useRouter();
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const [childData, setChildData] = useState<number>();
   const handleChildData = (data: number) => {
     setChildData(data);
@@ -27,7 +30,7 @@ export default function ListPolyclinics() {
     if (childData) {
       try {
         const response = await axios.delete(
-          `https://api-simrs.serpihantech.com/api/polyclinics/${childData}`
+          `${apiUrl}/polyclinics/${childData}`
         );
         setIsSuccess(true);
       } catch (error) {

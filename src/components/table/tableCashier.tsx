@@ -61,35 +61,32 @@ export default function TableRecipes() {
   const router = useRouter();
   const params = useParams();
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/registrations"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/registrations`);
         setRegistrations(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [apiUrl]);
 
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/payments`
-        );
+        const { data: response } = await axios.get(`${apiUrl}/payments`);
         setPayment(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
     };
     fetchPayments();
-  }, [params, payments]);
+  }, [params, payments, apiUrl]);
 
-  // Calculate the start and end indices for pagination
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedRecipes = registrations.slice(startIndex, endIndex);

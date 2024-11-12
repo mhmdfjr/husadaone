@@ -1,14 +1,12 @@
 import React from "react";
 import { Profile2User } from "iconsax-react";
 
-// Define the props interface
 interface CardDashboardProps {
   title: string;
   sum: number | string;
   date: string;
 }
 
-// Functional component with typed props
 const CardDashboard: React.FC<CardDashboardProps> = ({ title, sum, date }) => {
   return (
     <div className="relative w-full flex flex-col justify-center items-start gap-8 p-4 rounded-2xl bg-brand-base overflow-hidden">

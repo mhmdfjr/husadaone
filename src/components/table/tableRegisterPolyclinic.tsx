@@ -39,12 +39,12 @@ const TableRegisterPolyclinic: React.FC<TablePolyclinicsProps> = ({
     }
   }, [onSelect]);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/polyclinics"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/polyclinics`);
         setPolyclinics(response.data);
       } catch (error) {
         console.error(error);
