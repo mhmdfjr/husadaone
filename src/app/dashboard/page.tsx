@@ -13,9 +13,15 @@ export default function Dashboard() {
   const [nursesCount, setNursesCount] = useState<string>("-");
   const [polyclinicCount, setPolyclinicCount] = useState<string>("-");
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  // useEffect(() => {
+  //   console.log(`API URL: ${apiUrl}`);
+  // }, []);
+
   useEffect(() => {
     axios
-      .get("https://api-simrs.serpihantech.com/api/patients")
+      .get(`${apiUrl}/patients`)
       .then((response) => {
         const data = response.data;
         if (data && Array.isArray(data.data)) {
@@ -45,7 +51,7 @@ export default function Dashboard() {
       .catch((error) => console.error("Error fetching patients:", error));
 
     axios
-      .get("https://api-simrs.serpihantech.com/api/doctors")
+      .get(`${apiUrl}/doctors`)
       .then((response) => {
         const data = response.data;
         if (data && Array.isArray(data.data)) {
@@ -59,7 +65,7 @@ export default function Dashboard() {
       .catch((error) => console.error("Error fetching doctors:", error));
 
     axios
-      .get("https://api-simrs.serpihantech.com/api/nurses")
+      .get(`${apiUrl}/nurses`)
       .then((response) => {
         const data = response.data;
         if (data && Array.isArray(data.data)) {
@@ -71,7 +77,7 @@ export default function Dashboard() {
       .catch((error) => console.error("Error fetching nurses:", error));
 
     axios
-      .get("https://api-simrs.serpihantech.com/api/polyclinics")
+      .get(`${apiUrl}/polyclinics`)
       .then((response) => {
         const data = response.data;
         if (data && Array.isArray(data.data)) {

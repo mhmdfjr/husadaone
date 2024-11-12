@@ -60,12 +60,12 @@ const TableRegisterDoctor: React.FC<TableDoctorsProps> = ({
     }
   }, [onSelect]);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/doctors"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/doctors`);
         setDoctors(response.data);
       } catch (error) {
         console.error(error);

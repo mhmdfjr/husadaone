@@ -44,6 +44,7 @@ const TableDoctors: React.FC<TableDoctorsProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const router = useRouter();
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     if (onSelect) {
@@ -58,16 +59,14 @@ const TableDoctors: React.FC<TableDoctorsProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/doctors"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/doctors`);
         setDoctors(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, [doctors]);
+  }, [doctors, apiUrl]);
 
   const handleCheckboxChange = (id: number) => {
     setSelectedOption(id);

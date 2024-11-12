@@ -12,6 +12,9 @@ export default function ListNurses() {
   const [isSuccess, setIsSuccess] = useState<boolean | null>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const router = useRouter();
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const [childData, setChildData] = useState<number>();
   const handleChildData = (data: number) => {
     setChildData(data);
@@ -26,9 +29,7 @@ export default function ListNurses() {
   const handleDelete = async () => {
     if (childData) {
       try {
-        const response = await axios.delete(
-          `https://api-simrs.serpihantech.com/api/patients/${childData}`
-        );
+        const response = await axios.delete(`${apiUrl}/patients/${childData}`);
         setIsSuccess(true);
       } catch (error) {
         setIsSuccess(false);

@@ -38,6 +38,8 @@ export default function InputDoctor() {
   const [address, setAddress] = useState<string>("");
   const [cost, setCost] = useState<string>("");
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const inputId = searchParams.get("input");
@@ -73,9 +75,7 @@ export default function InputDoctor() {
   useEffect(() => {
     const fetchDoctorDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/doctors/${id}`
-        );
+        const { data: response } = await axios.get(`${apiUrl}/doctors/${id}`);
         setDoctor(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
@@ -96,9 +96,7 @@ export default function InputDoctor() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/polyclinics"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/polyclinics`);
         setPolyclinics(response.data);
       } catch (error) {
         console.error(error);
@@ -115,7 +113,7 @@ export default function InputDoctor() {
   const handleSave = async () => {
     try {
       const response = await axios.post(
-        "https://api-simrs.serpihantech.com/api/doctors",
+        `${apiUrl}/doctors`,
         {
           polyclinic_id: polyId,
           name: name,
@@ -150,7 +148,7 @@ export default function InputDoctor() {
   const handleEdit = async (id: number) => {
     try {
       const response = await axios.put(
-        `https://api-simrs.serpihantech.com/api/doctors/${id}`,
+        `${apiUrl}/doctors/${id}`,
         {
           polyclinic_id: polyId || doctor.polyclinic_id,
           name: name || doctor.name,

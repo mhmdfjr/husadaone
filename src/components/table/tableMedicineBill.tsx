@@ -89,12 +89,13 @@ const TableMedicineBill: React.FC<TableMedicineBillProps> = ({
 
   const [payments, setPayments] = useState<Payment[]>(paymentData);
   const [medicines, setMedicines] = useState<Medicine[]>(medicineData);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const fetchRegistration = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/registrations/${id}`
+          `${apiUrl}/registrations/${id}`
         );
         setMedicines(response.data.keranjang[0].medicines);
       } catch (error) {
@@ -111,7 +112,7 @@ const TableMedicineBill: React.FC<TableMedicineBillProps> = ({
         router.push("/error");
       }
     }
-  }, [params]);
+  }, [params, apiUrl, router]);
 
   useEffect(() => {
     onMedicinesChange(medicines);

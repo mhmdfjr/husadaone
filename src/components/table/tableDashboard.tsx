@@ -39,20 +39,19 @@ export default function TableDashboard() {
 
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const router = useRouter();
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/registrations"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/registrations`);
         setRegistrations(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [apiUrl]);
 
   const calculateAge = (date_of_birth: string) => {
     const birthDate = new Date(date_of_birth);

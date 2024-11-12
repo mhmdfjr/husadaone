@@ -69,12 +69,12 @@ const TablePrescription: React.FC<TablePrescription> = ({
 
   const [payment, setPayment] = useState<Payment>(paymentData);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchPatientDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/payments/${id}`
-        );
+        const { data: response } = await axios.get(`${apiUrl}/payments/${id}`);
         setPayment(response.data.payment);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);

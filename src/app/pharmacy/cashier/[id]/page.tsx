@@ -84,6 +84,8 @@ export default function CashierDetails() {
   const router = useRouter();
   const params = useParams();
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const patientData: Patient = {
     id: 0,
     name: "",
@@ -136,7 +138,7 @@ export default function CashierDetails() {
     const fetchRegistration = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/registrations/${id}`
+          `${apiUrl}/registrations/${id}`
         );
         setRegistration(response.data.registration);
       } catch (error) {
@@ -187,7 +189,7 @@ export default function CashierDetails() {
   ) => {
     try {
       const response = axios.put(
-        `https://api-simrs.serpihantech.com/api/registrations/${registrationData.id}`,
+        `${apiUrl}/registrations/${registrationData.id}`,
         {
           patient_id: registrationData.patient_id,
           polyclinic_id: registrationData.polyclinic_id,
@@ -213,7 +215,7 @@ export default function CashierDetails() {
     medicinesTable.map((medicineTable: MedicineTable, index: number) => {
       try {
         const response = axios.put(
-          `https://api-simrs.serpihantech.com/api/medicines/${medicineTable.id}`,
+          `${apiUrl}/medicines/${medicineTable.id}`,
           {
             name: medicineTable.name,
             category: medicineTable.category,

@@ -118,11 +118,13 @@ export default function InputOutpatient() {
   const [registration, setRegistration] =
     useState<Registration>(registrationData);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/registrations/${id}`
+          `${apiUrl}/registrations/${id}`
         );
         setRegistration(response.data.registration);
       } catch (error) {
@@ -144,9 +146,7 @@ export default function InputOutpatient() {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/medicines`
-        );
+        const { data: response } = await axios.get(`${apiUrl}/medicines`);
         setMedicines(response.data);
       } catch (error) {
         console.error("Failed to fetch payments:", error);
@@ -158,7 +158,7 @@ export default function InputOutpatient() {
   const handleAdd = async () => {
     try {
       const response = await axios.post(
-        `https://api-simrs.serpihantech.com/api/payments-medicines`,
+        `${apiUrl}/payments-medicines`,
         {
           payment_id: registration.id,
           medicine_id: filteredMedicines
@@ -186,11 +186,7 @@ export default function InputOutpatient() {
 
   const handleSave = async (id: number) => {
     try {
-      const response = await axios.post(
-        `https://api-simrs.serpihantech.com/api/apotek/${id}`,
-        {},
-        {}
-      );
+      const response = await axios.post(`${apiUrl}/apotek/${id}`, {}, {});
       setAudio(response.data);
       router.push(`/services/outpatient/prescription/${registration.id}`);
     } catch (error) {

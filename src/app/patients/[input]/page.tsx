@@ -37,6 +37,8 @@ export default function InputPatient() {
   const searchParams = useSearchParams();
   const inputId = searchParams.get("input");
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const patientData: PatientDetails = {
     id: 0,
     name: "",
@@ -55,9 +57,7 @@ export default function InputPatient() {
   useEffect(() => {
     const fetchNurseDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/patients/${id}`
-        );
+        const { data: response } = await axios.get(`${apiUrl}/patients/${id}`);
         setPatients(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
@@ -78,7 +78,7 @@ export default function InputPatient() {
   const handleSave = async () => {
     try {
       const response = await axios.post(
-        "https://api-simrs.serpihantech.com/api/patients",
+        `${apiUrl}/patients`,
         {
           name: name,
           place_of_birth: place,
@@ -109,7 +109,7 @@ export default function InputPatient() {
   const handleEdit = async (id: number) => {
     try {
       const response = await axios.put(
-        `https://api-simrs.serpihantech.com/api/patients/${id}`,
+        `${apiUrl}/patients/${id}`,
         {
           name: name || patients.name,
           place_of_birth: place || patients.place_of_birth,

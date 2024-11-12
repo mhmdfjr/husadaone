@@ -43,11 +43,13 @@ export default function EditPatientData() {
   const [registration, setRegistration] =
     useState<Registration>(registrationData);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchNurseDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/registrations/${id}`
+          `${apiUrl}/registrations/${id}`
         );
         setRegistration(response.data.registration);
       } catch (error) {

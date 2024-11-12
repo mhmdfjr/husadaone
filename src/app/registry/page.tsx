@@ -5,10 +5,11 @@ import TableRegist from "@/components/table/tableRegist";
 import { Add } from "iconsax-react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import DatePicker from "@/components/date-picker";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import Popup from "@/components/popup";
 
 interface Data {
   name: string;
@@ -61,13 +62,16 @@ interface SelectDoctor {
 
 const Registry = () => {
   const router = useRouter();
-  // const searchParams = useSearchParams();
+  const [isSuccess, setIsSuccess] = useState<boolean | null>();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [regis, setRegis] = useState("");
   const [nama, setNama] = useState("");
   const [noRM, setNoRM] = useState("");
   const [poli, setPoli] = useState("");
   const [doctor, setDoctor] = useState("");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const registrationData = {
     id: 0,
@@ -154,7 +158,7 @@ const Registry = () => {
   const handleSave = async () => {
     try {
       const response = await axios.post(
-        "https://api-simrs.serpihantech.com/api/registrations",
+        `${apiUrl}/registrations`,
         {
           patient_id: patientId.id,
           polyclinic_id: polyclinicId.id,
@@ -171,8 +175,12 @@ const Registry = () => {
         }
       );
       router.push("/registry");
+      setIsSuccess(true);
     } catch (error) {
+      setIsSuccess(false);
       console.error("Failed to post medicine details:", error);
+    } finally {
+      setIsModalOpen(true);
     }
   };
 
@@ -197,7 +205,12 @@ const Registry = () => {
 
   return (
     <div className="mx-4 flex flex-col justify-start items-center gap-4 ">
-      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible ">
+      <div
+        onClick={() => {
+          isModalOpen ? setIsModalOpen(false) : "";
+        }}
+        className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible "
+      >
         <div className="flex justify-start items-center gap-x-20">
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
             <Input
@@ -293,6 +306,19 @@ const Registry = () => {
       <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
         <TableRegist />
       </div>
+      {isModalOpen && (
+        <Popup
+          variant={isSuccess ? "success" : "danger"}
+          icon={isSuccess ? "tick" : "warning"}
+          withButton={false}
+          description={
+            isSuccess
+              ? ["Registrasi berhasil", ""]
+              : ["Registrasi gagal", "Coba ulangi beberapa saat lagi"]
+          }
+          buttonLabel={["Selesai", "Keluar"]}
+        />
+      )}
     </div>
   );
 };

@@ -17,12 +17,12 @@ export default function GuestQueue() {
   const [current, setCurrent] = useState<Queue>(currentData);
   const [waiting, setWaiting] = useState<Queue[]>(waitingData);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/queue"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/queue`);
         setCurrent(response.current_queue);
         setWaiting(response.waiting_queue);
       } catch (error) {

@@ -52,12 +52,12 @@ const TableNurses: React.FC<TableNursesProps> = ({
     }
   }, [onSelect]);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/nurses"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/nurses`);
         setNurses(response.data);
       } catch (error) {
         console.error(error);

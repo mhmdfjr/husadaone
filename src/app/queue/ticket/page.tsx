@@ -15,6 +15,9 @@ export default function TicketQueue() {
   const currentData = { number: 0, path: "" };
   const waitingData = [{ number: 0, path: "" }];
   const router = useRouter();
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [current, setCurrent] = useState<Queue>(currentData);
   const [waiting, setWaiting] = useState<Queue[]>(waitingData);
@@ -22,10 +25,7 @@ export default function TicketQueue() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/queue"
-        );
-        // console.log(response);
+        const { data: response } = await axios.get(`${apiUrl}/queue`);
         setCurrent(response.current_queue);
         setWaiting(response.waiting_queue);
       } catch (error) {
@@ -37,11 +37,7 @@ export default function TicketQueue() {
 
   const handleNext = async () => {
     try {
-      const response = await axios.post(
-        "https://api-simrs.serpihantech.com/api/queue/next",
-        {},
-        {}
-      );
+      const response = await axios.post(`${apiUrl}/queue/next`, {}, {});
     } catch (error) {
       console.error("Failed to post medicine details:", error);
     }
@@ -62,12 +58,7 @@ export default function TicketQueue() {
 
   const handleReset = async () => {
     try {
-      const response = await axios.post(
-        "https://api-simrs.serpihantech.com/api/queue/reset",
-        {},
-        {}
-      );
-      // console.log(response);
+      const response = await axios.post(`${apiUrl}/queue/reset`, {}, {});
     } catch (error) {
       console.error("Failed to post medicine details:", error);
     }

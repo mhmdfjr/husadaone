@@ -56,21 +56,20 @@ const TableMedicines: React.FC<TableMedicinesProps> = ({
     }
   }, [onSelect]);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/medicines"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/medicines`);
         setMedicines(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [apiUrl]);
 
-  // Calculate the start and end indices for pagination
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedMedicines = medicines.slice(startIndex, endIndex);

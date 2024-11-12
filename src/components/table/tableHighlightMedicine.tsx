@@ -12,30 +12,29 @@ interface Medicine {
   stock: number;
 }
 
-export async function getMedicines() {
-  const response = await fetch(`https://192.168.18.31/api/medicines`, {
-    method: "GET",
-  });
-  return response.json();
-}
+// export async function getMedicines() {
+//   const response = await fetch(`https://192.168.18.31/api/medicines`, {
+//     method: "GET",
+//   });
+//   return response.json();
+// }
 
 export default function TableHighlightMedicine() {
   const tableHeaders = ["ID", "Nama", "Kategori", "Harga Satuan", "Stok"];
   const [data, setData] = useState([]);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(
-          "https://api-simrs.serpihantech.com/api/medicines"
-        );
+        const { data: response } = await axios.get(`${apiUrl}/medicines`);
         setData(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [apiUrl]);
 
   return (
     <Table tableHead={tableHeaders}>

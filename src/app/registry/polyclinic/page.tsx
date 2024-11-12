@@ -24,7 +24,6 @@ export default function ListPolyclinics() {
 
   const handleCLick = () => {
     localStorage.setItem("polyclinicId", JSON.stringify(childData));
-    // router.push(`/registry?polyclinic=${childData}`);
     router.push("/registry");
   };
 

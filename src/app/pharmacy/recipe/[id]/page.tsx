@@ -52,6 +52,8 @@ export default function ValidateRecipe() {
   const [amount, setAmount] = useState<number>();
   const [usage, setUsage] = useState<string>("");
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const router = useRouter();
   const params = useParams();
 
@@ -111,7 +113,7 @@ export default function ValidateRecipe() {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `https://api-simrs.serpihantech.com/api/registrations/${id}`
+          `${apiUrl}/registrations/${id}`
         );
         setRegistration(response.data.registration);
       } catch (error) {
@@ -133,7 +135,7 @@ export default function ValidateRecipe() {
   const handleEdit = async (id: number) => {
     try {
       const response = await axios.put(
-        `https://api-simrs.serpihantech.com/api/payments-medicines/${id}`,
+        `${apiUrl}/payments-medicines/${id}`,
         {
           id: childData.id,
           payment_id: childData.payment_id,
@@ -156,9 +158,7 @@ export default function ValidateRecipe() {
 
   const handleValidation = async (id: number) => {
     try {
-      const response = await axios.get(
-        `https://api-simrs.serpihantech.com/api/validation/${id}`
-      );
+      const response = await axios.get(`${apiUrl}/validation/${id}`);
       router.push("/pharmacy/recipe");
     } catch (error) {
       console.error("Failed to update validation:", error);

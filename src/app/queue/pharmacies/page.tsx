@@ -18,6 +18,8 @@ export default function TicketQueue() {
   const [queue, setQueue] = useState<number>(0);
   const [path, setPath] = useState<string>("");
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const paymentsData = [
     {
       id: 0,
@@ -34,9 +36,7 @@ export default function TicketQueue() {
 
   const fetchData = async () => {
     try {
-      const { data: response } = await axios.get(
-        "https://api-simrs.serpihantech.com/api/payments"
-      );
+      const { data: response } = await axios.get(`${apiUrl}/payments`);
       const responses = response.data.filter(
         (res: Payment) => res.path_audio !== null
       );
