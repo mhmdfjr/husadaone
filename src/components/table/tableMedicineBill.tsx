@@ -3,7 +3,7 @@ import Table from "@/components/table";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
-import clsx from "clsx";
+import Cookies from "js-cookie";
 
 interface TableMedicineBillProps {
   registrationId: number;
@@ -44,6 +44,7 @@ const TableMedicineBill: React.FC<TableMedicineBillProps> = ({
   onTotalPriceChange,
   onMedicinesChange,
 }) => {
+  const token = Cookies.get("token");
   const router = useRouter();
   const params = useParams();
 
@@ -95,7 +96,13 @@ const TableMedicineBill: React.FC<TableMedicineBillProps> = ({
     const fetchRegistration = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `${apiUrl}/registrations/${id}`
+          `${apiUrl}/registrations/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
         );
         setMedicines(response.data.keranjang[0].medicines);
       } catch (error) {

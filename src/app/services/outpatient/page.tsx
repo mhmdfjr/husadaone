@@ -1,12 +1,19 @@
 "use client";
-import Input from "@/components/input";
+import { useEffect } from "react";
 import { ArrowRight2 } from "iconsax-react";
 import TableOutpatient from "@/components/table/tableOutpatient";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function OutPatient() {
+  const token = Cookies.get("token");
   const router = useRouter();
-  const handleCLick = () => {};
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <>

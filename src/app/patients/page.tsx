@@ -1,13 +1,15 @@
 "use client";
 import Button from "@/components/button";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import TablePatients from "@/components/table/tablePatients";
 import { TickSquare } from "iconsax-react";
 import Popup from "@/components/popup";
+import Cookies from "js-cookie";
 
 export default function ListNurses() {
+  const token = Cookies.get("token");
   const [select, setSelect] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean | null>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -29,7 +31,12 @@ export default function ListNurses() {
   const handleDelete = async () => {
     if (childData) {
       try {
-        const response = await axios.delete(`${apiUrl}/patients/${childData}`);
+        const response = await axios.delete(`${apiUrl}/patients/${childData}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setIsSuccess(true);
       } catch (error) {
         setIsSuccess(false);
@@ -41,6 +48,12 @@ export default function ListNurses() {
       console.error("No medicine selected for deletion");
     }
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="mx-4 flex justify-center items-center gap-4 ">

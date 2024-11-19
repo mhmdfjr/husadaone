@@ -3,7 +3,12 @@ import Table from "@/components/table";
 import axios from "axios";
 import clsx from "clsx";
 import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+
+interface TableDashboardProps {
+  date?: Date;
+}
 
 interface Patient {
   id: number;
@@ -27,7 +32,7 @@ interface Registration {
   patient: Patient;
 }
 
-export default function TableDashboard() {
+const TableDashboard: React.FC<TableDashboardProps> = ({ date }) => {
   const tableHeaders = [
     "No Reg",
     "Nama Pasien",
@@ -37,6 +42,7 @@ export default function TableDashboard() {
     "Poliklinik",
   ];
 
+  const token = Cookies.get("token");
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const router = useRouter();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -44,7 +50,12 @@ export default function TableDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/registrations`);
+        const { data: response } = await axios.get(`${apiUrl}/registrations`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
         setRegistrations(response.data);
       } catch (error) {
         console.error(error);
@@ -52,6 +63,10 @@ export default function TableDashboard() {
     };
     fetchData();
   }, [apiUrl]);
+
+  // useEffect(() => {
+  //   console.log(date);
+  // }, [date]);
 
   const calculateAge = (date_of_birth: string) => {
     const birthDate = new Date(date_of_birth);
@@ -96,4 +111,6 @@ export default function TableDashboard() {
       })}
     </Table>
   );
-}
+};
+
+export default TableDashboard;

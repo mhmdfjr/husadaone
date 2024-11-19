@@ -5,6 +5,7 @@ import Input from "@/components/input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 interface PatientDetails {
   id: number;
@@ -21,6 +22,7 @@ interface PatientDetails {
 }
 
 export default function InputPatient() {
+  const token = Cookies.get("token");
   const [id, setId] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const [gender, setGender] = useState<string>("");
@@ -57,7 +59,12 @@ export default function InputPatient() {
   useEffect(() => {
     const fetchNurseDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/patients/${id}`);
+        const { data: response } = await axios.get(`${apiUrl}/patients/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setPatients(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
@@ -98,6 +105,10 @@ export default function InputPatient() {
             address: address,
             insurance: insurance,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push("/patients");
@@ -129,6 +140,10 @@ export default function InputPatient() {
             address: address || patients.address,
             insurance: insurance || patients.insurance,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push("/patients");
@@ -136,6 +151,12 @@ export default function InputPatient() {
       console.error("Failed to post medicine details:", error);
     }
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   const handleCLick = () => {};
 

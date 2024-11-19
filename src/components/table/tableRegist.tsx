@@ -3,8 +3,9 @@ import Table from "@/components/table";
 import axios from "axios";
 import clsx from "clsx";
 import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Edit, Trash } from "iconsax-react";
+import Cookies from "js-cookie";
 
 interface Patient {
   id: number;
@@ -46,6 +47,7 @@ export default function TableRegist() {
     "Aksi",
   ];
 
+  const token = Cookies.get("token");
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const router = useRouter();
 
@@ -54,7 +56,12 @@ export default function TableRegist() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/registrations`);
+        const { data: response } = await axios.get(`${apiUrl}/registrations`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
         setRegistrations(response.data);
       } catch (error) {
         console.error(error);

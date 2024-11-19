@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import Button from "@/components/button";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 import Input from "@/components/input";
 
@@ -14,6 +15,7 @@ interface Payment {
 }
 
 export default function TicketQueue() {
+  const token = Cookies.get("token");
   const [id, setId] = useState<number>(0);
   const [queue, setQueue] = useState<number>(0);
   const [path, setPath] = useState<string>("");
@@ -36,7 +38,12 @@ export default function TicketQueue() {
 
   const fetchData = async () => {
     try {
-      const { data: response } = await axios.get(`${apiUrl}/payments`);
+      const { data: response } = await axios.get(`${apiUrl}/payments`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "Application/json",
+        },
+      });
       const responses = response.data.filter(
         (res: Payment) => res.path_audio !== null
       );
@@ -80,6 +87,12 @@ export default function TicketQueue() {
   const handleReset = () => {
     fetchData();
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="mx-4 flex justify-start items-center gap-4 ">

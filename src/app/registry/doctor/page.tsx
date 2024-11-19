@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import TableRegisterDoctor from "@/components/table/tableRegisterDoctor";
 import { TickSquare, ArrowRight2 } from "iconsax-react";
+import Cookies from "js-cookie";
 
 interface SelectDoctor {
   id: number;
@@ -11,6 +12,7 @@ interface SelectDoctor {
 }
 
 export default function ListDoctors() {
+  const token = Cookies.get("token");
   const [select, setSelect] = useState<boolean>(false);
   const router = useRouter();
   const [childData, setChildData] = useState<SelectDoctor>({ id: 0, name: "" });
@@ -26,6 +28,12 @@ export default function ListDoctors() {
   const handleSelect = () => {
     setSelect(!select);
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="mx-4 flex justify-center items-center gap-4 ">

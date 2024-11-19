@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Button from "../button";
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
+import Cookies from "js-cookie";
 
 interface Polyclinic {
   id: number;
@@ -22,7 +23,7 @@ const TableRegisterPolyclinic: React.FC<TablePolyclinicsProps> = ({
   onDataChange,
 }) => {
   const [tableHeaders, setTableHeaders] = useState<string[]>(["ID", "Nama"]);
-
+  const token = Cookies.get("token");
   const [polyclinics, setPolyclinics] = useState<Polyclinic[]>([]);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,7 +45,12 @@ const TableRegisterPolyclinic: React.FC<TablePolyclinicsProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/polyclinics`);
+        const { data: response } = await axios.get(`${apiUrl}/polyclinics`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
         setPolyclinics(response.data);
       } catch (error) {
         console.error(error);

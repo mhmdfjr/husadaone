@@ -6,6 +6,7 @@ import DatePicker from "@/components/date-picker";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 interface Patient {
   id: number;
@@ -41,6 +42,7 @@ interface Registration {
 }
 
 export default function InputMedic() {
+  const token = Cookies.get("token");
   const [medic, setMedic] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const [gender, setGender] = useState<string>("");
@@ -92,6 +94,12 @@ export default function InputMedic() {
     },
   };
 
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
+
   const handleBirthDate = (date: string) => {
     setBirthDate(date);
   };
@@ -99,11 +107,6 @@ export default function InputMedic() {
   const handleRegisterDate = (date: string) => {
     setRegisterDate(date);
   };
-
-  // useEffect(() => {
-  //   console.log(registerDate);
-  //   console.log(name);
-  // }, [registerDate, name]);
 
   const [registration, setRegistration] =
     useState<Registration>(registrationData);
@@ -113,7 +116,13 @@ export default function InputMedic() {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `${apiUrl}/registrations/${inputId}`
+          `${apiUrl}/registrations/${inputId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
         );
         setRegistration(response.data.registration);
         setCart(response.data.keranjang);
@@ -136,7 +145,12 @@ export default function InputMedic() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/patients`);
+        const { data: response } = await axios.get(`${apiUrl}/patients`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setMedic(response.data[response.data.length - 1].id + 1);
       } catch (error) {
         console.error(error);
@@ -167,6 +181,10 @@ export default function InputMedic() {
             polyclinic_id: registration.polyclinic_id,
             doctor_id: registration.doctor_id,
             registration_date: registration.registration_date,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
           },
         }
       );
@@ -204,6 +222,10 @@ export default function InputMedic() {
             blood_type: registration.patient.blood_type,
             insurance: registration.patient.insurance,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
     } catch (error) {
@@ -239,6 +261,10 @@ export default function InputMedic() {
             address: addressPatient || registration.patient.address,
             blood_type: bloodType || registration.patient.blood_type,
             insurance: insurance || registration.patient.insurance,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
           },
         }
       );

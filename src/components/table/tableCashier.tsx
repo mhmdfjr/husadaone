@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Button from "../button";
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
+import Cookies from "js-cookie";
 
 interface Patient {
   id: number;
@@ -54,6 +55,7 @@ export default function TableRecipes() {
     "Status Bayar",
   ];
 
+  const token = Cookies.get("token");
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [payments, setPayment] = useState<Payment[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,7 +68,12 @@ export default function TableRecipes() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/registrations`);
+        const { data: response } = await axios.get(`${apiUrl}/registrations`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setRegistrations(response.data);
       } catch (error) {
         console.error(error);
@@ -78,7 +85,12 @@ export default function TableRecipes() {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/payments`);
+        const { data: response } = await axios.get(`${apiUrl}/payments`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setPayment(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);

@@ -6,6 +6,7 @@ import DatePicker from "@/components/date-picker";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 interface Patient {
   id: number;
@@ -43,8 +44,8 @@ interface Registration {
 }
 
 export default function InputOutpatient() {
+  const token = Cookies.get("token");
   const [diagnose, setDiagnose] = useState<string>("");
-
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -94,7 +95,13 @@ export default function InputOutpatient() {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `${apiUrl}/registrations/${id}`
+          `${apiUrl}/registrations/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
         );
         setRegistration(response.data.registration);
       } catch (error) {
@@ -136,6 +143,10 @@ export default function InputOutpatient() {
             doctor_id: registration.doctor_id,
             registration_date: registration.registration_date,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push(`/services/outpatient/diagnose/${registration.id}`);
@@ -143,6 +154,12 @@ export default function InputOutpatient() {
       console.error("Failed to post medicine details:", error);
     }
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   const handleCLick = () => {};
 

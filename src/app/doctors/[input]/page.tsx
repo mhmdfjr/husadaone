@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
 import DatePicker from "@/components/date-picker";
+import Cookies from "js-cookie";
 
 interface Polyclinic {
   id: number;
@@ -27,6 +28,7 @@ interface DoctorDetails {
 }
 
 export default function InputDoctor() {
+  const token = Cookies.get("token");
   const [polyId, setPolyId] = useState<number>(0);
   const [polyName, setPolyName] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -75,7 +77,12 @@ export default function InputDoctor() {
   useEffect(() => {
     const fetchDoctorDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/doctors/${id}`);
+        const { data: response } = await axios.get(`${apiUrl}/doctors/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setDoctor(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
@@ -96,7 +103,12 @@ export default function InputDoctor() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/polyclinics`);
+        const { data: response } = await axios.get(`${apiUrl}/polyclinics`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setPolyclinics(response.data);
       } catch (error) {
         console.error(error);
@@ -137,6 +149,10 @@ export default function InputDoctor() {
             address: address,
             cost: cost,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push("/doctors");
@@ -172,6 +188,10 @@ export default function InputDoctor() {
             address: address || doctor.address,
             cost: cost || doctor.cost,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push("/doctors");
@@ -179,6 +199,12 @@ export default function InputDoctor() {
       console.error("Failed to post medicine details:", error);
     }
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   const handleCLick = () => {};
 

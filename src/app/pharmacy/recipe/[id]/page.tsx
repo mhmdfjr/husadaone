@@ -8,6 +8,7 @@ import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
 import clsx from "clsx";
 import TableRecipeById from "@/components/table/tableRecipeById";
+import Cookies from "js-cookie";
 
 interface Patient {
   id: number;
@@ -48,6 +49,7 @@ interface Recipe {
 }
 
 export default function ValidateRecipe() {
+  const token = Cookies.get("token");
   const [medicineName, setMedicineName] = useState<string>("");
   const [amount, setAmount] = useState<number>();
   const [usage, setUsage] = useState<string>("");
@@ -113,7 +115,13 @@ export default function ValidateRecipe() {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `${apiUrl}/registrations/${id}`
+          `${apiUrl}/registrations/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
         );
         setRegistration(response.data.registration);
       } catch (error) {
@@ -148,6 +156,10 @@ export default function ValidateRecipe() {
             amount: childData.amount,
             usage_rules: childData.usage_rules,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push(`/pharmacy/recipe/${registration.id}`);
@@ -158,12 +170,24 @@ export default function ValidateRecipe() {
 
   const handleValidation = async (id: number) => {
     try {
-      const response = await axios.get(`${apiUrl}/validation/${id}`);
+      const response = await axios.get(`${apiUrl}/validation/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "Application/json",
+        },
+      });
       router.push("/pharmacy/recipe");
     } catch (error) {
       console.error("Failed to update validation:", error);
     }
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
+
   const handleCLick = () => {};
 
   return (

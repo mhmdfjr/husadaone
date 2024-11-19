@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
 import DatePicker from "@/components/date-picker";
+import Cookies from "js-cookie";
 
 interface NurseDetails {
   id: number;
@@ -18,6 +19,7 @@ interface NurseDetails {
 }
 
 export default function InputNurse() {
+  const token = Cookies.get("token");
   const [id, setId] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const [gender, setGender] = useState<string>("");
@@ -51,7 +53,12 @@ export default function InputNurse() {
   useEffect(() => {
     const fetchNurseDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/nurses/${id}`);
+        const { data: response } = await axios.get(`${apiUrl}/nurses/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setNurse(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
@@ -90,6 +97,10 @@ export default function InputNurse() {
             phone_number: phone,
             address: address,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push("/nurses");
@@ -119,6 +130,10 @@ export default function InputNurse() {
             phone_number: phone || nurse.phone_number,
             address: address || nurse.address,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push("/nurses");
@@ -126,6 +141,12 @@ export default function InputNurse() {
       console.error("Failed to post medicine details:", error);
     }
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   const handleCLick = () => {};
 

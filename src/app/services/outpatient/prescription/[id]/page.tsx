@@ -7,6 +7,7 @@ import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import TablePrescription from "@/components/table/tablePrescription";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 interface Pivot {
   payment_id: number;
@@ -60,6 +61,7 @@ interface Recipe {
 }
 
 export default function InputOutpatient() {
+  const token = Cookies.get("token");
   const [amount, setAmount] = useState<number>(0);
   const [usage, setUsage] = useState<string>("");
   const [audio, setAudio] = useState<string>("");
@@ -124,7 +126,13 @@ export default function InputOutpatient() {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `${apiUrl}/registrations/${id}`
+          `${apiUrl}/registrations/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
         );
         setRegistration(response.data.registration);
       } catch (error) {
@@ -146,7 +154,12 @@ export default function InputOutpatient() {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/medicines`);
+        const { data: response } = await axios.get(`${apiUrl}/medicines`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setMedicines(response.data);
       } catch (error) {
         console.error("Failed to fetch payments:", error);
@@ -176,6 +189,10 @@ export default function InputOutpatient() {
             amount: amount,
             usage_rules: usage,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push(`/services/outpatient/prescription/${registration.id}`);
@@ -186,7 +203,16 @@ export default function InputOutpatient() {
 
   const handleSave = async (id: number) => {
     try {
-      const response = await axios.post(`${apiUrl}/apotek/${id}`, {}, {});
+      const response = await axios.post(
+        `${apiUrl}/apotek/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        }
+      );
       setAudio(response.data);
       router.push(`/services/outpatient/prescription/${registration.id}`);
     } catch (error) {
@@ -216,6 +242,12 @@ export default function InputOutpatient() {
     setMedicineName(selectedMedicine.name); // Set selected medicine to input field
     setIsFocused(false); // Hide the dropdown after selection
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="mx-4 flex flex-col justify-start items-center gap-4 ">

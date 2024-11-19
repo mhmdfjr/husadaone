@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Button from "../button";
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
+import Cookies from "js-cookie";
 
 interface Patient {
   id: number;
@@ -42,7 +43,7 @@ const TableRegisterPatients: React.FC<TablePatientProps> = ({
     "Alamat",
     "Asuransi",
   ]);
-
+  const token = Cookies.get("token");
   const [patients, setPatients] = useState<Patient[]>([]);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -64,7 +65,12 @@ const TableRegisterPatients: React.FC<TablePatientProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/patients`);
+        const { data: response } = await axios.get(`${apiUrl}/patients`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setPatients(response.data);
       } catch (error) {
         console.error(error);

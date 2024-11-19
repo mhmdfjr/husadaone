@@ -1,27 +1,37 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import CardDashboard from "@/components/card-dashboard";
 import Calender from "@/components/calender";
 import TableDashboard from "@/components/table/tableDashboard";
+import Cookies from "js-cookie";
 
 export default function Dashboard() {
+  const token = Cookies.get("token");
+  const [user, setUser] = useState({});
+  const router = useRouter();
+
   const [patients, setPatients] = useState<any[]>([]);
   const [patientCount, setPatientCount] = useState<string>("-");
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [doctorsCount, setDoctorsCount] = useState<string>("-");
   const [nursesCount, setNursesCount] = useState<string>("-");
   const [polyclinicCount, setPolyclinicCount] = useState<string>("-");
+  const [childData, setChildData] = useState<Date>();
+  const handleChildData = (data: Date) => {
+    setChildData(data);
+  };
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-  // useEffect(() => {
-  //   console.log(`API URL: ${apiUrl}`);
-  // }, []);
-
-  useEffect(() => {
+  const fetchData = () => {
     axios
-      .get(`${apiUrl}/patients`)
+      .get(`${apiUrl}/patients`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "Application/json",
+        },
+      })
       .then((response) => {
         const data = response.data;
         if (data && Array.isArray(data.data)) {
@@ -51,7 +61,12 @@ export default function Dashboard() {
       .catch((error) => console.error("Error fetching patients:", error));
 
     axios
-      .get(`${apiUrl}/doctors`)
+      .get(`${apiUrl}/doctors`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "Application/json",
+        },
+      })
       .then((response) => {
         const data = response.data;
         if (data && Array.isArray(data.data)) {
@@ -65,7 +80,12 @@ export default function Dashboard() {
       .catch((error) => console.error("Error fetching doctors:", error));
 
     axios
-      .get(`${apiUrl}/nurses`)
+      .get(`${apiUrl}/nurses`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "Application/json",
+        },
+      })
       .then((response) => {
         const data = response.data;
         if (data && Array.isArray(data.data)) {
@@ -77,7 +97,12 @@ export default function Dashboard() {
       .catch((error) => console.error("Error fetching nurses:", error));
 
     axios
-      .get(`${apiUrl}/polyclinics`)
+      .get(`${apiUrl}/polyclinics`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "Application/json",
+        },
+      })
       .then((response) => {
         const data = response.data;
         if (data && Array.isArray(data.data)) {
@@ -89,6 +114,13 @@ export default function Dashboard() {
         }
       })
       .catch((error) => console.error("Error fetching polyclinic:", error));
+  };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+    fetchData();
   }, []);
 
   const formattedLastUpdated = lastUpdated
@@ -123,11 +155,11 @@ export default function Dashboard() {
       <div className="mx-4 flex justify-start items-start gap-4 ">
         <div className="py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll basis-3/4">
           <p className="text-h8-bold text-basic-black">Pasien Terbaru</p>
-          <TableDashboard />
+          <TableDashboard date={childData} />
         </div>
         <div className="py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
           <p className="text-h8-bold text-basic-black mb-4">Kalender</p>
-          <Calender />
+          <Calender onDataChange={handleChildData} />
         </div>
       </div>
     </div>
