@@ -12,9 +12,10 @@ import {
   LogoutCurve,
   Task,
 } from "iconsax-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "@/components/button";
 import { useRouter, useParams, usePathname } from "next/navigation";
+import Cookies from "js-cookie";
 
 interface Menu {
   title: string;
@@ -122,7 +123,8 @@ export default function Sidebar() {
   };
 
   const handleLogout = () => {
-    router.push("/");
+    Cookies.remove("token");
+    router.push("/login");
   };
 
   return (

@@ -1,11 +1,20 @@
 "use client";
-import Input from "@/components/input";
 import { ArrowRight2 } from "iconsax-react";
-import TableRecipes from "@/components/table/tableCashier";
+import Button from "@/components/button";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function InPatient() {
+  const token = Cookies.get("token");
   const router = useRouter();
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
+
   const handleCLick = () => {};
 
   return (
@@ -22,8 +31,18 @@ export default function InPatient() {
             <ArrowRight2 size="16" className="text-gray-medium-light" />
             <p className="text-brand-40 p-2">Rawat Inap</p>
           </div>
-
-          <TableRecipes />
+          <div className="w-full flex flex-col justify-center items-center gap-4">
+            <p className="text-h6-bold text-brand-base">SIMRS</p>
+            <p className="tetx-body text-gray-medium">
+              Fitur ini sedang dalam tahap pengembangan
+            </p>
+            <Button
+              label="Penanganan"
+              variant="primary"
+              size="small"
+              onClick={() => router.push(`/services/outpatient`)}
+            />
+          </div>
         </div>
       </div>
     </>

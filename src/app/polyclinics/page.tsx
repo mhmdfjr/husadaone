@@ -2,12 +2,14 @@
 import Button from "@/components/button";
 import TablePolyclinics from "@/components/table/tablePolyclinics";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { TickSquare } from "iconsax-react";
 import Popup from "@/components/popup";
+import Cookies from "js-cookie";
 
 export default function ListPolyclinics() {
+  const token = Cookies.get("token");
   const [select, setSelect] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean | null>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -30,7 +32,13 @@ export default function ListPolyclinics() {
     if (childData) {
       try {
         const response = await axios.delete(
-          `${apiUrl}/polyclinics/${childData}`
+          `${apiUrl}/polyclinics/${childData}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
         );
         setIsSuccess(true);
       } catch (error) {
@@ -43,7 +51,11 @@ export default function ListPolyclinics() {
       console.error("No medicine selected for deletion");
     }
   };
-
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
   return (
     <div className="mx-4 flex justify-center items-center gap-4 ">
       <div

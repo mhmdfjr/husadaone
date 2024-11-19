@@ -2,8 +2,9 @@
 import Button from "@/components/button";
 import TableRegisterPolyclinic from "@/components/table/tableRegisterPolyclinic";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TickSquare, ArrowRight2 } from "iconsax-react";
+import Cookies from "js-cookie";
 
 interface Polyclinic {
   id: number;
@@ -11,6 +12,7 @@ interface Polyclinic {
 }
 
 export default function ListPolyclinics() {
+  const token = Cookies.get("token");
   const [select, setSelect] = useState<boolean>(false);
   const router = useRouter();
   const [childData, setChildData] = useState<Polyclinic>({ id: 0, name: "" });
@@ -26,6 +28,12 @@ export default function ListPolyclinics() {
     localStorage.setItem("polyclinicId", JSON.stringify(childData));
     router.push("/registry");
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="mx-4 flex justify-center items-center gap-4 ">

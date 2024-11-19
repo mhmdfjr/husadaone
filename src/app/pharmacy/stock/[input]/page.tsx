@@ -6,7 +6,7 @@ import DatePicker from "@/components/date-picker";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
-import { setPriority } from "os";
+import Cookies from "js-cookie";
 
 interface MedicineDetails {
   id: number;
@@ -21,6 +21,7 @@ interface MedicineDetails {
 }
 
 export default function InputPharmacy() {
+  const token = Cookies.get("token");
   const [id, setId] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>("");
@@ -60,7 +61,15 @@ export default function InputPharmacy() {
   useEffect(() => {
     const fetchPatientDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/medicines/${id}`);
+        const { data: response } = await axios.get(
+          `${apiUrl}/medicines/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
+        );
         setMedicine(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
@@ -103,6 +112,10 @@ export default function InputPharmacy() {
             production_year: production,
             validity_period: validity,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push("/pharmacy/stock");
@@ -136,6 +149,10 @@ export default function InputPharmacy() {
             production_year: production || medicine.production_year,
             validity_period: validity || medicine.validity_period,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push("/pharmacy/stock");
@@ -144,7 +161,11 @@ export default function InputPharmacy() {
     }
   };
 
-  const handleCLick = () => {};
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="mx-4 flex justify-start items-center gap-4 ">

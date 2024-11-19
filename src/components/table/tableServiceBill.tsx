@@ -3,7 +3,7 @@ import Table from "@/components/table";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
-import clsx from "clsx";
+import Cookies from "js-cookie";
 
 interface TableServiceBillProps {
   registrationId: number;
@@ -43,6 +43,7 @@ const TableServiceBill: React.FC<TableServiceBillProps> = ({
   registrationId,
   onDoctorCostChange,
 }) => {
+  const token = Cookies.get("token");
   const router = useRouter();
   const params = useParams();
 
@@ -86,7 +87,13 @@ const TableServiceBill: React.FC<TableServiceBillProps> = ({
     const fetchRegistration = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `${apiUrl}/registrations/${id}`
+          `${apiUrl}/registrations/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
         );
         setRegistration(response.data.registration);
       } catch (error) {

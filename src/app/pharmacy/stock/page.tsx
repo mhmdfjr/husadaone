@@ -2,12 +2,14 @@
 import Button from "@/components/button";
 import TableMedicines from "@/components/table/tableMedicine";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TickSquare } from "iconsax-react";
 import Popup from "@/components/popup";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default function StockPharmacy() {
+  const token = Cookies.get("token");
   const [select, setSelect] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean | null>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -20,8 +22,6 @@ export default function StockPharmacy() {
     setChildData(data);
   };
 
-  const handleCLick = () => {};
-
   const handleSelect = () => {
     setSelect(!select);
   };
@@ -29,7 +29,15 @@ export default function StockPharmacy() {
   const handleDelete = async () => {
     if (childData) {
       try {
-        const response = await axios.delete(`${apiUrl}/medicines/${childData}`);
+        const response = await axios.delete(
+          `${apiUrl}/medicines/${childData}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
+        );
         setIsSuccess(true);
       } catch (error) {
         setIsSuccess(false);
@@ -41,6 +49,12 @@ export default function StockPharmacy() {
       console.error("No medicine selected for deletion");
     }
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="mx-4 flex justify-center items-center gap-4 ">

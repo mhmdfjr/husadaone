@@ -10,6 +10,7 @@ import DatePicker from "@/components/date-picker";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import Popup from "@/components/popup";
+import Cookies from "js-cookie";
 
 interface Data {
   name: string;
@@ -61,6 +62,7 @@ interface SelectDoctor {
 }
 
 const Registry = () => {
+  const token = Cookies.get("token");
   const router = useRouter();
   const [isSuccess, setIsSuccess] = useState<boolean | null>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -136,6 +138,12 @@ const Registry = () => {
   });
 
   useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
+
+  useEffect(() => {
     const storagePatient = localStorage.getItem("patientId");
     const storagePolyclinic = localStorage.getItem("polyclinicId");
     const storageDoctor = localStorage.getItem("doctorId");
@@ -171,6 +179,10 @@ const Registry = () => {
             polyclinic_id: polyclinicId.id,
             doctor_id: doctorId.id,
             registration_date: selectedDate,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
           },
         }
       );

@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import Button from "@/components/button";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 import Input from "@/components/input";
 
@@ -12,6 +13,7 @@ interface Queue {
 }
 
 export default function TicketQueue() {
+  const token = Cookies.get("token");
   const currentData = { number: 0, path: "" };
   const waitingData = [{ number: 0, path: "" }];
   const router = useRouter();
@@ -63,6 +65,12 @@ export default function TicketQueue() {
       console.error("Failed to post medicine details:", error);
     }
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="mx-4 flex justify-start items-center gap-4 ">

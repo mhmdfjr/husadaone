@@ -1,9 +1,10 @@
 "use client";
 import Button from "@/components/button";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TableRegisterPatients from "@/components/table/tableRegisterPatient";
 import { TickSquare, ArrowRight2 } from "iconsax-react";
+import Cookies from "js-cookie";
 
 interface Patient {
   id: number;
@@ -23,6 +24,7 @@ interface Patient {
 }
 
 export default function InputPatientData() {
+  const token = Cookies.get("token");
   const [select, setSelect] = useState<boolean>(false);
   const router = useRouter();
   const [childData, setChildData] = useState<Patient>({
@@ -53,6 +55,12 @@ export default function InputPatientData() {
   const handleSelect = () => {
     setSelect(!select);
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="mx-4 flex justify-center items-center gap-4 ">

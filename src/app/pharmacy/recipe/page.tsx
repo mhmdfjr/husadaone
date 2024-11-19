@@ -1,12 +1,20 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Button from "@/components/button";
 import TableRecipes from "@/components/table/tableRecipes";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function RecipesPharmacy() {
+  const token = Cookies.get("token");
   const router = useRouter();
   const handleCLick = () => {};
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="mx-4 flex justify-start items-center gap-4 ">

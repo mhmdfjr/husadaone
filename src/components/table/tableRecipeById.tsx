@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { Edit } from "iconsax-react";
 import axios from "axios";
 import clsx from "clsx";
+import Cookies from "js-cookie";
 
 interface Pivot {
   payment_id: number;
@@ -56,6 +57,7 @@ interface TableRecipeByIdProps {
 }
 
 const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
+  const token = Cookies.get("token");
   const router = useRouter();
   const params = useParams();
 
@@ -111,7 +113,12 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
   useEffect(() => {
     const fetchPatientDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/patients/${id}`);
+        const { data: response } = await axios.get(`${apiUrl}/patients/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setPatients(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
@@ -132,7 +139,12 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/payments`);
+        const { data: response } = await axios.get(`${apiUrl}/payments`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setPayments(response.data);
       } catch (error) {
         console.error("Failed to fetch payments:", error);

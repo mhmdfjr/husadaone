@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   format,
   startOfMonth,
@@ -12,7 +12,11 @@ import {
 } from "date-fns";
 import { id } from "date-fns/locale";
 
-export default function Calender() {
+interface CalenderType {
+  onDataChange: (data: Date) => void;
+}
+
+const Calender: React.FC<CalenderType> = ({ onDataChange }) => {
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
@@ -26,6 +30,7 @@ export default function Calender() {
 
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
+    onDataChange(date);
   };
 
   const renderDays = () => {
@@ -84,4 +89,6 @@ export default function Calender() {
       <div className="grid grid-cols-7 gap-2 text-center">{renderDates()}</div>
     </div>
   );
-}
+};
+
+export default Calender;

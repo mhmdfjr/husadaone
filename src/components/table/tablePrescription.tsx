@@ -3,6 +3,7 @@ import Table from "@/components/table";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 interface Pivot {
   payment_id: number;
@@ -35,6 +36,7 @@ const TablePrescription: React.FC<TablePrescription> = ({
   medicineName,
   // onDataChange,
 }) => {
+  const token = Cookies.get("token");
   const router = useRouter();
   const params = useParams();
 
@@ -74,7 +76,12 @@ const TablePrescription: React.FC<TablePrescription> = ({
   useEffect(() => {
     const fetchPatientDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/payments/${id}`);
+        const { data: response } = await axios.get(`${apiUrl}/payments/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setPayment(response.data.payment);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
@@ -91,17 +98,6 @@ const TablePrescription: React.FC<TablePrescription> = ({
       }
     }
   }, [params]);
-  // useEffect(() => {
-  //   // Filter the medicines based on "Nama Obat" input
-  //   const filtered = medicines.filter((medicineItem) =>
-  //     medicineItem.name.toLowerCase().includes(medicine.name.toLowerCase())
-  //   );
-  //   setFilteredMedicines(filtered);
-  // }, [medicine, medicines]); // Update filtered medicines when the input or childData changes
-
-  // const handleClick = () => {
-  //   // Handle the click event for adding the prescription
-  // };
 
   return (
     <Table tableHead={tableHeaders}>

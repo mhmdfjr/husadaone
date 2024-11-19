@@ -4,6 +4,7 @@ import axios from "axios";
 import clsx from "clsx";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Cookies from "js-cookie";
 
 interface Registration {
   id: number;
@@ -23,6 +24,7 @@ interface Patient {
 }
 
 export default function TableRegisterPatientDetail() {
+  const token = Cookies.get("token");
   const router = useRouter();
   const searchParams = useSearchParams();
   const inputId = searchParams.get("input");
@@ -60,7 +62,12 @@ export default function TableRegisterPatientDetail() {
   useEffect(() => {
     const fetchNurseDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/patients/${id}`);
+        const { data: response } = await axios.get(`${apiUrl}/patients/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
         setPatient(response.data);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);

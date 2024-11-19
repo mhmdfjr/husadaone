@@ -8,6 +8,7 @@ import DatePicker from "@/components/date-picker";
 import axios from "axios";
 import TableMedicineBill from "@/components/table/tableMedicineBill";
 import TableServiceBill from "@/components/table/tableServiceBill";
+import Cookies from "js-cookie";
 
 interface Patient {
   id: number;
@@ -32,6 +33,11 @@ interface Registration {
   polyclinic_id: number;
   doctor_id: number;
   registration_date: string;
+  subjective: string;
+  objective: string;
+  assessment: string;
+  plan: string;
+  diagnosis: string;
   already_paid: string;
   polyclinic: Polyclinic;
   doctor: Doctor;
@@ -77,6 +83,7 @@ interface MedicineTable {
 }
 
 export default function CashierDetails() {
+  const token = Cookies.get("token");
   const [pay, setPay] = useState<number>(0);
   const [cashback, setCashback] = useState<number>(0);
   const [status, setStatus] = useState<string>("");
@@ -109,6 +116,11 @@ export default function CashierDetails() {
     polyclinic_id: 0,
     doctor_id: 0,
     registration_date: "",
+    subjective: "",
+    objective: "",
+    assessment: "",
+    plan: "",
+    diagnosis: "",
     already_paid: "",
     polyclinic: polyclinicData,
     patient: patientData,
@@ -138,7 +150,13 @@ export default function CashierDetails() {
     const fetchRegistration = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `${apiUrl}/registrations/${id}`
+          `${apiUrl}/registrations/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
         );
         setRegistration(response.data.registration);
       } catch (error) {
@@ -191,19 +209,28 @@ export default function CashierDetails() {
       const response = axios.put(
         `${apiUrl}/registrations/${registrationData.id}`,
         {
-          patient_id: registrationData.patient_id,
-          polyclinic_id: registrationData.polyclinic_id,
-          doctor_id: registrationData.doctor_id,
-          registration_date: registrationData.registration_date,
+          patient_id: registration.patient_id,
+          polyclinic_id: registration.polyclinic_id,
+          doctor_id: registration.doctor_id,
+          registration_date: registration.registration_date,
+          subjective: registration.subjective,
+          objective: registration.objective,
+          assessment: registration.assessment,
+          plan: registration.plan,
+          diagnosis: registration.diagnosis,
           already_paid: status === "Sudah Bayar" ? "yes" : null,
         },
         {
           params: {
-            patient_id: registrationData.patient_id,
-            polyclinic_id: registrationData.polyclinic_id,
-            doctor_id: registrationData.doctor_id,
-            registration_date: registrationData.registration_date,
+            patient_id: registration.patient_id,
+            polyclinic_id: registration.polyclinic_id,
+            doctor_id: registration.doctor_id,
+            registration_date: registration.registration_date,
             already_paid: status === "Sudah Bayar" ? "yes" : null,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
           },
         }
       );
@@ -243,6 +270,10 @@ export default function CashierDetails() {
               production_year: medicineTable.production_year,
               validity_period: medicineTable.validity_period,
             },
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
           }
         );
         router.push("/pharmacy/cashier");
@@ -252,7 +283,11 @@ export default function CashierDetails() {
     });
   };
 
-  const handleCLick = () => {};
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <>

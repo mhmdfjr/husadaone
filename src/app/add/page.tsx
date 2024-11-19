@@ -7,7 +7,8 @@ import Image from "next/image";
 import Button from "@/components/button";
 import axios from "axios";
 import Popup from "@/components/popup";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import Cookies from "js-cookie";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 

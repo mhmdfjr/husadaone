@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Button from "../button";
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
+import Cookies from "js-cookie";
 
 interface Polyclinic {
   id: number;
@@ -44,6 +45,7 @@ const TableRegisterDoctor: React.FC<TableDoctorsProps> = ({
     "Tempat Lahir",
   ]);
 
+  const token = Cookies.get("token");
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,7 +67,12 @@ const TableRegisterDoctor: React.FC<TableDoctorsProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/doctors`);
+        const { data: response } = await axios.get(`${apiUrl}/doctors`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
         setDoctors(response.data);
       } catch (error) {
         console.error(error);

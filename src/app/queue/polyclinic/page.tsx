@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Button from "@/components/button";
 import axios from "axios";
 import Input from "@/components/input";
+import Cookies from "js-cookie";
 
 interface Registration {
   id: number;
@@ -23,6 +24,7 @@ interface Registration {
 }
 
 export default function TicketQueue() {
+  const token = Cookies.get("token");
   const [id, setId] = useState<number>(0);
   const [queue, setQueue] = useState<number>(0);
   const [path, setPath] = useState<string>("");
@@ -56,7 +58,12 @@ export default function TicketQueue() {
 
   const fetchData = async () => {
     try {
-      const { data: response } = await axios.get(`${apiUrl}/registrations`);
+      const { data: response } = await axios.get(`${apiUrl}/registrations`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "Application/json",
+        },
+      });
       const responses = response.data.filter(
         (res: Registration) => res.path_audio !== null
       );
@@ -136,6 +143,12 @@ export default function TicketQueue() {
   const handleReset = () => {
     fetchData();
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <div className="mx-4 flex justify-start items-center gap-4 ">

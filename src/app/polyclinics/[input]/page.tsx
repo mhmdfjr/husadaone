@@ -5,6 +5,7 @@ import Input from "@/components/input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 interface Doctor {
   id: number;
@@ -20,6 +21,7 @@ interface PolyclincDetails {
 }
 
 export default function InputPolyclinic() {
+  const token = Cookies.get("token");
   const [id, setId] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const router = useRouter();
@@ -40,7 +42,13 @@ export default function InputPolyclinic() {
     const fetchPatientDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `${apiUrl}/polyclinics/${id}`
+          `${apiUrl}/polyclinics/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
         );
         setPolyclinic(response.data);
       } catch (error) {
@@ -70,6 +78,10 @@ export default function InputPolyclinic() {
           params: {
             name: name,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push("/polyclinics");
@@ -89,6 +101,10 @@ export default function InputPolyclinic() {
           params: {
             name: name || polyclinic.name,
           },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
         }
       );
       router.push("/polyclinics");
@@ -96,6 +112,12 @@ export default function InputPolyclinic() {
       console.error("Failed to post medicine details:", error);
     }
   };
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   const handleCLick = () => {};
 

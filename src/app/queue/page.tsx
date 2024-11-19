@@ -1,10 +1,15 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function Queue() {
+  const token = Cookies.get("token");
+
   const router = useRouter();
   useEffect(() => {
-    router.push("/queue/ticket");
+    if (!token) {
+      router.push("/login");
+    } else router.push("/queue/ticket");
   }, []);
 }

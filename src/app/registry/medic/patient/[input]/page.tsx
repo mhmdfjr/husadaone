@@ -1,11 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
-import Button from "@/components/button";
 import Input from "@/components/input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
 import TableRegisterPatientDetail from "@/components/table/tableRegisterPatientDetail";
+import Cookies from "js-cookie";
 
 interface Patient {
   id: number;
@@ -21,6 +21,7 @@ interface Registration {
 }
 
 export default function EditPatientData() {
+  const token = Cookies.get("token");
   const [id, setId] = useState<number>(0);
   const [medic, setMedic] = useState<number>(0);
   const [name, setName] = useState<string>("");
@@ -49,7 +50,13 @@ export default function EditPatientData() {
     const fetchNurseDetails = async (id: number) => {
       try {
         const { data: response } = await axios.get(
-          `${apiUrl}/registrations/${id}`
+          `${apiUrl}/registrations/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
         );
         setRegistration(response.data.registration);
       } catch (error) {
@@ -67,6 +74,12 @@ export default function EditPatientData() {
       }
     }
   }, [inputId]);
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
 
   const handleCLick = () => {};
 
