@@ -11,6 +11,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import Popup from "@/components/popup";
 import Cookies from "js-cookie";
+import { cookies } from "next/headers";
 
 interface Data {
   name: string;
@@ -20,6 +21,7 @@ interface Data {
 
 const Registry = () => {
   const token = Cookies.get("token");
+  const newPatient = Cookies.get("newPatient");
   const patientId = Cookies.get("patientId");
   const patientName = Cookies.get("patientName");
   const doctorId = Cookies.get("doctorId");
@@ -27,7 +29,8 @@ const Registry = () => {
   const polyclinicId = Cookies.get("polyclinicId");
   const polyclinicName = Cookies.get("polyclinicName");
   const router = useRouter();
-  const [id, setId] = useState<number>(0);
+  const [id, setId] = useState<number>();
+  const [medic, setMedic] = useState<number>();
   const [isSuccess, setIsSuccess] = useState<boolean | null>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -67,19 +70,52 @@ const Registry = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: response } = await axios.get(`${apiUrl}/patients`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
+        if (newPatient == "true") {
+          setMedic(response.data[response.data.length - 1].id);
+        } else {
+          setMedic(0);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const handleSave = async () => {
     try {
       const response = await axios.post(
         `${apiUrl}/registrations`,
         {
-          patient_id: Number(patientId),
+          patient_id: patientId
+            ? Number(patientId)
+            : newPatient
+            ? medic
+              ? medic
+              : ""
+            : "",
           polyclinic_id: Number(polyclinicId),
           doctor_id: Number(doctorId),
           registration_date: selectedDate,
         },
         {
           params: {
-            patient_id: Number(patientId),
+            patient_id: patientId
+              ? Number(patientId)
+              : newPatient
+              ? medic
+                ? medic
+                : ""
+              : "",
             polyclinic_id: Number(polyclinicId),
             doctor_id: Number(doctorId),
             registration_date: selectedDate,
@@ -90,6 +126,7 @@ const Registry = () => {
           },
         }
       );
+      Cookies.remove("newPatient");
       Cookies.remove("patientId");
       Cookies.remove("patientName");
       Cookies.remove("doctorId");
@@ -139,7 +176,7 @@ const Registry = () => {
               label="No Registrasi"
               name="regis"
               type="text"
-              value={id.toString()}
+              value={id ? id.toString() : ""}
               onChange={() => {}}
             />
             <DatePicker
@@ -162,12 +199,25 @@ const Registry = () => {
                 label="No Rekam Medis"
                 name="noRM"
                 type="text"
-                value={patientId ? patientId : ""}
+                value={
+                  patientId
+                    ? patientId
+                    : newPatient
+                    ? medic
+                      ? medic.toString()
+                      : ""
+                    : ""
+                }
                 onChange={() => {}}
               />
               <Button
                 label={<Add size="32" color="#2F7BFE" />}
-                onClick={() => router.push("/registry/medic")}
+                onClick={() => {
+                  Cookies.remove("newPatient");
+                  Cookies.remove("patientId");
+                  Cookies.remove("patientName");
+                  router.push("/registry/medic");
+                }}
                 size="very-small"
                 variant="secondary"
               />
@@ -182,7 +232,11 @@ const Registry = () => {
               />
               <Button
                 label={<Add size="32" color="#2F7BFE" />}
-                onClick={() => router.push("/registry/polyclinic")}
+                onClick={() => {
+                  Cookies.remove("polyclinicId");
+                  Cookies.remove("polyclinicName");
+                  router.push("/registry/polyclinic");
+                }}
                 size="very-small"
                 variant="secondary"
               />
@@ -197,7 +251,11 @@ const Registry = () => {
               />
               <Button
                 label={<Add size="32" color="#2F7BFE" />}
-                onClick={() => router.push("/registry/doctor")}
+                onClick={() => {
+                  Cookies.remove("doctorId");
+                  Cookies.remove("doctorName");
+                  router.push("/registry/doctor");
+                }}
                 size="very-small"
                 variant="secondary"
               />
