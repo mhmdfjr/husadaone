@@ -43,7 +43,7 @@ interface Registration {
 
 export default function InputMedic() {
   const token = Cookies.get("token");
-  const [medic, setMedic] = useState<number>(0);
+  const [phone, setPhone] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [gender, setGender] = useState<string>("");
   const [bloodType, setBloodType] = useState<string>("");
@@ -151,7 +151,6 @@ export default function InputMedic() {
             Accept: "Application/json",
           },
         });
-        setMedic(response.data[response.data.length - 1].id + 1);
       } catch (error) {
         console.error(error);
       }
@@ -165,7 +164,7 @@ export default function InputMedic() {
         `${apiUrl}/registrations/${id}`,
         {
           data: {
-            patient_id: medic || registration.patient_id,
+            patient_id: registration.patient_id,
             polyclinic_id: registration.polyclinic_id,
             doctor_id: registration.doctor_id,
             registration_date: registerDate
@@ -263,7 +262,7 @@ export default function InputMedic() {
             place_of_birth: birthPlace || registration.patient.place_of_birth,
             date_of_birth: birthDate || registration.patient.date_of_birth,
             gender: gender || registration.patient.gender,
-            phone_number: "085700072350",
+            phone_number: phone || registration.patient.phone_number,
             address: addressPatient || registration.patient.address,
             blood_type: bloodType || registration.patient.blood_type,
             insurance: insurance || registration.patient.insurance,
@@ -274,8 +273,11 @@ export default function InputMedic() {
           },
         }
       );
-      Cookies.set("patientId", registration.patient_id.toString());
-      Cookies.set("patientName", registration.patient.name);
+      Cookies.set("newPatient", "true");
+      Cookies.set(
+        "patientName",
+        registration.patient.name ? registration.patient.name : name
+      );
       router.push("/registry");
     } catch (error) {
       console.error("Failed to post medicine details:", error);
@@ -323,7 +325,7 @@ export default function InputMedic() {
 
         <div className="flex justify-start items-center gap-x-20">
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
-            <Input
+            {/* <Input
               label="No Rekam Medis"
               type="number"
               onChange={(e) =>
@@ -334,7 +336,7 @@ export default function InputMedic() {
               value={
                 inputId ? registration.patient.id.toString() : medic.toString()
               }
-            />
+            /> */}
             <DatePicker
               title="Tanggal Pertama Daftar"
               name=""
@@ -401,6 +403,16 @@ export default function InputMedic() {
                 onDateChange={handleBirthDate}
               />
             </div>
+            <Input
+              label="Nomor Telepon"
+              type="number"
+              onChange={(e) =>
+                setPhone((registration.patient.phone_number = e.target.value))
+              }
+              placeholder={inputId ? registration.patient.phone_number : ""}
+              name=""
+              value={inputId ? registration.patient.phone_number : phone}
+            />
             <Input
               label="Alamat Pasien"
               type="text"
