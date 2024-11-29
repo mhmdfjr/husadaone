@@ -38,6 +38,7 @@ interface Registration {
   polyclinic_id: number;
   doctor_id: number;
   registration_date: string;
+  created_at: string;
   polyclinic: Polyclinic;
   patient: Patient;
   doctor: Doctor;
@@ -71,13 +72,19 @@ export default function TableRecipes() {
             Accept: "Application/json",
           },
         });
-        setRegistrations(response.data);
+
+        const sortedRegistrations = response.data.sort(
+          (a: Registration, b: Registration) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+
+        setRegistrations(sortedRegistrations);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [apiUrl, token]);
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -116,7 +123,7 @@ export default function TableRecipes() {
   return (
     <div>
       <Table tableHead={tableHeaders}>
-        {registrations.map((registration: Registration, index: number) => {
+        {paginatedRecipes.map((registration: Registration, index: number) => {
           return (
             <tr
               key={index}

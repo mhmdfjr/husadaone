@@ -251,7 +251,7 @@ export default function InputOutpatient() {
 
   return (
     <div className="mx-4 flex flex-col justify-start items-center gap-4 ">
-      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible">
+      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible scrollbar-hide">
         <div className="flex justify-start items-center text-body-sm cursor-pointer">
           <p
             className="text-gray-medium-light p-2"
@@ -360,7 +360,7 @@ export default function InputOutpatient() {
             label="Batal"
             variant="secondary"
             size="small"
-            onClick={() => router.push("/registry")}
+            onClick={() => router.push("/services/outpatient")}
           />
           <Button
             label="Simpan"
@@ -372,26 +372,26 @@ export default function InputOutpatient() {
       </div>
 
       {/* Medicine search and input section */}
-      <div className="w-full py-6 px-8 flex justify-center items-end bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible">
+      <div className="w-full py-6 px-8 flex justify-center items-end bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible scrollbar-hide">
         <div className="w-full flex justify-start items-end gap-4">
           <div className="w-full relative">
             <Input
               label="Nama Obat"
               type="text"
-              onFocus={() => setIsFocused(true)} // Show list when focused
-              onBlur={() => setTimeout(() => setIsFocused(false), 200)} // Hide list after clicking away (delay to allow item click)
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setTimeout(() => setIsFocused(false), 200)}
               onChange={(e) => setMedicineName(e.target.value)}
               placeholder=""
               name=""
-              value={medicineName} // Update with medicineName input
+              value={medicineName}
             />
             {isFocused && filteredMedicines.length > 0 && (
-              <ul className="w-full max-h-72 overflow-scroll bg-white border border-gray-300 rounded-md mt-2 absolute z-50">
+              <ul className="w-full max-h-72 overflow-scroll scrollbar-hide bg-white border border-gray-300 rounded-md mt-2 absolute z-50">
                 {filteredMedicines.map((med) => (
                   <li
                     key={med.id}
                     className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-                    onClick={() => handleMedicineSelect(med)} // Set medicine on click
+                    onClick={() => handleMedicineSelect(med)}
                   >
                     {med.name}
                   </li>
@@ -431,11 +431,8 @@ export default function InputOutpatient() {
       </div>
 
       {/* Prescription table */}
-      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
-        <TablePrescription
-          medicineName={medicine}
-          // onDataChange={handleChildData}
-        />
+      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll scrollbar-hide">
+        <TablePrescription medicineName={medicine} />
       </div>
     </div>
   );

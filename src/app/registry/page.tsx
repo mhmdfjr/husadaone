@@ -18,93 +18,21 @@ interface Data {
   address: string;
 }
 
-interface Patient {
-  id: number;
-  name: string;
-  gender: string;
-  blood_type: string;
-  place_of_birth: string;
-  date_of_birth: string;
-  phone_number: string;
-  address: string;
-  insurance: string;
-  allergy: string;
-  disability: string;
-  pic_name: string;
-  pic_status: string;
-  pic_address: string;
-}
-
-interface Registration {
-  id: number;
-  patient_id: number;
-  polyclinic_id: number;
-  doctor_id: number;
-  registration_date: string;
-  subjective: string;
-  objective: string;
-  assessment: string;
-  plan: string;
-  diagnosis: string;
-  recipe: string;
-  already_paid: string;
-  patient: Patient;
-}
-
-interface Polyclinic {
-  id: number;
-  name: string;
-}
-
-interface SelectDoctor {
-  id: number;
-  name: string;
-}
-
 const Registry = () => {
   const token = Cookies.get("token");
+  const patientId = Cookies.get("patientId");
+  const patientName = Cookies.get("patientName");
+  const doctorId = Cookies.get("doctorId");
+  const doctorName = Cookies.get("doctorName");
+  const polyclinicId = Cookies.get("polyclinicId");
+  const polyclinicName = Cookies.get("polyclinicName");
   const router = useRouter();
+  const [id, setId] = useState<number>(0);
   const [isSuccess, setIsSuccess] = useState<boolean | null>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [regis, setRegis] = useState("");
-  const [nama, setNama] = useState("");
-  const [noRM, setNoRM] = useState("");
-  const [poli, setPoli] = useState("");
-  const [doctor, setDoctor] = useState("");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-  const registrationData = {
-    id: 0,
-    patient_id: 0,
-    polyclinic_id: 0,
-    doctor_id: 0,
-    registration_date: "",
-    subjective: "",
-    objective: "",
-    assessment: "",
-    plan: "",
-    diagnosis: "",
-    recipe: "",
-    already_paid: "",
-    patient: {
-      id: 0,
-      name: "",
-      gender: "",
-      blood_type: "",
-      place_of_birth: "",
-      date_of_birth: "",
-      phone_number: "",
-      address: "",
-      insurance: "",
-      allergy: "",
-      disability: "",
-      pic_name: "",
-      pic_status: "",
-      pic_address: "",
-    },
-  };
 
   const [state, setState] = useState<Data>({
     name: "John Doe",
@@ -112,72 +40,48 @@ const Registry = () => {
     address: "1234 Example St, City, Country",
   });
 
-  const [patientId, setPatientId] = useState<Patient>({
-    id: 0,
-    name: "",
-    gender: "",
-    blood_type: "",
-    place_of_birth: "",
-    date_of_birth: "",
-    phone_number: "",
-    address: "",
-    insurance: "",
-    allergy: "",
-    disability: "",
-    pic_name: "",
-    pic_status: "",
-    pic_address: "",
-  });
-  const [polyclinicId, setPolyclinicId] = useState<Polyclinic>({
-    id: 0,
-    name: "",
-  });
-  const [doctorId, setDoctorId] = useState<SelectDoctor>({
-    id: 0,
-    name: "",
-  });
-
   useEffect(() => {
     if (!token) {
       router.push("/login");
     }
-  }, []);
-
-  useEffect(() => {
-    const storagePatient = localStorage.getItem("patientId");
-    const storagePolyclinic = localStorage.getItem("polyclinicId");
-    const storageDoctor = localStorage.getItem("doctorId");
-
-    if (storagePatient) {
-      setPatientId(JSON.parse(storagePatient) as Patient);
-    }
-    if (storagePolyclinic) {
-      setPolyclinicId(JSON.parse(storagePolyclinic) as Polyclinic);
-    }
-    if (storageDoctor) {
-      setDoctorId(JSON.parse(storageDoctor) as SelectDoctor);
-    }
-  }, []);
+  }, [token, router]);
 
   const handleDateChange = (date: string) => {
     setSelectedDate(date);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: response } = await axios.get(`${apiUrl}/registrations`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "Application/json",
+          },
+        });
+        setId(response.data[response.data.length - 1].id + 1);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleSave = async () => {
     try {
       const response = await axios.post(
         `${apiUrl}/registrations`,
         {
-          patient_id: patientId.id,
-          polyclinic_id: polyclinicId.id,
-          doctor_id: doctorId.id,
+          patient_id: Number(patientId),
+          polyclinic_id: Number(polyclinicId),
+          doctor_id: Number(doctorId),
           registration_date: selectedDate,
         },
         {
           params: {
-            patient_id: patientId.id,
-            polyclinic_id: polyclinicId.id,
-            doctor_id: doctorId.id,
+            patient_id: Number(patientId),
+            polyclinic_id: Number(polyclinicId),
+            doctor_id: Number(doctorId),
             registration_date: selectedDate,
           },
           headers: {
@@ -186,6 +90,12 @@ const Registry = () => {
           },
         }
       );
+      Cookies.remove("patientId");
+      Cookies.remove("patientName");
+      Cookies.remove("doctorId");
+      Cookies.remove("doctorName");
+      Cookies.remove("polyclinicId");
+      Cookies.remove("polyclinicName");
       router.push("/registry");
       setIsSuccess(true);
     } catch (error) {
@@ -221,7 +131,7 @@ const Registry = () => {
         onClick={() => {
           isModalOpen ? setIsModalOpen(false) : "";
         }}
-        className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible "
+        className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible scrollbar-none"
       >
         <div className="flex justify-start items-center gap-x-20">
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
@@ -229,7 +139,7 @@ const Registry = () => {
               label="No Registrasi"
               name="regis"
               type="text"
-              value={regis}
+              value={id.toString()}
               onChange={() => {}}
             />
             <DatePicker
@@ -242,7 +152,7 @@ const Registry = () => {
               label="Nama"
               name="nama"
               type="text"
-              value={patientId ? patientId.name : nama}
+              value={patientName ? patientName : ""}
               onChange={() => {}}
             />
           </div>
@@ -252,7 +162,7 @@ const Registry = () => {
                 label="No Rekam Medis"
                 name="noRM"
                 type="text"
-                value={patientId ? patientId.id.toString() : ""}
+                value={patientId ? patientId : ""}
                 onChange={() => {}}
               />
               <Button
@@ -267,7 +177,7 @@ const Registry = () => {
                 label="Poliklinik yang Dituju"
                 name="poli"
                 type="text"
-                value={polyclinicId ? polyclinicId.name : ""}
+                value={polyclinicName ? polyclinicName : ""}
                 onChange={() => {}}
               />
               <Button
@@ -282,7 +192,7 @@ const Registry = () => {
                 label="Dokter yang Dituju"
                 name="doctor"
                 type="text"
-                value={doctorId ? doctorId.name : ""}
+                value={doctorName ? doctorName : ""}
                 onChange={() => {}}
               />
               <Button
@@ -315,7 +225,7 @@ const Registry = () => {
           />
         </div>
       </div>
-      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
+      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2">
         <TableRegist />
       </div>
       {isModalOpen && (

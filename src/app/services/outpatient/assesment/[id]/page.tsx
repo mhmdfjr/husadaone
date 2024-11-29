@@ -314,7 +314,7 @@ export default function InputOutpatient() {
             label="Batal"
             variant="secondary"
             size="small"
-            onClick={() => router.push("/registry")}
+            onClick={() => router.push("/services/outpatient")}
           />
           <Button
             label="Simpan"

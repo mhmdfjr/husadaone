@@ -39,6 +39,7 @@ interface Registration {
   doctor_id: number;
   registration_date: string;
   already_paid: string;
+  created_at: string;
   polyclinic: Polyclinic;
   patient: Patient;
   doctor: Doctor;
@@ -71,13 +72,19 @@ export default function TableOutpatient() {
             Accept: "Application/json",
           },
         });
-        setRegistrations(response.data);
+
+        const sortedRegistrations = response.data.sort(
+          (a: Registration, b: Registration) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+
+        setRegistrations(sortedRegistrations);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [apiUrl, token]);
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -98,7 +105,7 @@ export default function TableOutpatient() {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedRecipes = registrations.slice(startIndex, endIndex);
+  const paginatedServices = registrations.slice(startIndex, endIndex);
   const totalPages = Math.ceil(registrations.length / itemsPerPage);
 
   const handleNextPage = () => {
@@ -116,7 +123,7 @@ export default function TableOutpatient() {
   return (
     <div>
       <Table tableHead={tableHeaders}>
-        {registrations.map((registration: Registration, index: number) => {
+        {paginatedServices.map((registration: Registration, index: number) => {
           return (
             <tr
               key={index}

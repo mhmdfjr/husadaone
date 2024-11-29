@@ -48,17 +48,17 @@ const mainMenu: Menu[] = [
     children: ["Rawat Inap", "Rawat Jalan"],
   },
   {
-    title: "Apotek",
-    dropdown: false,
-    icon: <ChemicalGlass size="24" />,
-    path: "/pharmacy",
-    children: [],
-  },
-  {
     title: "Antrean",
     dropdown: false,
     icon: <Task size="24" />,
     path: "/queue",
+    children: [],
+  },
+  {
+    title: "Apotek",
+    dropdown: false,
+    icon: <ChemicalGlass size="24" />,
+    path: "/pharmacy",
     children: [],
   },
 ];
@@ -124,11 +124,17 @@ export default function Sidebar() {
 
   const handleLogout = () => {
     Cookies.remove("token");
+    Cookies.remove("patientId");
+    Cookies.remove("patientName");
+    Cookies.remove("doctorId");
+    Cookies.remove("doctorName");
+    Cookies.remove("polyclinicId");
+    Cookies.remove("polyclinicName");
     router.push("/login");
   };
 
   return (
-    <div className="w-60 bg-basic-white h-full fixed overflow-y-auto min-h-screen flex flex-col justify-start gap-12 px-4 py-4">
+    <div className="w-60 bg-basic-white h-full fixed scrollbar-hide overflow-y-auto min-h-screen flex flex-col justify-start gap-12 px-4 py-4">
       <div className="logo w-full flex justify-center items-center cursor-pointer">
         <p className="text-h6-bold text-brand-base">SIMRS</p>
       </div>

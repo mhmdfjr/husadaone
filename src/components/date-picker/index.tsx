@@ -10,6 +10,8 @@ import {
   isSameDay,
   addMonths,
   subMonths,
+  setYear,
+  getYear,
 } from "date-fns";
 import { id } from "date-fns/locale";
 import { FaCalendarAlt } from "react-icons/fa";
@@ -27,34 +29,74 @@ const DatePicker: React.FC<DatePickerProps> = ({
   value,
   onDateChange,
 }) => {
+  const today = new Date();
   const [showDatepicker, setShowDatepicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+  const [selectedYear, setSelectedYear] = useState<number>();
+  const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
+  const [showYearDropdown, setShowYearDropdown] = useState(false);
 
   useEffect(() => {
     if (value) {
       const parsedDate = parse(value, "yyyy-MM-dd", new Date());
       setSelectedDate(parsedDate);
       setCurrentMonth(parsedDate);
+      setSelectedYear(getYear(parsedDate));
+    } else {
+      setSelectedDate(today);
+      setCurrentMonth(today);
+      setCurrentYear(getYear(today));
+      onDateChange(format(today, "yyyy-MM-dd"));
     }
-  }, [value]);
+  }, [value, onDateChange]);
 
   const toggleDatepicker = () => {
     setShowDatepicker(!showDatepicker);
+    setShowYearDropdown(false);
   };
 
   const handlePrevMonth = () => {
-    setCurrentMonth(subMonths(currentMonth, 1));
+    const newDate = subMonths(currentMonth, 1);
+    setCurrentMonth(newDate);
+    setSelectedYear(getYear(newDate));
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(addMonths(currentMonth, 1));
+    const newDate = addMonths(currentMonth, 1);
+    setCurrentMonth(newDate);
+    setSelectedYear(getYear(newDate));
+  };
+
+  const handleYearSelect = (year: number) => {
+    setSelectedYear(year);
+    setCurrentMonth(setYear(currentMonth, year));
+    setShowYearDropdown(false);
   };
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
     setShowDatepicker(false);
     onDateChange(format(date, "yyyy-MM-dd"));
+  };
+
+  const renderYears = () => {
+    const years = Array.from({ length: 100 }, (_, i) => currentYear - 99 + i);
+    return (
+      <div className="absolute top-12 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-50 p-2 max-h-48 overflow-auto scrollbar-hide">
+        {years.map((year) => (
+          <div
+            key={year}
+            onClick={() => handleYearSelect(year)}
+            className={`p-2 cursor-pointer text-center rounded-md ${
+              year === currentYear ? "bg-blue-500 text-white" : "text-gray-700"
+            } hover:bg-blue-100`}
+          >
+            {year}
+          </div>
+        ))}
+      </div>
+    );
   };
 
   const renderDays = () => {
@@ -135,13 +177,25 @@ const DatePicker: React.FC<DatePickerProps> = ({
             <button className="text-xl text-gray-700" onClick={handlePrevMonth}>
               &laquo;
             </button>
-            <span className="font-bold text-gray-900">
-              {format(currentMonth, "MMMM yyyy", { locale: id })}
-            </span>
+            <div className="flex items-center space-x-2">
+              <span
+                className="font-bold text-gray-900 cursor-pointer"
+                onClick={() => setShowYearDropdown(!showYearDropdown)}
+              >
+                {format(currentMonth, "MMMM", { locale: id })}
+              </span>
+              <span
+                className="font-bold text-gray-900 cursor-pointer"
+                onClick={() => setShowYearDropdown(!showYearDropdown)}
+              >
+                {selectedYear ? selectedYear : currentYear}
+              </span>
+            </div>
             <button className="text-xl text-gray-700" onClick={handleNextMonth}>
               &raquo;
             </button>
           </div>
+          {showYearDropdown && renderYears()}
           <div className="grid grid-cols-7 text-center mt-10 mb-2">
             {renderDays()}
           </div>

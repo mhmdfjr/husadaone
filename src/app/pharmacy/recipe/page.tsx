@@ -18,7 +18,7 @@ export default function RecipesPharmacy() {
 
   return (
     <div className="mx-4 flex justify-start items-center gap-4 ">
-      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
+      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll scrollbar-hide">
         <div className="flex">
           <Button
             label="Resep"

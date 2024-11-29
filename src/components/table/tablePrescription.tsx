@@ -29,13 +29,9 @@ interface Payment {
 
 interface TablePrescription {
   medicineName?: Medicine;
-  // onDataChange: (data: Medicine[]) => void;
 }
 
-const TablePrescription: React.FC<TablePrescription> = ({
-  medicineName,
-  // onDataChange,
-}) => {
+const TablePrescription: React.FC<TablePrescription> = ({ medicineName }) => {
   const token = Cookies.get("token");
   const router = useRouter();
   const params = useParams();

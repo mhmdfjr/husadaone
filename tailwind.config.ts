@@ -6,6 +6,9 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  plugins: [
+    require('tailwind-scrollbar-hide') 
+  ],
   theme: {
     extend: {
       colors: {
@@ -75,8 +78,16 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      scrollbar: {
+        none: {
+          '&::-webkit-scrollbar': {
+            display: 'none', // Chrome, Safari, Opera
+          },
+          '-ms-overflow-style': 'none', // IE and Edge
+          'scrollbar-width': 'none', // Firefox
+        },
+      },
     },
   },
-  plugins: [],
 };
 export default config;
