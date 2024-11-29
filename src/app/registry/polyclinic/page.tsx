@@ -25,7 +25,8 @@ export default function ListPolyclinics() {
   };
 
   const handleCLick = () => {
-    localStorage.setItem("polyclinicId", JSON.stringify(childData));
+    Cookies.set("polyclinicId", childData.id.toString());
+    Cookies.set("polyclinicName", childData.name);
     router.push("/registry");
   };
 

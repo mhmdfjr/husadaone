@@ -69,14 +69,6 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
     "Aksi",
   ];
 
-  const patientData: Patient = {
-    id: 0,
-    name: "",
-    registration: [
-      { id: 0, polyclinic_id: 0, doctor_id: 0, registration_date: "" },
-    ],
-  };
-
   const pivotData: Pivot = {
     payment_id: 0,
     medicine_id: 0,
@@ -94,17 +86,6 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
     },
   ];
 
-  const paymentData: Payment[] = [
-    {
-      id: 0,
-      registration_id: 0,
-      total_cost: "",
-      medicines: medicineData,
-    },
-  ];
-
-  const [patients, setPatients] = useState<Patient>(patientData);
-  const [payments, setPayments] = useState<Payment[]>(paymentData);
   const [medicines, setMedicines] = useState<Medicine[]>(medicineData);
 
   const [selectedOption, setSelectedOption] = useState<boolean>(false);
@@ -113,58 +94,31 @@ const TableRecipeById: React.FC<TableRecipeByIdProps> = ({ onDataChange }) => {
   useEffect(() => {
     const fetchPatientDetails = async (id: number) => {
       try {
-        const { data: response } = await axios.get(`${apiUrl}/patients/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "Application/json",
-          },
-        });
-        setPatients(response.data);
+        const { data: response } = await axios.get(
+          `${apiUrl}/registrations/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "Application/json",
+            },
+          }
+        );
+        setMedicines(response.data.keranjang[0].medicines);
       } catch (error) {
         console.error("Failed to fetch patient details:", error);
       }
     };
 
     if (params && params.id) {
-      const patientId = Number(params.id);
-      if (!isNaN(patientId)) {
-        fetchPatientDetails(patientId);
+      const registrationId = Number(params.id);
+      if (!isNaN(registrationId)) {
+        fetchPatientDetails(registrationId);
       } else {
         console.error("Invalid patient ID:", params.id);
         router.push("/error");
       }
     }
   }, [params]);
-
-  useEffect(() => {
-    const fetchPayments = async () => {
-      try {
-        const { data: response } = await axios.get(`${apiUrl}/payments`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "Application/json",
-          },
-        });
-        setPayments(response.data);
-      } catch (error) {
-        console.error("Failed to fetch payments:", error);
-      }
-    };
-    fetchPayments();
-  }, [params]);
-
-  useEffect(() => {
-    if (patients && patients.id && payments.length > 0) {
-      const matchingPayments = payments.filter(
-        (payment: Payment) => payment.registration_id === patients.id
-      );
-      if (matchingPayments.length > 0) {
-        if (matchingPayments) {
-          setMedicines(matchingPayments[0].medicines);
-        }
-      }
-    }
-  }, [payments]);
 
   const handelAction = (data: Recipe) => {
     setSelectedOption(!data.isOn);

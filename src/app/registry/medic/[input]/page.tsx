@@ -164,23 +164,29 @@ export default function InputMedic() {
       const response = await axios.put(
         `${apiUrl}/registrations/${id}`,
         {
-          patient_id: medic || registration.patient_id,
-          polyclinic_id: registration.polyclinic_id,
-          doctor_id: registration.doctor_id,
-          registration_date: registerDate || registration.registration_date,
-          subjective: registration.subjective,
-          objective: registration.objective,
-          assessment: registration.assessment,
-          plan: registration.plan,
-          diagnosis: registration.diagnosis,
-          already_paid: registration.already_paid,
+          data: {
+            patient_id: medic || registration.patient_id,
+            polyclinic_id: registration.polyclinic_id,
+            doctor_id: registration.doctor_id,
+            registration_date: registerDate
+              ? registerDate
+              : registration.registration_date,
+            subjective: registration.subjective,
+            objective: registration.objective,
+            assessment: registration.assessment,
+            plan: registration.plan,
+            diagnosis: registration.diagnosis,
+            already_paid: registration.already_paid,
+          },
         },
         {
           params: {
             patient_id: registration.patient_id,
             polyclinic_id: registration.polyclinic_id,
             doctor_id: registration.doctor_id,
-            registration_date: registration.registration_date,
+            registration_date: registerDate
+              ? registerDate
+              : registration.registration_date,
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -268,7 +274,8 @@ export default function InputMedic() {
           },
         }
       );
-      localStorage.setItem("patientId", JSON.stringify(registration.patient));
+      Cookies.set("patientId", registration.patient_id.toString());
+      Cookies.set("patientName", registration.patient.name);
       router.push("/registry");
     } catch (error) {
       console.error("Failed to post medicine details:", error);

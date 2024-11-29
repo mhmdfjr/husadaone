@@ -21,41 +21,19 @@ interface Registration {
   diagnosis: string;
   recipe: string;
   already_paid: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export default function TicketQueue() {
   const token = Cookies.get("token");
-  const [id, setId] = useState<number>(0);
-  const [queue, setQueue] = useState<number>(0);
-  const [path, setPath] = useState<string>("");
-
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-  const registrationData = [
-    {
-      id: 0,
-      patient_id: 0,
-      polyclinic_id: 0,
-      doctor_id: 0,
-      registration_date: "",
-      poly_queue: "",
-      path_audio: "",
-      subjective: "",
-      objective: "",
-      assessment: "",
-      plan: "",
-      diagnosis: "",
-      recipe: "",
-      already_paid: "",
-    },
-  ];
-
-  const [registrations, setRegistrations] =
-    useState<Registration[]>(registrationData);
-  const [current, setCurrent] = useState<number>(0);
+  const queue = Cookies.get("queuePolyclinics");
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [current, setCurrent] = useState<number>(Number(queue) || 0);
   const router = useRouter();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const fetchData = async () => {
     try {
       const { data: response } = await axios.get(`${apiUrl}/registrations`, {
@@ -64,91 +42,79 @@ export default function TicketQueue() {
           Accept: "Application/json",
         },
       });
-      const responses = response.data.filter(
+
+      const result = response.data || [];
+      const filteredRegistrations = result.filter(
         (res: Registration) => res.path_audio !== null
       );
-      setRegistrations(responses);
-      setCurrent(responses[0].id);
+      setRegistrations(filteredRegistrations);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching registrations:", error);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const filterRegistrationsByCurrentDay = (
+    items: Registration[]
+  ): Registration[] => {
+    const today = new Date();
+    return items
+      .filter((item) => {
+        const createdAtDate = new Date(item.updated_at);
+        return createdAtDate.toDateString() === today.toDateString();
+      })
+      .sort(
+        (a, b) =>
+          new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
+      );
+  };
 
-  useEffect(() => {
-    console.log(registrations);
-  }, [registrations]);
+  const todayRegistrations = filterRegistrationsByCurrentDay(registrations);
 
-  const findPayment = registrations.find(
-    (registration) => registration.id == current
-  );
-
-  // const handleDeleteQueue = async (id: number) => {
-  //   try {
-  //     const response = await axios.put(
-  //       `${apiUrl}/registrations/${id}`,
-  //       {
-  //         patient_id: registration.patient_id,
-  //         polyclinic_id: registration.polyclinic_id,
-  //         doctor_id: registration.doctor_id,
-  //         registration_date: registration.registration_date,
-  //         poly_queue: registration.poly_queue,
-  //         path_audio: registration.path_queue,
-  //         subjective: registration.subjective,
-  //         objective: registration.objective,
-  //         assessment: registration.assessment,
-  //         plan: registration.plan,
-  //         diagnosis: registration.diagnosis,
-  //         already_paid: registration.already_paid,
-  //       },
-  //       {
-  //         params: {
-  //           patient_id: registration.patient_id,
-  //           polyclinic_id: registration.polyclinic_id,
-  //           doctor_id: registration.doctor_id,
-  //           registration_date: registration.registration_date,
-  //         },
-  //       }
-  //     );
-  //   } catch (error) {
-  //     console.error("Failed to post medicine details:", error);
-  //   }
-  // };
-
-  const handleNext = () => {
-    if (current < registrations.length) {
-      setCurrent(current + 1);
+  const handleNext = async () => {
+    if (current < todayRegistrations.length - 1) {
+      const nextQueue = current + 1;
+      Cookies.set("queuePolyclinics", nextQueue.toString(), { expires: 0.5 });
+      setCurrent(nextQueue);
+    } else {
+      // console.log("No more registrations in the queue.");
     }
-    setCurrent(current + 1);
-    console.log(current);
-    // deletePayment(current);
   };
 
   const handleCall = async () => {
     if (audioRef.current) {
-      audioRef.current.play();
+      audioRef.current
+        .play()
+        .catch((err) => console.error("Error playing audio:", err));
     }
   };
 
   const handleStop = () => {
     if (audioRef.current) {
       audioRef.current.pause();
-    } else {
+      audioRef.current.currentTime = 0;
     }
   };
 
   const handleReset = () => {
+    Cookies.remove("queuePolyclinics");
+    setCurrent(0);
     fetchData();
   };
 
   useEffect(() => {
     if (!token) {
       router.push("/login");
+    } else {
+      fetchData();
     }
-  }, []);
+  }, [token]);
+
+  // useEffect(() => {
+  //   console.log("Current queue:", current);
+  //   if (todayRegistrations[current]) {
+  //     console.log("Current payment:", todayRegistrations);
+  //   }
+  // }, [current, todayRegistrations]);
 
   return (
     <div className="mx-4 flex justify-start items-center gap-4 ">
@@ -175,7 +141,7 @@ export default function TicketQueue() {
         </div>
         <div className="flex justify-start items-center gap-x-20 w-full">
           <Input
-            label="Poliklinik"
+            label="Apotek"
             type="select"
             onChange={(e) => {}}
             placeholder="Pilih Apotek"
@@ -189,14 +155,11 @@ export default function TicketQueue() {
             onChange={() => {}}
             placeholder=""
             name=""
-            // value=""
-            value={findPayment ? findPayment.id.toString() : ""}
+            value={todayRegistrations[current]?.poly_queue.toString() || ""}
           />
-          {/* // this line is error, NotSupportedError: The media resource indicated by the src attribute or assigned media provider object was not suitable. */}
           <audio
             ref={audioRef}
-            // src=""
-            src={findPayment ? findPayment.path_audio : ""}
+            src={todayRegistrations[current]?.path_audio || ""}
           />
         </div>
         <div className="w-full flex justify-end items-center gap-4">

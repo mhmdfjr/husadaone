@@ -21,7 +21,8 @@ export default function ListDoctors() {
   };
 
   const handleCLick = () => {
-    localStorage.setItem("doctorId", JSON.stringify(childData));
+    Cookies.set("doctorId", childData.id.toString());
+    Cookies.set("doctorName", childData.name);
     router.push("/registry");
   };
 
@@ -33,7 +34,7 @@ export default function ListDoctors() {
     if (!token) {
       router.push("/login");
     }
-  }, []);
+  }, [router, token]);
 
   return (
     <div className="mx-4 flex justify-center items-center gap-4 ">

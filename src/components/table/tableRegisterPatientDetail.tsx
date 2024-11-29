@@ -32,9 +32,9 @@ export default function TableRegisterPatientDetail() {
   const tableHeaders = [
     "Tanggal",
     "Subjektif",
-    "Objecktif",
-    "Assesment",
-    "Planning",
+    "Objektif",
+    "Penanganan",
+    "Perencanaan",
     "Diagnosis",
   ];
 

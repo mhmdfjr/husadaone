@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Button from "@/components/button";
 import Input from "@/components/input";
+import DatePicker from "@/components/date-picker";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight2 } from "iconsax-react";
 import axios from "axios";
@@ -14,6 +15,7 @@ interface PatientDetails {
   place_of_birth: string;
   gender: string;
   address: string;
+  blood_type: string;
   phone_number: string;
   insurance: string;
   pic_name: string;
@@ -35,6 +37,8 @@ export default function InputPatient() {
   const [picName, setPicName] = useState<string>("");
   const [picStatus, setPicStatus] = useState<string>("");
   const [picAddress, setPicAddress] = useState<string>("");
+  const [birthDate, setBirthDate] = useState<string | null>(null);
+  const [bloodType, setBloodType] = useState<string>("");
   const router = useRouter();
   const searchParams = useSearchParams();
   const inputId = searchParams.get("input");
@@ -48,6 +52,7 @@ export default function InputPatient() {
     place_of_birth: "",
     date_of_birth: "",
     address: "",
+    blood_type: "",
     phone_number: "",
     insurance: "",
     pic_name: "",
@@ -93,6 +98,7 @@ export default function InputPatient() {
           gender: gender,
           phone_number: phone,
           address: address,
+          blood_type: bloodType,
           insurance: insurance,
         },
         {
@@ -124,17 +130,18 @@ export default function InputPatient() {
         {
           name: name || patients.name,
           place_of_birth: place || patients.place_of_birth,
-          date_of_birth: "2003-04-13",
+          date_of_birth: birthDate || patients.date_of_birth,
           gender: gender || patients.gender,
           phone_number: phone || patients.phone_number,
           address: address || patients.address,
+          blood_type: bloodType || patients.blood_type,
           insurance: insurance || patients.insurance,
         },
         {
           params: {
             name: name || patients.name,
             place_of_birth: place || patients.place_of_birth,
-            date_of_birth: "2003-04-13",
+            date_of_birth: place || patients.place_of_birth,
             gender: gender || patients.gender,
             phone_number: phone || patients.phone_number,
             address: address || patients.address,
@@ -150,6 +157,10 @@ export default function InputPatient() {
     } catch (error) {
       console.error("Failed to post medicine details:", error);
     }
+  };
+
+  const handleBirthDate = (date: string) => {
+    setBirthDate(date);
   };
 
   useEffect(() => {
@@ -194,22 +205,11 @@ export default function InputPatient() {
                 name=""
                 value={inputId ? patients.place_of_birth : place}
               />
-              <Input
-                label="Usia"
-                type="number"
-                onChange={(e) => setAge((patients.id = Number(e.target.value)))}
-                placeholder={inputId ? patients.id.toString() : ""}
+              <DatePicker
+                title="Tanggal Lahir"
                 name=""
-                value={inputId ? patients.id.toString() : age.toString()}
-              />
-              <Input
-                label="Jenis Kelamin"
-                type="select"
-                onChange={(e) => setGender((patients.gender = e.target.value))}
-                placeholder={inputId ? patients.gender : "Pilih"}
-                name=""
-                value={inputId ? patients.gender : gender}
-                options={["L", "P"]}
+                value={inputId ? patients.date_of_birth : birthDate}
+                onDateChange={handleBirthDate}
               />
             </div>
             <Input
@@ -223,26 +223,52 @@ export default function InputPatient() {
               value={inputId ? patients.insurance : insurance}
               options={["BPJS", "Umum"]}
             />
-            <Input
-              label="Nomor Telepon Pasien"
-              type="text"
-              onChange={(e) =>
-                setPhone((patients.phone_number = e.target.value))
-              }
-              placeholder={inputId ? patients.phone_number : ""}
-              name=""
-              value={inputId ? patients.phone_number : phone}
-            />
-            <Input
-              label="Alamat Pasien"
-              type="text"
-              onChange={(e) => setAddress((patients.address = e.target.value))}
-              placeholder={inputId ? patients.address : ""}
-              name=""
-              value={inputId ? patients.address : address}
-            />
+            <div className="w-full flex justify-center items-center gap-4">
+              <Input
+                label="Gol. Darah"
+                type="select"
+                onChange={(e) =>
+                  setBloodType((patients.blood_type = e.target.value))
+                }
+                placeholder={inputId ? patients.blood_type : "Pilih"}
+                name=""
+                value={inputId ? patients.blood_type : bloodType}
+                options={["A", "B", "O", "AB"]}
+              />
+              <Input
+                label="Jenis Kelamin"
+                type="select"
+                onChange={(e) => setGender((patients.gender = e.target.value))}
+                placeholder={inputId ? patients.gender : "Pilih"}
+                name=""
+                value={inputId ? patients.gender : gender}
+                options={["L", "P"]}
+              />
+            </div>
           </div>
           <div className="flex flex-col justify-start items-center gap-y-4 w-full">
+            <div className="w-full flex justify-center items-center gap-4">
+              <Input
+                label="Nomor Telepon Pasien"
+                type="text"
+                onChange={(e) =>
+                  setPhone((patients.phone_number = e.target.value))
+                }
+                placeholder={inputId ? patients.phone_number : ""}
+                name=""
+                value={inputId ? patients.phone_number : phone}
+              />
+              <Input
+                label="Alamat Pasien"
+                type="text"
+                onChange={(e) =>
+                  setAddress((patients.address = e.target.value))
+                }
+                placeholder={inputId ? patients.address : ""}
+                name=""
+                value={inputId ? patients.address : address}
+              />
+            </div>
             <Input
               label="Nama Penanggung Jawab"
               type="text"

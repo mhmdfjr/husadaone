@@ -62,7 +62,7 @@ export default function ListPolyclinics() {
         onClick={() => {
           isModalOpen ? setIsModalOpen(false) : "";
         }}
-        className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll"
+        className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll scrollbar-hide"
       >
         <div className="flex justify-end">
           <div className="flex gap-4">

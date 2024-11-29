@@ -55,16 +55,14 @@ const Login = () => {
           },
         }
       );
-      console.log(response.data.token);
       Cookies.set("token", response.data.token, { expires: 0.5 });
       toast.success("Berhasil login");
       setTimeout(() => {
         router.push("/dashboard");
       }, 500);
     } catch (error: any) {
-      console.log(error);
-      // setValidation(error.response.data);
-      //   toast.error(validation.message);
+      setValidation(error.response.data);
+      // toast.error(validation.message);
     }
   };
 

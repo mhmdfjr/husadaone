@@ -292,7 +292,7 @@ export default function CashierDetails() {
   return (
     <>
       <div className="mx-4 flex justify-start items-center gap-4">
-        <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible ">
+        <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible scrollbar-hide">
           <div className="flex justify-start items-center text-body-sm cursor-pointer">
             <p
               className="text-gray-medium-light p-2"
@@ -348,7 +348,7 @@ export default function CashierDetails() {
       </div>
 
       <div className="mx-4 flex justify-start items-center gap-4 ">
-        <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
+        <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll scrollbar-hide">
           <p className="text-h8-bold text-basic-black">
             Tagihan Jasa Pemeriksaan
           </p>
@@ -366,7 +366,7 @@ export default function CashierDetails() {
       </div>
 
       <div className="mx-4 flex justify-start items-center gap-4 ">
-        <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
+        <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll scrollbar-hide">
           <p className="text-h8-bold text-basic-black">Tagihan Obat</p>
           <TableMedicineBill
             registrationId={registration.id}
@@ -385,7 +385,7 @@ export default function CashierDetails() {
       </div>
 
       <div className="mx-4 flex justify-start items-center gap-4 ">
-        <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
+        <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll scrollbar-hide">
           <div className="flex justify-between items-center">
             <p className="text-h8-bold text-basic-black">Pembayaran</p>
             <div className="flex justify-center items-center gap-4">

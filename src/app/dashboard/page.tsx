@@ -18,8 +18,8 @@ export default function Dashboard() {
   const [doctorsCount, setDoctorsCount] = useState<string>("-");
   const [nursesCount, setNursesCount] = useState<string>("-");
   const [polyclinicCount, setPolyclinicCount] = useState<string>("-");
-  const [childData, setChildData] = useState<Date>();
-  const handleChildData = (data: Date) => {
+  const [childData, setChildData] = useState<string>();
+  const handleChildData = (data: string) => {
     setChildData(data);
   };
 
@@ -89,7 +89,7 @@ export default function Dashboard() {
       .then((response) => {
         const data = response.data;
         if (data && Array.isArray(data.data)) {
-          setNursesCount(`0${data.data.length}`);
+          setNursesCount(`${data.data.length}`);
         } else {
           console.error("Unexpected data format:", data);
         }
@@ -152,12 +152,12 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="mx-4 flex justify-start items-start gap-4 ">
-        <div className="py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll basis-3/4">
+      <div className="mx-4 w-full flex justify-start items-start gap-4 ">
+        <div className="py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll scrollbar-hide basis-3/4">
           <p className="text-h8-bold text-basic-black">Pasien Terbaru</p>
           <TableDashboard date={childData} />
         </div>
-        <div className="py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
+        <div className="py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2">
           <p className="text-h8-bold text-basic-black mb-4">Kalender</p>
           <Calender onDataChange={handleChildData} />
         </div>

@@ -192,7 +192,7 @@ export default function ValidateRecipe() {
 
   return (
     <div className="mx-4 flex flex-col justify-start items-center gap-4">
-      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible ">
+      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible scrollbar-hide">
         <div className="flex justify-start items-center text-body-sm cursor-pointer">
           <p
             className="text-gray-medium-light p-2"
@@ -263,13 +263,13 @@ export default function ValidateRecipe() {
         </div>
       </div>
 
-      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
+      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll  scrollbar-hide">
         <TableRecipeById onDataChange={handleChildData} />
       </div>
 
       <div
         className={clsx(
-          "w-full justify-center items-end gap-4 py-6 px-8 flex bg-basic-white rounded-2xl border-2 overflow-scroll",
+          "w-full justify-center items-end gap-4 py-6 px-8 flex bg-basic-white rounded-2xl border-2 overflow-scroll scrollbar-hide",
           { hidden: !childData.isOn }
         )}
       >
