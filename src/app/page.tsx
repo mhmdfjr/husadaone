@@ -56,7 +56,7 @@ const Main = () => {
       );
       toast.success("Berhasil registrasi akun");
       setTimeout(() => {
-        router.push("/login");
+        router.push("/dashboard");
       }, 500);
     } catch (error: any) {
       setValidation(error.response.data);
