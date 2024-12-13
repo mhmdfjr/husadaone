@@ -38,7 +38,7 @@ export default function ListDoctors() {
 
   return (
     <div className="mx-4 flex justify-center items-center gap-4 ">
-      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll">
+      <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll scrollbar-none">
         <div className="flex justify-between">
           <div className="flex justify-start items-center text-body-sm cursor-pointer">
             <p
