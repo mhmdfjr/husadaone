@@ -50,6 +50,7 @@ export default function InputPatientData() {
   const handleCLick = () => {
     Cookies.set("patientId", childData.id.toString());
     Cookies.set("patientName", childData.name);
+    Cookies.set("patientData", JSON.stringify(childData));
     router.push("/registry");
   };
 

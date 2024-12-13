@@ -29,21 +29,21 @@ export default function AddQueue() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const handlePrint = () => {
-    // if (waiting) {
-    //   const doc = new jsPDF();
-    //   doc.text("Rumah Sakit Harapan Sehat", 10, 10);
-    //   doc.text("Nomor Antrian", 10, 20);
-    //   const tableData = [
-    //     // ["Loket", "A1"],
-    //     ["A1", waiting[waiting.length - 1].number + 1],
-    //   ];
-    //   autoTable(doc, {
-    //     startY: 30,
-    //     head: [["Loket", "Nomor"]],
-    //     body: tableData,
-    //   });
-    //   doc.save("Tiket Antrian Harapan Sehat.pdf");
-    // }
+    if (waiting) {
+      const doc = new jsPDF();
+      doc.text("Rumah Sakit Harapan Sehat", 10, 10);
+      doc.text("Nomor Antrian", 10, 20);
+      const tableData = [
+        // ["Loket", "A1"],
+        ["A1", waiting[waiting.length - 1].number + 1],
+      ];
+      autoTable(doc, {
+        startY: 30,
+        head: [["Loket", "Nomor"]],
+        body: tableData,
+      });
+      doc.save("Tiket Antrian Harapan Sehat.pdf");
+    }
   };
 
   const fetchData = async () => {

@@ -78,7 +78,12 @@ export default function TableRegist() {
 
   const deleteRegistration = async (id: number) => {
     try {
-      const response = await axios.delete(`${apiUrl}/registrations/${id}`);
+      const response = await axios.delete(`${apiUrl}/registrations/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
       router.push("/registry");
     } catch (error) {
       console.error("Failed to delete registration:", error);

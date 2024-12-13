@@ -155,7 +155,7 @@ export default function InputOutpatient() {
           },
         }
       );
-      router.push(`/services/outpatient/assesment/${registration.id}`);
+      router.push(`/services/outpatient/diagnose/${registration.id}`);
     } catch (error) {
       console.error("Failed to post medicine details:", error);
     }

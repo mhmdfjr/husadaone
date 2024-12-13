@@ -142,22 +142,6 @@ export default function InputMedic() {
     }
   }, [inputId]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data: response } = await axios.get(`${apiUrl}/patients`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "Application/json",
-          },
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, []);
-
   const handleUpdateRegistration = async (id: number) => {
     try {
       const response = await axios.put(
@@ -278,6 +262,7 @@ export default function InputMedic() {
         "patientName",
         registration.patient.name ? registration.patient.name : name
       );
+      Cookies.set("patientData", JSON.stringify(registration.patient));
       router.push("/registry");
     } catch (error) {
       console.error("Failed to post medicine details:", error);

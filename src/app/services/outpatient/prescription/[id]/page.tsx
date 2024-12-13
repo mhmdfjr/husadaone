@@ -8,6 +8,7 @@ import { ArrowRight2 } from "iconsax-react";
 import TablePrescription from "@/components/table/tablePrescription";
 import axios from "axios";
 import Cookies from "js-cookie";
+import jsPDF from "jspdf";
 
 interface Pivot {
   payment_id: number;
@@ -64,7 +65,7 @@ export default function InputOutpatient() {
   const token = Cookies.get("token");
   const [amount, setAmount] = useState<number>(0);
   const [usage, setUsage] = useState<string>("");
-  const [audio, setAudio] = useState<string>("");
+  const [pharmacyQueue, setPharmacyQueue] = useState<number>();
 
   const router = useRouter();
   const params = useParams();
@@ -201,6 +202,58 @@ export default function InputOutpatient() {
     }
   };
 
+  const handlePrintQueue = async (id: number) => {
+    try {
+      const { data: response } = await axios.get(`${apiUrl}/payments/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "Application/json",
+        },
+      });
+      const queue = response.data.payment.payment_queue;
+      setPharmacyQueue(queue);
+
+      const doc = new jsPDF({
+        unit: "pt",
+        format: [250, 250],
+      });
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("Rumah Sakit Harapan Sehat", 30, 30);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      doc.text(
+        "Jl. Pemuda No.229, Bantarbolang, Kab. Pemalang, Jawa Tengah",
+        10,
+        45
+      );
+      doc.text("Telp: 0876-8383-8393   Email: harapansehat@gmail.com", 20, 55);
+
+      doc.setDrawColor(0);
+      doc.setLineWidth(0.5);
+      doc.line(20, 65, 233.5, 65);
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.text("Nomor Antrian Apotek", 120, 85, { align: "center" });
+
+      doc.setFontSize(40);
+      doc.text(queue ? queue.toString() : "0", 125, 160, {
+        align: "center",
+      });
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text("Dengan Sepenuh Hati", 125, 200, { align: "center" });
+
+      doc.save("Tiket_Antrian_Poliklinik.pdf");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleSave = async (id: number) => {
     try {
       const response = await axios.post(
@@ -213,34 +266,27 @@ export default function InputOutpatient() {
           },
         }
       );
-      setAudio(response.data);
-      router.push(`/services/outpatient/prescription/${registration.id}`);
+      handlePrintQueue(id);
+      router.push(`/services/outpatient`);
     } catch (error) {
       console.error("Failed to post medicine details:", error);
     }
   };
 
-  // const [childData, setChildData] = useState<Medicine[]>(medicinesData);
-
-  // const handleChildData = (data: Medicine[]) => {
-  //   setChildData(data);
-  // };
-
-  const [filteredMedicines, setFilteredMedicines] = useState<Medicine[]>([]); // Track filtered medicines based on search input
-  const [isFocused, setIsFocused] = useState<boolean>(false); // Track focus state
+  const [filteredMedicines, setFilteredMedicines] = useState<Medicine[]>([]);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
 
   useEffect(() => {
-    // Filter the medicines based on the "Nama Obat" input
     const filtered = medicines.filter((medicineItem) =>
       medicineItem.name.toLowerCase().includes(medicineName.toLowerCase())
     );
     setFilteredMedicines(filtered);
-  }, [medicineName, medicine, medicines]); // Update filtered medicines when the input or childData changes
+  }, [medicineName, medicine, medicines]);
 
   const handleMedicineSelect = (selectedMedicine: Medicine) => {
     setMedicine(selectedMedicine);
-    setMedicineName(selectedMedicine.name); // Set selected medicine to input field
-    setIsFocused(false); // Hide the dropdown after selection
+    setMedicineName(selectedMedicine.name);
+    setIsFocused(false);
   };
 
   useEffect(() => {
@@ -371,7 +417,6 @@ export default function InputOutpatient() {
         </div>
       </div>
 
-      {/* Medicine search and input section */}
       <div className="w-full py-6 px-8 flex justify-center items-end bg-basic-white rounded-2xl gap-6 border-2 overflow-y-visible scrollbar-hide">
         <div className="w-full flex justify-start items-end gap-4">
           <div className="w-full relative">
@@ -400,7 +445,6 @@ export default function InputOutpatient() {
             )}
           </div>
 
-          {/* Amount and usage inputs */}
           <div className="w-full">
             <Input
               label="Jumlah"
@@ -430,7 +474,6 @@ export default function InputOutpatient() {
         />
       </div>
 
-      {/* Prescription table */}
       <div className="w-full py-6 px-8 flex flex-col bg-basic-white rounded-2xl gap-6 border-2 overflow-scroll scrollbar-hide">
         <TablePrescription medicineName={medicine} />
       </div>
