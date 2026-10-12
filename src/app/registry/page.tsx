@@ -256,7 +256,7 @@ const Registry = () => {
 
     doc.text("TTL :", 20, 90);
     {
-      patientData
+      patientData.place_of_birth
         ? doc.text(
             `${patientData.place_of_birth} / ${patientData.date_of_birth}`,
             40,
@@ -267,20 +267,20 @@ const Registry = () => {
 
     doc.text("Asuransi :", 20, 100);
     {
-      patientData
+      patientData.insurance
         ? doc.text(patientData.insurance, 40, 100)
         : doc.line(40, 100, 100, 100);
     }
 
     doc.text("JK :", 20, 110);
     {
-      patientData
+      patientData.gender
         ? doc.text(patientData.gender, 40, 110)
         : doc.line(40, 110, 55, 110);
     }
     doc.text("Gol. Darah :", 58, 110);
     {
-      patientData
+      patientData.blood_type
         ? doc.text(patientData.blood_type, 85, 110)
         : doc.line(85, 110, 100, 110);
     }
@@ -294,21 +294,21 @@ const Registry = () => {
 
     doc.text("Alamat :", 110, 70);
     {
-      patientData
+      patientData.address
         ? doc.text(patientData.address, 135, 70)
         : doc.line(135, 70, 190, 70);
     }
 
     doc.text("Alergi :", 110, 80);
     {
-      patientData
+      patientData.allergy
         ? doc.text(patientData.allergy, 135, 80)
         : doc.line(135, 80, 190, 80);
     }
 
     doc.text("Kecacatan :", 110, 90);
     {
-      patientData
+      patientData.disability
         ? doc.text(patientData.disability, 135, 90)
         : doc.line(135, 90, 190, 90);
     }

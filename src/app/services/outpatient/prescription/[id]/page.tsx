@@ -248,7 +248,7 @@ export default function InputOutpatient() {
       doc.setFontSize(10);
       doc.text("Dengan Sepenuh Hati", 125, 200, { align: "center" });
 
-      doc.save("Tiket_Antrian_Poliklinik.pdf");
+      doc.save("Tiket_Antrian_Apotek.pdf");
     } catch (error) {
       console.error(error);
     }
